@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>
+            Web Audio API
+        </title>
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />
+        <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <!--<link href="css/bootstrap-responsive.css" rel="stylesheet">-->
+        <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
+        <script src="src/wavesurfer.js"></script>
+        <script src="src/webaudio.js"></script>
+        <script src="src/drawer.js"></script>
+        
+        <style>
+        body {
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+        
+        #sidebar {
+            height: 400px;
+            min-width: 130px;
+        }
+        
+        .track {
+            height: 115px;
+        }
+    </style>
+    </head>
+    <body>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
+              <div class="container-fluid">
+                <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+                <a class="brand" href="#">OpenDAW</a>
+                <div class="nav-collapse collapse">
+                  <ul class="nav">
+                    <li><a href="#">Upload</a></li>
+                    <li><a href="#">Export</a></li>
+                    <li><a id="step-backward" href="#"><i class="icon-step-backward icon-white"></i></a></li>
+                    <li><a href="#"><i class="icon-backward icon-white"></i></a></li>
+                    <li><a id="playPause" href="#"><i class="icon-play icon-white"></i></a></li>
+                    <li><a id="pause" href="#"><i class="icon-stop icon-white"></i></a></li>
+                    <li><a href="#"><i class="icon-forward icon-white"></i></a></li>
+                    <li><a id="step-forward" href="#"><i class="icon-step-forward icon-white"></i></a></li>
+                </ul>
+                </div><!--/.nav-collapse -->
+              </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span3">
+                    <div id="sidebar" class="well sidebar-nav">
+                        <ul class="nav nav-list">
+                          <li class="nav-header">Library</li>
+                          <li><a href="#">Sample1.wav</a></li>
+                          <li><a href="#">Sample2.wav</a></li>
+                          <li><a href="#">Sample3.wav</a></li>
+                          <li><a href="#">Sample4.wav</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="span9">
+                    <div class="row-fluid">
+                        <div class="span2 track well">
+                            <p>Track 1</p>
+                            <div class="btn-group">
+                                <button class="btn btn-mini"><i class="icon-headphones"></i></button>
+                                <button class="btn btn-mini"><i class="icon-volume-off"></i></button>
+                                <button class="btn btn-mini"><i class="icon-plus-sign"></i></button>
+                            </div>
+                        </div>
+                        <div id="track1" class="span10 track well timeline">
+                            <!--<div class="cursor" id="wave-cursor"></div>
+                                <canvas id="wave" height="80px" width="inherit"></canvas>-->
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span2 track well">
+                            <p>Track 2</p>
+                            <div class="btn-group">
+                                <button class="btn btn-mini"><i class="icon-headphones"></i></button>
+                                <button class="btn btn-mini"><i class="icon-volume-off"></i></button>
+                                <button class="btn btn-mini"><i class="icon-plus-sign"></i></button>
+                            </div>
+                        </div>
+                        <div id="track2" class="span10 track well">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="examples/webaudio/main2.js"></script>
+        <script>
+            $(document).ready(function(){
+                $("#pause").click(function(){
+                    wavesurfer.pause();
+                });
+                $("#step-forward").click(function(){
+                    wavesurfer.pause();
+                });
+                $("#step-backward").click(function(){
+                    wavesurfer.playAt(0);
+                });
+            });
+        </script>
+    </body>
+</html>
