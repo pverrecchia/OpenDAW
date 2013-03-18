@@ -1,4 +1,4 @@
 [
-{"url":"examples/webaudio/data/samples/example1.mp3","track":"1"},
-{"url":"examples/webaudio/data/samples/sonnet_23.mp3","track":"2"}
+{"url":"examples/webaudio/data/samples/example1.mp3","track":"1","startTime":"0","duration":"51.9324951171875"},
+{"url":"examples/webaudio/data/samples/sonnet_23.mp3","track":"2","startTime":"0","duration":"72.7009048461914"}
 ]

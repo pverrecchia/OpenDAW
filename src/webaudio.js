@@ -63,6 +63,7 @@ WaveSurfer.WebAudio = {
                 my.lastPause = 0;
                 my.startTime = null;
                 cb(buffer);
+                console.log(buffer);
             },
             Error
         );

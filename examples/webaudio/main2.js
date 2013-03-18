@@ -4,7 +4,7 @@ var wavesurfer = (function () {
     var createWavesurfer = function (song) {
         var canvas = document.createElement('canvas');
         $("#track"+song.track).append(canvas);
-        //canvas.width = 1024;
+        canvas.width = parseFloat(song.duration);
         canvas.height = 80;
 
         var wavesurfer = Object.create(WaveSurfer);
@@ -22,23 +22,16 @@ var wavesurfer = (function () {
     var processData = function (json) {
         var wavesurfers = json.map(createWavesurfer);
         $.each(wavesurfers, function(){
-            console.log(this.backend.currentBuffer.duration);
-        });
-        $("#playPause").click(function(){
-            wavesurfers[0].playPause();
-            wavesurfers[1].playPause();
-        });
-        $("#pause").click(function(){
-            wavesurfers[0].pause();
-            wavesurfers[1].pause();
-        });
-        $("#step-forward").click(function(){
-            wavesurfers[0].pause();
-            wavesurfers[1].pause();
-        });
-        $("#step-backward").click(function(){
-            wavesurfers[0].playAt(0);
-            wavesurfers[1].playAt(0);
+            var currentWaveSurfer = this;
+            $('body').bind('playPause-event', function(e){
+                currentWaveSurfer.playPause();
+            });
+            $('body').bind('pause-event', function(e){
+                currentWaveSurfer.pause();
+            });
+            $('body').bind('stepBackward-event', function(e){
+                currentWaveSurfer.playAt(0);
+            });
         });
     };
 

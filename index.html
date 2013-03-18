@@ -105,14 +105,14 @@
         <script src="examples/webaudio/main2.js"></script>
         <script>
             $(document).ready(function(){
-                $("#pause").click(function(){
-                    wavesurfer.pause();
+                $("#playPause").click(function(){
+                    $('body').trigger('playPause-event');
                 });
-                $("#step-forward").click(function(){
-                    wavesurfer.pause();
+                $("#pause").click(function(){
+                    $('body').trigger('pause-event');
                 });
                 $("#step-backward").click(function(){
-                    wavesurfer.playAt(0);
+                    $('body').trigger('stepBackward-event');
                 });
             });
         </script>
