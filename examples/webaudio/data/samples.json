@@ -1,4 +1,6 @@
 [
-{"url":"examples/webaudio/data/samples/example1.mp3","track":"1","startTime":"0","duration":"51.9324951171875"},
-{"url":"examples/webaudio/data/samples/sonnet_23.mp3","track":"2","startTime":"0","duration":"72.7009048461914"}
+{"url":"examples/webaudio/data/samples/Bliss_Rhodes.mp3","track":"1","startTime":"0","duration":"400"},
+{"url":"examples/webaudio/data/samples/Bliss_BlipLead.mp3","track":"2","startTime":"0","duration":"400"},
+{"url":"examples/webaudio/data/samples/Bliss_Bassline2.mp3","track":"3","startTime":"0","duration":"400"},
+{"url":"examples/webaudio/data/samples/Bliss_PercLoop2.mp3","track":"4","startTime":"0","duration":"100"}
 ]
