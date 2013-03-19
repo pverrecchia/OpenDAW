@@ -20,9 +20,10 @@ var WaveSurfer = {
             my.onAudioProcess();
         });
 
-        this.bindClick(params.canvas, function (percents) {
+        /*this.bindClick(params.canvas, function (percents) {
             my.playAt(percents);
         });
+        */
     },
 
     onAudioProcess: function () {
@@ -105,6 +106,7 @@ var WaveSurfer = {
     /**
      * Click to seek.
      */
+    /*
     bindClick: function (element, callback) {
         var my = this;
         element.addEventListener('click', function (e) {
@@ -113,4 +115,5 @@ var WaveSurfer = {
             callback(relX / this.clientWidth);
         }, false);
     }
+    */
 };

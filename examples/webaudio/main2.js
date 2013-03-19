@@ -2,11 +2,28 @@ var wavesurfer = (function () {
     'use strict';
 
     var createWavesurfer = function (song) {
+        var bpm = 128;
+        var span = document.createElement('span');
+        span.id = "sample" + song.id + "Span";
         var canvas = document.createElement('canvas');
-        $("#track"+song.track).append(canvas);
-        canvas.width = parseFloat(song.duration);
+        canvas.id = "sample" + song.id + "Canvas";
+        $("#track"+song.track).append(span);
+        $("#sample" + song.id + "Span").append(canvas);
+        $("#sample" + song.id + "Span").width(parseFloat(song.duration) * ((10*bpm)/60));
+        canvas.width = parseFloat(song.duration) * ((10*bpm)/60);
         canvas.height = 80;
-
+        $( "#sample" + song.id + "Span" ).attr('data-startTime',song.startTime);
+        $( "#sample" + song.id + "Span" ).css('left',"" + parseInt(song.startTime) + "px");
+        $( "#sample" + song.id + "Span" ).draggable({
+            axis: "x",
+            containment: "parent",
+            grid: [10, 0],
+            stop: function() {
+                $( "#sample" + song.id + "Span" ).attr('data-startTime',parseInt($( "#sample" + song.id + "Span" ).css('left')));
+            }
+        });
+        
+        
         var wavesurfer = Object.create(WaveSurfer);
         wavesurfer.init({
             canvas: canvas,
