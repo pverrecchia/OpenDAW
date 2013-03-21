@@ -1,7 +1,7 @@
 var ac = new (window.AudioContext || window.webkitAudioContext);
 
-var masterGainNode = ac.createGainNode();
-masterGainNode.connect(ac.destination);
+//var masterGainNode = ac.createGainNode();
+//masterGainNode.connect(ac.destination);
 
 var wavesurfer = (function () {
     'use strict';
@@ -52,18 +52,6 @@ var wavesurfer = (function () {
 
     var processData = function (json) {
         var wavesurfers = json.map(createWavesurfer);
-        $.each(wavesurfers, function(){
-            var currentWaveSurfer = this;
-            $('body').bind('playPause-event', function(e){
-                currentWaveSurfer.playPause();
-            });
-            $('body').bind('pause-event', function(e){
-                currentWaveSurfer.pause();
-            });
-            $('body').bind('stepBackward-event', function(e){
-                currentWaveSurfer.playAt(0);
-            });
-        });
     };
 
     var xhr = new XMLHttpRequest();
@@ -98,7 +86,7 @@ var buffers = [];
         e.target.response,
         function (buffer) {
            buffers.push({buffer: buffer, name: "sample1"});
-           console.log(buffers);	
+          	
         },
         Error
         );			

@@ -19,16 +19,16 @@ WaveSurfer.WebAudio = {
         this.ac = params.audioContext;
 
         this.fftSize = params.fftSize || this.Defaults.fftSize;
-        this.masterGainNode = params.masterGainNode || this.ac.masterGainNode;
+        this.destination = params.destination || this.ac.destination;
 
         this.analyser = this.ac.createAnalyser();
         this.analyser.smoothingTimeConstant = params.smoothingTimeConstant ||
             this.Defaults.smoothingTimeConstant;
         this.analyser.fftSize = this.fftSize;
-        this.analyser.connect(this.masterGainNode);
+        this.analyser.connect(this.destination);
 
         this.proc = this.ac.createJavaScriptNode(this.fftSize / 2, 1, 1);
-        this.proc.connect(this.masterGainNode);
+        this.proc.connect(this.destination);
 
         this.dataArray = new Uint8Array(this.analyser.fftSize);
 
