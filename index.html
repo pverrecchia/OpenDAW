@@ -64,12 +64,8 @@
             <div class="row-fluid">
                 <div class="span3">
                     <div id="sidebar" class="well sidebar-nav">
-                        <ul class="nav nav-list">
+                        <ul id="library" class="nav nav-list">
                           <li class="nav-header">Library</li>
-                          <li><a href="#">Sample1.wav</a></li>
-                          <li><a href="#">Sample2.wav</a></li>
-                          <li><a href="#">Sample3.wav</a></li>
-                          <li><a href="#">Sample4.wav</a></li>
                         </ul>
                     </div>
                 </div>
@@ -112,6 +108,9 @@
                 });
                 $("#step-backward").click(function(){
                     $('body').trigger('stepBackward-event');
+                });
+                $( "#track1" ).droppable({
+                    accept: ".librarySample"
                 });
                 var c=document.getElementById("timeline");
                 var ctx=c.getContext("2d");

@@ -5,6 +5,10 @@ var wavesurfer = (function () {
         var bpm = 128;
         var startTimes = song.startTime;
         var sampleNumber = 0;
+        var sampleUrl = song.url.split("/");
+        var sampleTitle = sampleUrl[sampleUrl.length-1];
+        $("#library").append("<span><li id=librarySample" + song.id +" class=\"librarySample\"><a href=\"#\">" + sampleTitle + "</a></li></span>");
+        $("#librarySample" + song.id).draggable({ revert: true, helper: "clone" });
         $.each(startTimes, function(){
             var span = document.createElement('span');
             span.id = "sample" + song.id + "Span" + sampleNumber;
