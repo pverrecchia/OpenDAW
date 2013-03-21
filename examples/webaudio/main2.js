@@ -69,3 +69,50 @@ var wavesurfer = (function () {
     xhr.open('GET', 'examples/webaudio/data/samples.json');
     xhr.send();
 }());
+
+var buffers = [];
+    //buffers.push({buffer: "buffer", name: "sample1"});
+    var sample1 = "examples/webaudio/data/samples/Bliss_PercLoop2.mp3";
+    load(sample1);
+    
+    console.log(buffers);	
+
+    function load (src) {
+  
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'arraybuffer';
+
+    xhr.addEventListener('load', function (e) {
+        /*my.backend.loadData(
+                e.target.response,
+                my.drawBuffer.bind(my)
+        );*/
+        
+        ac.decodeAudioData(
+        e.target.response,
+        function (buffer) {
+           buffers.push({buffer: buffer, name: "sample1"});
+           console.log(buffers);	
+        },
+        Error
+        );			
+    }, false);
+    xhr.open('GET', src, true);
+    xhr.send();
+    };
+            
+initSched({
+    bufferArray: buffers,
+    audioContext: ac
+});
+
+
+$('body').bind('playPause-event', function(e){
+    play2();
+});
+$('body').bind('pause-event', function(e){
+    stop2();
+});
+$('body').bind('stepBackward-event', function(e){
+    //scheduler.playAt(0);
+});
