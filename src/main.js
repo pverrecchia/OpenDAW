@@ -60,13 +60,13 @@ var wavesurfer = (function () {
             processData(JSON.parse(this.responseText));
         }
     };
-    xhr.open('GET', 'examples/webaudio/data/samples.json');
+    xhr.open('GET', 'src/data/samples.json');
     xhr.send();
 }());
 
 var buffers = [];
     //buffers.push({buffer: "buffer", name: "sample1"});
-    var sample1 = "examples/webaudio/data/samples/Bliss_PercLoop2.mp3";
+    var sample1 = "src/data/samples/Bliss_PercLoop2.mp3";
     load(sample1);
     
     console.log(buffers);	
@@ -109,4 +109,34 @@ $('body').bind('pause-event', function(e){
 });
 $('body').bind('stepBackward-event', function(e){
     //scheduler.playAt(0);
+});
+
+$(document).ready(function(){
+    $("#playPause").click(function(){
+        $('body').trigger('playPause-event');
+    });
+    $("#pause").click(function(){
+        $('body').trigger('pause-event');
+    });
+    $("#step-backward").click(function(){
+        $('body').trigger('stepBackward-event');
+    });
+    $( "#track1" ).droppable({
+        accept: ".librarySample"
+    });
+    var c=document.getElementById("timeline");
+    var ctx=c.getContext("2d");
+    ctx.font = '8pt Calibri';
+    ctx.textAlign = 'center';
+    for(var i=0;i<500;i+=10){
+        ctx.moveTo(i,0);
+        ctx.lineTo(i,10);
+        ctx.stroke();
+    }
+    ctx.fillText("Bar",10,20);
+    var bar = 2;
+    for(var i=40;i<500;i+=40){
+        ctx.fillText(bar, i, 20);
+        bar++;
+    }
 });

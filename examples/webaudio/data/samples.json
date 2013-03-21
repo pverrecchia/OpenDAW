@@ -1,6 +1,0 @@
-[
-{"id":"1","url":"examples/webaudio/data/samples/Bliss_BlipLead.mp3","track":"1","startTime":[],"duration":"15.2555103302"},
-{"id":"2","url":"examples/webaudio/data/samples/Bliss_Bassline2.mp3","track":"1","startTime":[],"duration":"15.2555103302"},
-{"id":"3","url":"examples/webaudio/data/samples/Bliss_Rhodes.mp3","track":"1","startTime":[],"duration":"15.2555103302"},
-{"id":"4","url":"examples/webaudio/data/samples/Bliss_PercLoop2.mp3","track":"1","startTime":[0,20],"duration":"3.813877582550049"}
-]
