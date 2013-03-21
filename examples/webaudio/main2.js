@@ -1,3 +1,8 @@
+var ac = new (window.AudioContext || window.webkitAudioContext);
+
+var masterGainNode = ac.createGainNode();
+masterGainNode.connect(ac.destination);
+
 var wavesurfer = (function () {
     'use strict';
 
@@ -7,7 +12,7 @@ var wavesurfer = (function () {
         var sampleNumber = 0;
         var sampleUrl = song.url.split("/");
         var sampleTitle = sampleUrl[sampleUrl.length-1];
-        $("#library").append("<span><li id=librarySample" + song.id +" class=\"librarySample\"><a href=\"#\">" + sampleTitle + "</a></li></span>");
+        $("#library").append("<li id=librarySample" + song.id +" class=\"librarySample\"><a href=\"#\">" + sampleTitle + "</a></li>");
         $("#librarySample" + song.id).draggable({ revert: true, helper: "clone" });
         $.each(startTimes, function(){
             var span = document.createElement('span');
@@ -35,7 +40,8 @@ var wavesurfer = (function () {
                 waveColor: 'violet',
                 progressColor: 'purple',
                 loadingColor: 'purple',
-                cursorColor: 'navy'
+                cursorColor: 'navy',
+                audioContext: ac
             });
             wavesurfer.load(song.url);
             sampleNumber++;
