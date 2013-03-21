@@ -3,29 +3,30 @@
 var WaveSurfer = {
     init: function (params) {
         var my = this;
-
+        
         if (params.audio) {
             var backend = WaveSurfer.Audio;
         } else {
             backend = WaveSurfer.WebAudio;
         }
-
+        /*
         this.backend = Object.create(backend);
         this.backend.init(params);
-
+        */
+        
         this.drawer = Object.create(WaveSurfer.Drawer);
         this.drawer.init(params);
-
+        /*
         this.backend.bindUpdate(function () {
             my.onAudioProcess();
         });
-
+        */
         /*this.bindClick(params.canvas, function (percents) {
             my.playAt(percents);
         });
         */
     },
-
+    /*
     onAudioProcess: function () {
         if (!this.backend.isPaused()) {
             this.drawer.progress(this.backend.getPlayedPercents());
@@ -47,7 +48,7 @@ var WaveSurfer = {
             this.pause();
         }
     },
-
+    */
     drawBuffer: function () {
         if (this.backend.currentBuffer) {
             this.drawer.drawBuffer(this.backend.currentBuffer);
@@ -82,10 +83,10 @@ var WaveSurfer = {
         xhr.open('GET', src, true);
         xhr.send();
     },
-
     /**
      * Loads an audio file via drag'n'drop.
      */
+    /**
     bindDragNDrop: function (dropTarget) {
         var my = this;
         var reader = new FileReader();
@@ -102,7 +103,7 @@ var WaveSurfer = {
             file && reader.readAsArrayBuffer(file);
         }, false);
     },
-
+    **/
     /**
      * Click to seek.
      */

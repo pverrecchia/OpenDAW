@@ -60,11 +60,12 @@ WaveSurfer.Drawer = {
             }
         }
     },
-
+    
     progress: function (percents) {
         this.cursorPos = ~~(this.width * percents);
         this.redraw();
     },
+    
 
     drawBuffer: function (buffer) {
         this.getPeaks(buffer);
@@ -74,6 +75,7 @@ WaveSurfer.Drawer = {
     /**
      * Redraws the entire canvas on each audio frame.
      */
+    
     redraw: function () {
         var my = this;
 
@@ -89,8 +91,9 @@ WaveSurfer.Drawer = {
             this.drawImage();
         }
 
-        this.drawCursor();
+        //this.drawCursor();
     },
+    
 
     clear: function () {
         this.cc.clearRect(0, 0, this.width, this.height);
@@ -103,15 +106,11 @@ WaveSurfer.Drawer = {
         var x = index * w;
         var y = Math.round((this.height - h) / 2);
 
-        if (this.cursorPos >= x) {
-            this.cc.fillStyle = this.params.progressColor;
-        } else {
-            this.cc.fillStyle = this.params.waveColor;
-        }
+        this.cc.fillStyle = this.params.waveColor;
 
         this.cc.fillRect(x, y, w, h);
     },
-
+    /*
     drawCursor: function () {
         var w = this.params.cursorWidth;
         var h = this.height;
@@ -122,6 +121,7 @@ WaveSurfer.Drawer = {
         this.cc.fillStyle = this.params.cursorColor;
         this.cc.fillRect(x, y, w, h);
     },
+    */
 
     /**
      * Loads and caches an image.

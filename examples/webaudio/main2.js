@@ -3,36 +3,40 @@ var wavesurfer = (function () {
 
     var createWavesurfer = function (song) {
         var bpm = 128;
-        var span = document.createElement('span');
-        span.id = "sample" + song.id + "Span";
-        var canvas = document.createElement('canvas');
-        canvas.id = "sample" + song.id + "Canvas";
-        $("#track"+song.track).append(span);
-        $("#sample" + song.id + "Span").append(canvas);
-        $("#sample" + song.id + "Span").width(parseFloat(song.duration) * ((10*bpm)/60));
-        canvas.width = parseFloat(song.duration) * ((10*bpm)/60);
-        canvas.height = 80;
-        $( "#sample" + song.id + "Span" ).attr('data-startTime',song.startTime);
-        $( "#sample" + song.id + "Span" ).css('left',"" + parseInt(song.startTime) + "px");
-        $( "#sample" + song.id + "Span" ).draggable({
-            axis: "x",
-            containment: "parent",
-            grid: [10, 0],
-            stop: function() {
-                $( "#sample" + song.id + "Span" ).attr('data-startTime',parseInt($( "#sample" + song.id + "Span" ).css('left')));
-            }
+        var startTimes = song.startTime;
+        var sampleNumber = 0;
+        $.each(startTimes, function(){
+            var span = document.createElement('span');
+            span.id = "sample" + song.id + "Span" + sampleNumber;
+            var canvas = document.createElement('canvas');
+            canvas.id = "sample" + song.id + "Canvas" + sampleNumber;
+            $("#track"+song.track).append(span);
+            $("#sample" + song.id + "Span" + sampleNumber).append(canvas);
+            $("#sample" + song.id + "Span" + sampleNumber).width(parseFloat(song.duration) * ((10*bpm)/60));
+            canvas.width = parseFloat(song.duration) * ((10*bpm)/60);
+            canvas.height = 80;
+            $( "#sample" + song.id + "Span" + sampleNumber).attr('data-startTime',song.startTime[sampleNumber]);
+            $( "#sample" + song.id + "Span" + sampleNumber).css('left',"" + parseInt(song.startTime[sampleNumber]) + "px");
+            $( "#sample" + song.id + "Span" + sampleNumber).draggable({
+                axis: "x",
+                containment: "parent",
+                grid: [10, 0],
+                stop: function() {
+                    $( "#sample" + song.id + "Span" + sampleNumber).attr('data-startTime',parseInt($( "#sample" + song.id + "Span" + sampleNumber).css('left')));
+                }
+            });
+            var wavesurfer = Object.create(WaveSurfer);
+            wavesurfer.init({
+                canvas: canvas,
+                waveColor: 'violet',
+                progressColor: 'purple',
+                loadingColor: 'purple',
+                cursorColor: 'navy'
+            });
+            wavesurfer.load(song.url);
+            sampleNumber++;
         });
-        
-        
-        var wavesurfer = Object.create(WaveSurfer);
-        wavesurfer.init({
-            canvas: canvas,
-            waveColor: 'violet',
-            progressColor: 'purple',
-            loadingColor: 'purple',
-            cursorColor: 'navy'
-        });
-        wavesurfer.load(song.url);
+
         return wavesurfer;
     };
 
