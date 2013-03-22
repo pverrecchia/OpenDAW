@@ -3,6 +3,10 @@ var ac = new (window.AudioContext || window.webkitAudioContext);
 //var masterGainNode = ac.createGainNode();
 //masterGainNode.connect(ac.destination);
 
+
+var buffers = []; //contains AudioBuffer and id# of samples in workspace
+var times = []; //contains start times of samples and their id#
+
 var wavesurfer = (function () {
     'use strict';
 
@@ -12,9 +16,13 @@ var wavesurfer = (function () {
         var sampleNumber = 0;
         var sampleUrl = song.url.split("/");
         var sampleTitle = sampleUrl[sampleUrl.length-1];
+		var obj;
         $("#library").append("<li id=librarySample" + song.id +" class=\"librarySample\"><a href=\"#\">" + sampleTitle + "</a></li>");
         $("#librarySample" + song.id).draggable({ revert: true, helper: "clone" });
         $.each(startTimes, function(){
+			if(sampleNumber == 0){
+				obj = ({bufferURL: song.url, id: song.id});
+			}
             var span = document.createElement('span');
             span.id = "sample" + song.id + "Span" + sampleNumber;
             var canvas = document.createElement('canvas');
@@ -47,13 +55,21 @@ var wavesurfer = (function () {
             sampleNumber++;
         });
 
-        return wavesurfer;
+        return obj;;
     };
+
 
     var processData = function (json) {
-        var wavesurfers = json.map(createWavesurfer);
+        var wavesurfers = json.map(createWavesurfer); 	//wavesurfers is array of all tracks 
+			$.each(wavesurfers, function(){				
+				if(this != undefined){   				//if they are in workspace...
+					load(this.bufferURL, this.id);		//load the buffer
+				}
+			});
     };
-
+	
+	
+	
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
         if (this.readyState == this.DONE && this.status == 200) {
@@ -64,36 +80,27 @@ var wavesurfer = (function () {
     xhr.send();
 }());
 
-var buffers = [];
-    //buffers.push({buffer: "buffer", name: "sample1"});
-    var sample1 = "src/data/samples/Bliss_PercLoop2.mp3";
-    load(sample1);
-    
-    console.log(buffers);	
+	
+    function load (src, id) {
 
-    function load (src) {
-  
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'arraybuffer';
 
     xhr.addEventListener('load', function (e) {
-        /*my.backend.loadData(
-                e.target.response,
-                my.drawBuffer.bind(my)
-        );*/
-        
         ac.decodeAudioData(
-        e.target.response,
-        function (buffer) {
-           buffers.push({buffer: buffer, name: "sample1"});
-          	
-        },
-        Error
+			e.target.response,
+			function (buffer) {
+				buffers.push({buffer: buffer, id: id});
+				//console.log(buffers);
+			},
+			Error
         );			
     }, false);
     xhr.open('GET', src, true);
     xhr.send();
     };
+	
+	
             
 initSched({
     bufferArray: buffers,
@@ -139,4 +146,5 @@ $(document).ready(function(){
         ctx.fillText(bar, i, 20);
         bar++;
     }
+	
 });

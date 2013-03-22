@@ -46,30 +46,19 @@ function scheduleNote( beatNumber, time ) {
     // push the note on the queue, even if we're not playing.
 //notesInQueue.push( { note: beatNumber, time: time } );
 
-	/*
-	if ( (noteResolution==1) && (beatNumber%2))
-		return;	// we're not playing non-8th 16th notes
-	if ( (noteResolution==2) && (beatNumber%4))
-		return;	// we're not playing non-quarter 8th notes
-	*/
+	
 	if(!(beatNumber%32)) {  //if(beatNumber == 
 		
-		//console.log(this.ac.currentTime);
+		var sampleID = 0;
+		
 	    source = ac.createBufferSource();
-		//console.log(this.buffers[0].buffer);
-		source.buffer = buffers[0].buffer;
+		source.buffer = buffers[sampleID].buffer;
 		
-		//var mute = ac.createGainNode();
-		// trackGain = ac.createGainNode();
-		
-		//source.connect(trackGain);
-		//trackGain.connect(mute);
-		//mute.connect(masterGainNode);
 		
 		source.connect(ac.destination);
 		
 		source.start(time);
-		source.stop(time + buffers[0].buffer.duration);
+		source.stop(time + buffers[sampleID].buffer.duration);
 		
 	// create an oscillator
 	}
@@ -135,7 +124,7 @@ function draw() {
 
 function initSched(params){
 
-console.log("init in scheduler2");
+
 /*
     var container = document.createElement( 'div' );
 
