@@ -52,7 +52,7 @@ function scheduleNote( beatNumber, time ) {
 	if ( (noteResolution==2) && (beatNumber%4))
 		return;	// we're not playing non-quarter 8th notes
 	*/
-	if(!(beatNumber%60)) {
+	if(!(beatNumber%32)) {  //if(beatNumber == 
 		
 		//console.log(this.ac.currentTime);
 	    source = ac.createBufferSource();
