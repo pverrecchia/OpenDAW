@@ -54,12 +54,14 @@ function scheduleNote( beatNumber, time ) {
 	source.connect(ac.destination);
 	    
 	for(var i = 0; i<samples.length; i++){
-	
-	source.buffer = buffers[samples[i]].buffer;
 	    
-	source.start(time);
-	source.stop(time + buffers[samples[i]].buffer.duration);
+	    //console.log(samples[0]);
 	
+	    source.buffer = buffers[samples[i]].buffer;
+	
+	    
+	    source.start(time);
+	    source.stop(time + buffers[samples[i]].buffer.duration);
 	}
     }
 

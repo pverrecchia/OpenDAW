@@ -6,7 +6,7 @@ var ac = new (window.AudioContext || window.webkitAudioContext);
 
 var buffers = []; //contains AudioBuffer and id# of samples in workspace
 var times = []; //contains start times of samples and their id#
-var pixelsPer16 = 4; 			//pixels per 16th note. used for grid snapping
+var pixelsPer16 = 6; 			//pixels per 16th note. used for grid snapping
 var pixelsPer4 = 4*pixelsPer16;		//pixels per 1/4 note	used for sample canvas size
 	
 	
@@ -103,7 +103,7 @@ function load (src, id) {
 	ac.decodeAudioData(
 	    e.target.response,
 	    function (buffer) {
-		buffers.push({buffer: buffer, id: id});
+		buffers[id] = {buffer: buffer};
 	    },
 	    Error
 	);			
@@ -146,9 +146,9 @@ $(document).ready(function(){
     var ctx=c.getContext("2d");
     ctx.font = '8pt Calibri';
     ctx.textAlign = 'center';
-    for(var i=0;i<500;i+=10){
+    for(var i=0;i<500;i+=pixelsPer4){	//timeline draws bars at 1/4 notes
         ctx.moveTo(i,0);
-        ctx.lineTo(i,pixelsPer4); 	//timeline draws bars at 1/4 notes
+        ctx.lineTo(i,10); 	
         ctx.stroke();
     }
     ctx.fillText("Bar",10,20);
