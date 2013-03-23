@@ -6,14 +6,16 @@ var ac = new (window.AudioContext || window.webkitAudioContext);
 
 var buffers = []; //contains AudioBuffer and id# of samples in workspace
 var times = []; //contains start times of samples and their id#
-
+var pixelsPer16 = 4; 			//pixels per 16th note. used for grid snapping
+var pixelsPer4 = 4*pixelsPer16;		//pixels per 1/4 note	used for sample canvas size
+	
+	
 var wavesurfer = (function () {
     'use strict';
 
     var createWavesurfer = function (song) {
         var bpm = 128;
-	var pixelsPer16 = 4; 			//pixels per 16th note. used for grid snapping
-	var pixelsPer4 = 4*pixelsPer16;		//pixels per 1/4 note	used for sample canvas size
+
         var startTimes = song.startTime;
         var sampleNumber = 0;
         var sampleUrl = song.url.split("/");
@@ -32,7 +34,7 @@ var wavesurfer = (function () {
             $("#track"+song.track).append(span);
             $("#sample" + song.id + "Span" + sampleNumber).append(canvas);
             $("#sample" + song.id + "Span" + sampleNumber).width(parseFloat(song.duration) * ((pixelsPer4*bpm)/60));
-            canvas.width = parseFloat(song.duration) * ((pixelPer4*bpm)/60);
+            canvas.width = parseFloat(song.duration) * ((pixelsPer4*bpm)/60);
             canvas.height = 80;
             $( "#sample" + song.id + "Span" + sampleNumber).attr('data-startTime',song.startTime[sampleNumber]);
             $( "#sample" + song.id + "Span" + sampleNumber).css('left',"" + parseInt(song.startTime[sampleNumber]) + "px");
