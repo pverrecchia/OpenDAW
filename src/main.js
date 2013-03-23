@@ -12,6 +12,8 @@ var wavesurfer = (function () {
 
     var createWavesurfer = function (song) {
         var bpm = 128;
+	var pixelsPer16 = 4; 			//pixels per 16th note. used for grid snapping
+	var pixelsPer4 = 4*pixelsPer16;		//pixels per 1/4 note	used for sample canvas size
         var startTimes = song.startTime;
         var sampleNumber = 0;
         var sampleUrl = song.url.split("/");
@@ -29,15 +31,15 @@ var wavesurfer = (function () {
             canvas.id = "sample" + song.id + "Canvas" + sampleNumber;
             $("#track"+song.track).append(span);
             $("#sample" + song.id + "Span" + sampleNumber).append(canvas);
-            $("#sample" + song.id + "Span" + sampleNumber).width(parseFloat(song.duration) * ((10*bpm)/60));
-            canvas.width = parseFloat(song.duration) * ((10*bpm)/60);
+            $("#sample" + song.id + "Span" + sampleNumber).width(parseFloat(song.duration) * ((pixelsPer4*bpm)/60));
+            canvas.width = parseFloat(song.duration) * ((pixelPer4*bpm)/60);
             canvas.height = 80;
             $( "#sample" + song.id + "Span" + sampleNumber).attr('data-startTime',song.startTime[sampleNumber]);
             $( "#sample" + song.id + "Span" + sampleNumber).css('left',"" + parseInt(song.startTime[sampleNumber]) + "px");
             $( "#sample" + song.id + "Span" + sampleNumber).draggable({
                 axis: "x",
                 containment: "parent",
-                grid: [10, 0],
+                grid: [pixelsPer16, 0],		//grid snaps to 16th notes
                 stop: function() {
                     $( "#sample" + song.id + "Span" + sampleNumber).attr('data-startTime',parseInt($( "#sample" + song.id + "Span" + sampleNumber).css('left')));
                 }
@@ -144,7 +146,7 @@ $(document).ready(function(){
     ctx.textAlign = 'center';
     for(var i=0;i<500;i+=10){
         ctx.moveTo(i,0);
-        ctx.lineTo(i,10);
+        ctx.lineTo(i,pixelsPer4); 	//timeline draws bars at 1/4 notes
         ctx.stroke();
     }
     ctx.fillText("Bar",10,20);
