@@ -37,7 +37,7 @@ var wavesurfer = (function () {
             canvas.width = parseFloat(song.duration) * ((pixelsPer4*bpm)/60);
             canvas.height = 80;
             $( "#sample" + song.id + "Span" + sampleNumber).attr('data-startTime',song.startTime[sampleNumber]);
-            $( "#sample" + song.id + "Span" + sampleNumber).css('left',"" + parseInt(song.startTime[sampleNumber]) + "px");
+            $( "#sample" + song.id + "Span" + sampleNumber).css('left',"" + parseInt(song.startTime[sampleNumber]*pixelsPer16) + "px");
 	    $( "#sample" + song.id + "Span" + sampleNumber).css('position','absolute');
             $( "#sample" + song.id + "Span" + sampleNumber).draggable({
                 axis: "x",
