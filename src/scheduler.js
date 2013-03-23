@@ -45,24 +45,26 @@ function nextNote() {
 function scheduleNote( beatNumber, time ) {
     // push the note on the queue, even if we're not playing.
     //notesInQueue.push( { note: beatNumber, time: time } );
+    var samples;
 
-
-    if(!(beatNumber%32)) {  //if(beatNumber == 
-	    
-	    var sampleID = 0;
-	    
+    if(times[beatNumber] != null){
+	samples = times[beatNumber];
+	
 	source = ac.createBufferSource();
-	    source.buffer = buffers[sampleID].buffer;
+	source.connect(ac.destination);
 	    
+	for(var i = 0; i<samples.length; i++){
+	
+	source.buffer = buffers[samples[i]].buffer;
 	    
-	    source.connect(ac.destination);
-	    
-	    source.start(time);
-	    source.stop(time + buffers[sampleID].buffer.duration);
-	    
-    // create an oscillator
+	source.start(time);
+	source.stop(time + buffers[samples[i]].buffer.duration);
+	
+	}
     }
+
 }
+
 
 function scheduler() {
 	// while there are notes that will need to play before the next interval, 
