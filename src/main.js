@@ -27,6 +27,7 @@ var wavesurfer = (function () {
 	    if(sampleNumber == 0){
 		obj = ({bufferURL: song.url, id: song.id, startTimes: song.startTime});
 	    }
+	    var currentStartTime = song.startTime[sampleNumber] + sampleNumber;
             var span = document.createElement('span');
             span.id = "sample" + song.id + "Span" + sampleNumber;
             var canvas = document.createElement('canvas');
@@ -37,7 +38,7 @@ var wavesurfer = (function () {
             canvas.width = parseFloat(song.duration) * ((pixelsPer4*bpm)/60);
             canvas.height = 80;
             $( "#sample" + song.id + "Span" + sampleNumber).attr('data-startTime',song.startTime[sampleNumber]);
-            $( "#sample" + song.id + "Span" + sampleNumber).css('left',"" + parseInt(song.startTime[sampleNumber]*pixelsPer16) + "px");
+            $( "#sample" + song.id + "Span" + sampleNumber).css('left',"" + parseInt(currentStartTime*pixelsPer16) + "px");
 	    $( "#sample" + song.id + "Span" + sampleNumber).css('position','absolute');
             $( "#sample" + song.id + "Span" + sampleNumber).draggable({
                 axis: "x",
@@ -65,8 +66,12 @@ var wavesurfer = (function () {
 
 
     var processData = function (json) {
+	var numberOfTracks = parseInt(json.projectInfo.tracks);
+	for(var i=0;i<numberOfTracks;i++){
+	    $("#trackBed").append("<div class=\"span9\"><div class=\"row-fluid\"><div class=\"span2 well\" style=\"height: 84px;\"><p>Track"+(i+1)+"</p><div class=\"btn-group\"><button class=\"btn btn-mini\"><i class=\"icon-headphones\"></i></button><button class=\"btn btn-mini\"><i class=\"icon-volume-off\"></i></button><button class=\"btn btn-mini\"><i class=\"icon-plus-sign\"></i></button></div></div><div id=\"track"+(i+1)+"\" class=\"span10 track\"></div></div></div>");
+	}
 	//wavesurfers is array of all tracks
-        var wavesurfers = json.map(createWavesurfer);
+        var wavesurfers = json.samples.map(createWavesurfer);
 	$.each(wavesurfers, function(){
 	    var currentSample = this;
 	    //if they are in workspace...
