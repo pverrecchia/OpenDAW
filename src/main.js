@@ -27,7 +27,7 @@ var wavesurfer = (function () {
 	    if(sampleNumber == 0){
 		obj = ({bufferURL: song.url, id: song.id, startTimes: song.startTime});
 	    }
-	    var currentStartTime = song.startTime[sampleNumber] + sampleNumber;
+	    var currentStartTime = song.startTime[sampleNumber] + (song.startTime[sampleNumber]/15);
             var span = document.createElement('span');
             span.id = "sample" + song.id + "Span" + sampleNumber;
             var canvas = document.createElement('canvas');
