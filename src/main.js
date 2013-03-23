@@ -16,12 +16,12 @@ var wavesurfer = (function () {
         var sampleNumber = 0;
         var sampleUrl = song.url.split("/");
         var sampleTitle = sampleUrl[sampleUrl.length-1];
-		var obj;
+	var obj;
         $("#library").append("<li id=librarySample" + song.id +" class=\"librarySample\"><a href=\"#\">" + sampleTitle + "</a></li>");
         $("#librarySample" + song.id).draggable({ revert: true, helper: "clone" });
         $.each(startTimes, function(){
 	    if(sampleNumber == 0){
-		    obj = ({bufferURL: song.url, id: song.id});
+		obj = ({bufferURL: song.url, id: song.id, startTimes: song.startTime});
 	    }
             var span = document.createElement('span');
             span.id = "sample" + song.id + "Span" + sampleNumber;
@@ -63,10 +63,16 @@ var wavesurfer = (function () {
 	//wavesurfers is array of all tracks
         var wavesurfers = json.map(createWavesurfer);
 	$.each(wavesurfers, function(){
+	    var currentSample = this;
 	    //if they are in workspace...
-	    if(this != undefined){
+	    if(currentSample != undefined){
 		//load the buffer
-		load(this.bufferURL, this.id);
+		load(currentSample.bufferURL, currentSample.id);
+		//store the times
+		$.each(currentSample.startTimes, function(){
+		    var currentStartTime = this;
+		    times[currentStartTime] = currentSample.id;
+		});
 	    }
 	});
     };
@@ -84,23 +90,23 @@ var wavesurfer = (function () {
 }());
 
 	
-    function load (src, id) {
+function load (src, id) {
 
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'arraybuffer';
-
+    
     xhr.addEventListener('load', function (e) {
-        ac.decodeAudioData(
+	ac.decodeAudioData(
 	    e.target.response,
 	    function (buffer) {
 		buffers.push({buffer: buffer, id: id});
 	    },
 	    Error
-        );			
+	);			
     }, false);
     xhr.open('GET', src, true);
     xhr.send();
-    };
+};
 
 
 initSched({
