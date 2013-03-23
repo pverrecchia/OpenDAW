@@ -1,24 +1,24 @@
 'use strict';
 var source = null;
 var isPlaying = false;		// Are we currently playing?
-var startTime;				// The start time of the entire sequence.
+var startTime;			// The start time of the entire sequence.
 var current16thNote;		// What note is currently last scheduled?
-var tempo = 120.0;			// tempo (in beats per minute)
+var tempo = 120.0;		// tempo (in beats per minute)
 var lookahead = 25.0;		// How frequently to call scheduling function 
-							//(in milliseconds)
+				//(in milliseconds)
 var scheduleAheadTime = 0.1;	// How far ahead to schedule audio (sec)
-							// This is calculated from lookahead, and overlaps 
-							// with next interval (in case the timer is late)
+				// This is calculated from lookahead, and overlaps 
+				// with next interval (in case the timer is late)
 var nextNoteTime = 0.0;		// when the next note is due.
 var noteResolution = 0;		// 0 == 16th, 1 == 8th, 2 == quarter note
 var noteLength = 0.05;		// length of "beep" (in seconds)
-var timerID = 0;			// setInterval identifier.
+var timerID = 0;		// setInterval identifier.
 
-var canvas,       			// the canvas element
+var canvas,       		// the canvas element
     canvasContext;  		// canvasContext is the canvas' context 2D
 var last16thNoteDrawn = -1;	// the last "box" we drew on the screen
-var notesInQueue = [];      // the notes that have been put into the web audio,
-                            // and may or may not have played yet. {note, time}
+var notesInQueue = [];      	// the notes that have been put into the web audio,
+				// and may or may not have played yet. {note, time}
 
 // First, let's shim the requestAnimationFrame API, with a setTimeout fallback
 window.requestAnimFrame = (function(){
@@ -35,34 +35,33 @@ window.requestAnimFrame = (function(){
 function nextNote() {
     // Advance current note and time by a 16th note...
     var secondsPerBeat = 60.0 / tempo;	// Notice this picks up the CURRENT 
-    									// tempo value to calculate beat length.
-    nextNoteTime += 0.25 * secondsPerBeat;	// Add beat length to last beat time
-
+    // tempo value to calculate beat length.
+    nextNoteTime += 0.25 * secondsPerBeat;
+    // Add beat length to last beat time
     current16thNote++;	// Advance the beat number, wrap to zero
     
 }
 
 function scheduleNote( beatNumber, time ) {
     // push the note on the queue, even if we're not playing.
-//notesInQueue.push( { note: beatNumber, time: time } );
+    //notesInQueue.push( { note: beatNumber, time: time } );
 
-	
-	if(!(beatNumber%32)) {  //if(beatNumber == 
-		
-		var sampleID = 0;
-		
-	    source = ac.createBufferSource();
-		source.buffer = buffers[sampleID].buffer;
-		
-		
-		source.connect(ac.destination);
-		
-		source.start(time);
-		source.stop(time + buffers[sampleID].buffer.duration);
-		
-	// create an oscillator
-	}
-	
+
+    if(!(beatNumber%32)) {  //if(beatNumber == 
+	    
+	    var sampleID = 0;
+	    
+	source = ac.createBufferSource();
+	    source.buffer = buffers[sampleID].buffer;
+	    
+	    
+	    source.connect(ac.destination);
+	    
+	    source.start(time);
+	    source.stop(time + buffers[sampleID].buffer.duration);
+	    
+    // create an oscillator
+    }
 }
 
 function scheduler() {
@@ -76,22 +75,18 @@ function scheduler() {
 }
 
 function play2() {
-//if(isPlaying) return; //return if already playing
+//if(isPlaying) return;
+//return if already playing
+    isPlaying = !isPlaying;
 
-	isPlaying = !isPlaying;
-	
-	
-
-	if (isPlaying) { // start playing
-		current16thNote = 0;
-		nextNoteTime = ac.currentTime;
-		scheduler();	// kick off scheduling
-		
-	} else {
-		source.stop(0);
-		window.clearTimeout( timerID );
-		
-	}
+    if (isPlaying) { // start playing
+	current16thNote = 0;
+	nextNoteTime = ac.currentTime;
+	scheduler();	// kick off scheduling
+    } else {
+	source.stop(0);
+	window.clearTimeout( timerID );
+    }
 }
 
 
@@ -105,46 +100,10 @@ function draw() {
         notesInQueue.splice(0,1);   // remove note from queue
     }
 
-	/*
-    // We only need to draw if the note has moved.
-    if (last16thNoteDrawn != currentNote) {
-        var x = Math.floor( canvas.width / 18 );
-        canvasContext.clearRect(0,0,canvas.width, canvas.height); 
-        for (var i=0; i<16; i++) {
-            canvasContext.fillStyle = ( currentNote == i ) ? 
-                ((currentNote%4 == 0)?"red":"blue") : "black";
-            canvasContext.fillRect( x * (i+1), x, x/2, x/2 );
-        }
-        last16thNoteDrawn = currentNote;
-    }
-	*/
     // set up to draw again
     requestAnimFrame(draw);
 }
 
 function initSched(params){
-
-
-/*
-    var container = document.createElement( 'div' );
-
-	
-    container.className = "container";
-    canvas = document.createElement( 'canvas' );
-    canvasContext = canvas.getContext( '2d' );
-    canvas.width = window.innerWidth; 
-    canvas.height = window.innerHeight; 
-    document.body.appendChild( container );
-    container.appendChild(canvas);	
-    canvasContext.strokeStyle = "#ffffff";
-    canvasContext.lineWidth = 2;
-
-	audioContext = new webkitAudioContext();
-
-	// if we wanted to load audio files, etc., this is where we should do it.
-
-    window.onorientationchange = resetCanvas;
-    window.onresize = resetCanvas;
-*/
     requestAnimFrame(draw);	// start the drawing loop.
 }
