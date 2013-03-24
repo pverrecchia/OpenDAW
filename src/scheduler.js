@@ -50,12 +50,14 @@ function scheduleNote( beatNumber, time ) {
     if(times[beatNumber] != null){
 	samples = times[beatNumber];
 	
-	source = ac.createBufferSource();
-	source.connect(ac.destination);
+	
 	    
 	for(var i = 0; i<samples.length; i++){
 	    
-	    //console.log(samples[0]);
+	    source = ac.createBufferSource();
+	    source.connect(ac.destination);
+	    
+	    console.log(samples[i]);
 	
 	    source.buffer = buffers[samples[i]].buffer;
 	

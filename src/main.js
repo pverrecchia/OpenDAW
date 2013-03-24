@@ -81,7 +81,11 @@ var wavesurfer = (function () {
 		//store the times
 		$.each(currentSample.startTimes, function(){
 		    var currentStartTime = this;
-		    times[currentStartTime] = currentSample.id;
+		    if(times[currentStartTime] == null){
+			times[currentStartTime] = [currentSample.id];
+		    } else {
+			times[currentStartTime].push(currentSample.id);
+		    }
 		});
 	    }
 	});
