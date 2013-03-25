@@ -156,7 +156,8 @@ $(document).ready(function(){
     var ctx=c.getContext("2d");
     ctx.font = '8pt Calibri';
     ctx.textAlign = 'center';
-    for(var i=0;i<500;i+=pixelsPer4){	//timeline draws bars at 1/4 notes
+    //timeline draws bars at 1/4 notes
+    for(var i=0;i<500;i+=pixelsPer4){	
         ctx.moveTo(i,0);
         ctx.lineTo(i,10); 	
         ctx.stroke();

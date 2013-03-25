@@ -19,6 +19,8 @@ var canvas,       		// the canvas element
 var last16thNoteDrawn = -1;	// the last "box" we drew on the screen
 var notesInQueue = [];      	// the notes that have been put into the web audio,
 				// and may or may not have played yet. {note, time}
+				
+var activeSources =[];
 
 // First, let's shim the requestAnimationFrame API, with a setTimeout fallback
 window.requestAnimFrame = (function(){
@@ -31,6 +33,8 @@ window.requestAnimFrame = (function(){
         window.setTimeout(callback, 1000 / 60);
     };
 })();
+
+
 
 function nextNote() {
     // Advance current note and time by a 16th note...
@@ -49,22 +53,22 @@ function scheduleNote( beatNumber, time ) {
 
     if(times[beatNumber] != null){
 	samples = times[beatNumber];
-	
-	
 	    
 	for(var i = 0; i<samples.length; i++){
 	    
 	    source = ac.createBufferSource();
 	    source.connect(ac.destination);
 	    
-	    console.log(samples[i]);
+	    //console.log(samples[i]);
 	
 	    source.buffer = buffers[samples[i]].buffer;
 	
-	    
+	    activeSources.push(source);
 	    source.start(time);
 	    source.stop(time + buffers[samples[i]].buffer.duration);
+	       
 	}
+	 
     }
 
 }
@@ -76,8 +80,18 @@ function scheduler() {
 	while (nextNoteTime < ac.currentTime + scheduleAheadTime ) {
 		scheduleNote( current16thNote, nextNoteTime );
 		nextNote();
+		
+		//get rid of finshed sources in activeSources array
+		activeSources.forEach(function(element, index){
+		    if (element.playbackState == 3) {
+			activeSources.splice(index, 1);
+		    }
+		});
+		
 	}
 	timerID = window.setTimeout( scheduler, lookahead );
+	
+	//console.log(activeSources);
 }
 
 function play2() {
@@ -86,11 +100,18 @@ function play2() {
     isPlaying = !isPlaying;
 
     if (isPlaying) { // start playing
+	
 	current16thNote = 0;
 	nextNoteTime = ac.currentTime;
 	scheduler();	// kick off scheduling
     } else {
-	source.stop(0);
+	
+	activeSources.forEach(function(element){
+	    element.stop(0);
+	    
+	});
+	
+	//source.stop(0);
 	window.clearTimeout( timerID );
     }
 }
@@ -104,6 +125,8 @@ function draw() {
     while (notesInQueue.length && notesInQueue[0].time < currentTime) {
         currentNote = notesInQueue[0].note;
         notesInQueue.splice(0,1);   // remove note from queue
+	
+	
     }
 
     // set up to draw again

@@ -8,7 +8,8 @@ WaveSurfer.Drawer = {
         loadingColor: '#333',
         loadingBars: 20,
         barHeight: 1,
-        barMargin: 10
+        barMargin: 10,
+        radius: 10
     },
 
     init: function (params) {
@@ -86,6 +87,10 @@ WaveSurfer.Drawer = {
             this.peaks.forEach(function (peak, index) {
                 my.drawFrame(index, peak, my.maxPeak);
             });
+            
+             
+       
+        this.roundRectangle(0,0,this.width, this.height, this.params.radius);
         // Or draw an image.
         } else if (this.image) {
             this.drawImage();
@@ -101,7 +106,10 @@ WaveSurfer.Drawer = {
 
     drawFrame: function (index, value, max) {
         var w = 1;
-        var h = Math.round(value * (this.height / max));
+        
+        //subtract radius from height to reduce vertical range
+        var h = Math.round(value * ((this.height-this.params.radius) / max));
+       
 
         var x = index * w;
         var y = Math.round((this.height - h) / 2);
@@ -109,6 +117,8 @@ WaveSurfer.Drawer = {
         this.cc.fillStyle = this.params.waveColor;
 
         this.cc.fillRect(x, y, w, h);
+        
+       
     },
     /*
     drawCursor: function () {
@@ -165,5 +175,25 @@ WaveSurfer.Drawer = {
             var x = i * barWidth + i * margin;
             this.cc.fillRect(x, y, barWidth, barHeight);
         }
-    }
+    },
+    
+    roundRectangle: function(x, y, w, h, r){
+        
+        //from http://stackoverflow.com/questions/1255512/how-to-draw-a-rounded-rectangle-on-html-canvas
+        this.cc.strokeStyle = this.params.progressColor;
+        this.cc.lineWidth = 1;
+        this.cc.beginPath();
+        this.cc.moveTo(x + r, y);
+        this.cc.lineTo(x + w - r, y);
+        this.cc.quadraticCurveTo(x + w, y, x + w, y + r);
+        this.cc.lineTo(x + w, y + h - r);
+        this.cc.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        this.cc.lineTo(x + r, y + h);
+        this.cc.quadraticCurveTo(x, y + h, x, y + h - r);
+        this.cc.lineTo(x, y + r);
+        this.cc.quadraticCurveTo(x, y, x + r, y);
+        this.cc.closePath();
+        
+        this.cc.stroke();
+        }
 };
