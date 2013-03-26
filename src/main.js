@@ -30,7 +30,7 @@ var wavesurfer = (function () {
 	    if(sampleNumber == 0){
 		obj = ({bufferURL: song.url, id: song.id, startTimes: song.startTime});
 	    }
-	    var currentStartTime = song.startTime[sampleNumber] + (song.startTime[sampleNumber]/15);
+	    var currentStartTime = song.startTime[sampleNumber];
             var span = document.createElement('span');
             span.id = "sample" + song.id + "Span" + sampleNumber;
             var canvas = document.createElement('canvas');
@@ -48,7 +48,8 @@ var wavesurfer = (function () {
                 containment: "parent",
                 grid: [pixelsPer16, 0],		//grid snaps to 16th notes
                 stop: function() {
-                    $( "#sample" + song.id + "Span" + sampleNumber).attr('data-startTime',parseInt($( "#sample" + song.id + "Span" + sampleNumber).css('left')));
+                    $(this).attr('data-startTime',parseInt($(this).css('left'))/pixelsPer16);
+
                 }
             });
 	    $( "#sample" + song.id + "Span" + sampleNumber ).resizable({
@@ -84,7 +85,7 @@ var wavesurfer = (function () {
 		accept: ".librarySample",
 		drop: function( event, ui ) {
 		    var startBar = Math.floor((ui.offset.left-$(this).offset().left)/6);
-		    var sampleStartTime = startBar - Math.floor(startBar/15);
+		    var sampleStartTime = startBar;
 		    console.log(startBar);
 		    var span = document.createElement('span');
 		    var sampleID = ui.helper.attr("data-id");
@@ -106,7 +107,7 @@ var wavesurfer = (function () {
 			containment: "parent",
 			grid: [pixelsPer16, 0],		//grid snaps to 16th notes
 			stop: function() {
-			    $( "#sample" + sampleID + "Span").attr('data-startTime',parseInt($( "#sample" + sampleID + "Span").css('left')));
+			    $(this).attr('data-startTime',parseInt($(this).css('left'))/pixelsPer16);
 			}
 		    });
 		    
