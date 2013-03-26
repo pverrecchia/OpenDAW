@@ -81,7 +81,7 @@ WaveSurfer.Drawer = {
         var my = this;
 
         this.clear();
-
+        this.roundRectangle(0,0,this.width, this.height, this.params.radius);
         // Draw WebAudio buffer peaks.
         if (this.peaks) {
             this.peaks.forEach(function (peak, index) {
@@ -90,7 +90,7 @@ WaveSurfer.Drawer = {
             
              
        
-        this.roundRectangle(0,0,this.width, this.height, this.params.radius);
+        
         // Or draw an image.
         } else if (this.image) {
             this.drawImage();
@@ -179,6 +179,8 @@ WaveSurfer.Drawer = {
     
     roundRectangle: function(x, y, w, h, r){
         
+        
+        
         //from http://stackoverflow.com/questions/1255512/how-to-draw-a-rounded-rectangle-on-html-canvas
         this.cc.strokeStyle = this.params.progressColor;
         this.cc.lineWidth = 1;
@@ -193,7 +195,12 @@ WaveSurfer.Drawer = {
         this.cc.lineTo(x, y + r);
         this.cc.quadraticCurveTo(x, y, x + r, y);
         this.cc.closePath();
+        this.cc.fillStyle = '#E0E0E0';
+        this.cc.fill();
         
         this.cc.stroke();
+        
+        
+        
         }
 };
