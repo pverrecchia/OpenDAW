@@ -9,7 +9,12 @@ var times = []; //contains start times of samples and their id#
 var pixelsPer16 = 6; 			//pixels per 16th note. used for grid snapping
 var pixelsPer4 = 4*pixelsPer16;		//pixels per 1/4 note	used for sample canvas size
 var bpm = 128;
-	
+    
+jQuery.removeFromArray = function(value, arr) {
+    return jQuery.grep(arr, function(elem, index) {
+        return elem !== value;
+    });
+};
 	
 var wavesurfer = (function () {
     'use strict';
@@ -48,8 +53,15 @@ var wavesurfer = (function () {
                 containment: "parent",
                 grid: [pixelsPer16, 0],		//grid snaps to 16th notes
                 stop: function() {
+		    //get rid of old entry in table
+		    times[currentStartTime] = jQuery.removeFromArray(song.id, times[currentStartTime]);
                     $(this).attr('data-startTime',parseInt($(this).css('left'))/pixelsPer16);
-
+		    var newStartTime = $(this).attr('data-startTime');
+		    if(times[newStartTime] == null){
+			times[newStartTime] = [song.id];
+		    } else {
+			times[newStartTime].push(song.id);
+		    }
                 }
             });
 	    $( "#sample" + song.id + "Span" + sampleNumber ).resizable({
@@ -107,7 +119,14 @@ var wavesurfer = (function () {
 			containment: "parent",
 			grid: [pixelsPer16, 0],		//grid snaps to 16th notes
 			stop: function() {
+			    times[startBar] = jQuery.removeFromArray(sampleID, times[startBar]);
 			    $(this).attr('data-startTime',parseInt($(this).css('left'))/pixelsPer16);
+			    var newStartTime = $(this).attr('data-startTime');
+			    if(times[newStartTime] == null){
+				times[newStartTime] = [sampleID];
+			    } else {
+				times[newStartTime].push(sampleID);
+			    }
 			}
 		    });
 		    
@@ -183,6 +202,7 @@ function load (src, id) {
     xhr.open('GET', src, true);
     xhr.send();
 };
+
 
 
 initSched({

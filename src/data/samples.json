@@ -5,7 +5,6 @@
         {"id":"1","url":"src/data/samples/Bliss_BlipLead.mp3","track":"1","startTime":[],"duration":"15.2555103302"},
         {"id":"2","url":"src/data/samples/Bliss_Bassline2.mp3","track":"1","startTime":[],"duration":"15.2555103302"},
         {"id":"3","url":"src/data/samples/Bliss_Rhodes.mp3","track":"1","startTime":[],"duration":"15.2555103302"},
-        {"id":"4","url":"src/data/samples/hats.wav","track":"1","startTime":[],"duration":"1.8750113248825073"},
         {"id":"4","url":"src/data/samples/hats.wav","track":"1","startTime":[0, 32],"duration":"1.8750113248825073"},
         {"id":"5","url":"src/data/samples/kick.wav","track":"2","startTime":[0, 16, 32, 48],"duration":"1.8750113248825073"}
     ]
