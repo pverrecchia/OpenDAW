@@ -3,10 +3,10 @@ var source = null;
 var isPlaying = false;		// Are we currently playing?
 var startTime;			// The start time of the entire sequence.
 var current16thNote;		// What note is currently last scheduled?
-var tempo = 120.0;		// tempo (in beats per minute)
+var tempo = 128.0;		// tempo (in beats per minute)
 var lookahead = 25.0;		// How frequently to call scheduling function 
 				//(in milliseconds)
-var scheduleAheadTime = 0.15;	// How far ahead to schedule audio (sec)
+var scheduleAheadTime = 0.1;	// How far ahead to schedule audio (sec)
 				// This is calculated from lookahead, and overlaps 
 				// with next interval (in case the timer is late)
 var nextNoteTime = 0.0;		// when the next note is due.
@@ -137,7 +137,7 @@ function draw() {
 	    
 	    canvasContext.clearRect(0,0,canvas.width, canvas.height);
 	    drawTimeline();
-	    canvasContext.fillStyle = "red";
+	    canvasContext.fillStyle = "FF9900";
 	    
 	    if (cnt == 1) {
 		canvasContext.fillRect( (k +1 + Math.floor(k/15))*pixelsPer16 , 0, pixelsPer4, 10 );	    
