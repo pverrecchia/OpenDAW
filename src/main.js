@@ -25,7 +25,7 @@ var wavesurfer = (function () {
         var sampleUrl = song.url.split("/");
         var sampleTitle = sampleUrl[sampleUrl.length-1];
 	var obj;
-        $("#library").append("<li id=librarySample" + song.id +" class=\"librarySample\" data-id="+song.id+" data-url="+song.url+" data-duration="+song.duration+"><a href=\"#\">" + sampleTitle + "</a></li>");
+        $("#libraryList").append("<li id=librarySample" + song.id +" class=\"librarySample\" data-id="+song.id+" data-url="+song.url+" data-duration="+song.duration+"><a href=\"#\">" + sampleTitle + "</a></li>");
         $("#librarySample" + song.id).draggable({
 	    revert: true,
 	    helper: "clone",
@@ -98,7 +98,6 @@ var wavesurfer = (function () {
 		drop: function( event, ui ) {
 		    var startBar = Math.floor((ui.offset.left-$(this).offset().left)/6);
 		    var sampleStartTime = startBar;
-		    console.log(startBar);
 		    var span = document.createElement('span');
 		    var sampleID = ui.helper.attr("data-id");
 		    var sampleDuration = ui.helper.attr("data-duration");

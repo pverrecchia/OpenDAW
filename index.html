@@ -18,9 +18,13 @@
             padding-bottom: 40px;
         }
         
-        #sidebar {
+        .sidebar {
             height: 400px;
             min-width: 130px;
+        }
+        
+        .sidebarTab {
+            height: 380px;
         }
         
         .track {
@@ -54,7 +58,6 @@
                 <a class="brand" href="#">OpenDAW</a>
                 <div class="nav-collapse collapse">
                   <ul class="nav">
-                    <li><a href="#">Upload</a></li>
                     <li><a href="#">Export</a></li>
                     <li><a href="#">Save</a></li>
                     <li><a id="step-backward" href="#"><i class="icon-step-backward icon-white"></i></a></li>
@@ -71,11 +74,31 @@
         <div class="container-fluid">
             <div class="row-fluid" id="trackBed">
                 <div class="span3">
-                    <div id="sidebar" class="well sidebar-nav">
-                        <ul id="library" class="nav nav-list">
-                          <li class="nav-header">Library</li>
+                    <div class="sidebar tabbable tabs-below well">
+                        <div class="tab-content">
+                            <div class="tab-pane sidebar-nav sidebarTab active" id="library">
+                                <ul id="libraryList" class="nav nav-list">
+                                   <li class="nav-header">Library</li>
+                                </ul>
+                            </div>
+                            <div class="tab-pane sidebarTab" id="upload">
+                                <ul id="uploadList" class="nav nav-list">
+                                   <li class="nav-header">Upload</li>
+                                </ul>
+                            </div>
+                            <div class="tab-pane sidebarTab" id="effects">
+                                <ul id="effectList" class="nav nav-list">
+                                   <li class="nav-header">Effects</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <ul class="nav nav-pills">
+                            <li class="active"><a href="#library" data-toggle="tab">Library</a></li>
+                            <li><a href="#upload" data-toggle="tab">Upload</a></li>
+                            <li><a href="#effects" data-toggle="tab">Effects</a></li>
                         </ul>
                     </div>
+                    
                 </div>
                 <div class="span9">
                     <div class="row-fluid">
