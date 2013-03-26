@@ -128,22 +128,22 @@ function draw() {
 	//4,4,4,3 counter
 	if (k == nextK) {
 	    
-	    if (cnt==4) {
-		nextK+=3;
-		cnt=0;
-	    }else{
+	    //if (cnt==4) {
+	//	nextK+=3;
+	//	cnt=0;
+	  //  }else{
 		nextK+=4;
-	    }
+	    //}
 	    
 	    canvasContext.clearRect(0,0,canvas.width, canvas.height);
 	    drawTimeline();
 	    canvasContext.fillStyle = "FF9900";
 	    
-	    if (cnt == 1) {
-		canvasContext.fillRect( (k +1 + Math.floor(k/15))*pixelsPer16 , 0, pixelsPer4, 10 );	    
-	    }else{
-		canvasContext.fillRect( (k + Math.floor(k/15))*pixelsPer16, 0, pixelsPer4, 10 );
-	    }
+	    //if (cnt == 1) {
+		//canvasContext.fillRect( (k +1 + Math.floor(k/15))*pixelsPer16 , 0, pixelsPer4, 10 );	    
+	    //}else{
+		canvasContext.fillRect( (k )*pixelsPer16, 0, pixelsPer4, 10 );
+	    //}
 	 
 	   cnt++; 
 	}
