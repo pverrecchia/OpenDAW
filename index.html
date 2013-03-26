@@ -43,7 +43,31 @@
             border-radius: 10px;
         }
         
+        #trackEffects {
+            position: fixed;
+            bottom: 0;
+            display: none;
+        }
+        
         .ui-resizable-helper { border: 2px dotted #00F; }
+        
+        
+        #holder{
+            min-height: 100%;
+            position:relative;
+        }
+        
+        #trackBed{
+            padding-bottom: 100px;    /* height of footer */
+        }
+        
+        #trackEffects{
+            height: 90px;
+            width: 100%;
+            position: absolute;
+            left: 0;
+            bottom: 0; 
+        }
     </style>
     </head>
     <body>
@@ -72,6 +96,7 @@
             </div>
         </div>
         <div class="container-fluid">
+            <div id="holder">
             <div class="row-fluid" id="trackBed">
                 <div class="span3">
                     <div class="sidebar tabbable tabs-below well">
@@ -110,7 +135,14 @@
                             </canvas>
                         </div>
                     </div>
+                    <div class="row-fluid" >
+                        <div class="span12 well" id="trackEffects">
+                            <button id="trackEffectsClose" class="close">&times;</button>
+                            <h4 id="trackEffectsHeader"></h4>
+                        </div>
+                    </div>
                 </div>
+            </div>
             </div>
         </div>
         <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>

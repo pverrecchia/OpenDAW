@@ -89,7 +89,13 @@ var wavesurfer = (function () {
     var processData = function (json) {
 	var numberOfTracks = parseInt(json.projectInfo.tracks);
 	for(var i=0;i<numberOfTracks;i++){
-	    $("#trackBed").append("<div class=\"span9\"><div class=\"row-fluid\"><div class=\"span2 well\" style=\"height: 84px;\"><p id=\"track"+(i+1)+"title\">Track"+(i+1)+"</p><div class=\"btn-group\"><button class=\"btn btn-mini\"><i class=\"icon-headphones\"></i></button><button class=\"btn btn-mini\"><i class=\"icon-volume-off\"></i></button><button class=\"btn btn-mini\"><i class=\"icon-plus-sign\"></i></button></div></div><div id=\"track"+(i+1)+"\" class=\"span10 track\"></div></div></div>");
+	    var currentTrackNumber = i+1;
+	    $("#trackBed").append("<div class=\"span9\"><div class=\"row-fluid\" id=\"selectTrack"+currentTrackNumber+"\"><div class=\"span2 well\" style=\"height: 84px;\"><p id=\"track"+currentTrackNumber+"title\">Track"+currentTrackNumber+"</p><div class=\"btn-group\"><button class=\"btn btn-mini\"><i class=\"icon-headphones\"></i></button><button class=\"btn btn-mini\"><i class=\"icon-volume-off\"></i></button><button class=\"btn btn-mini\"><i class=\"icon-plus-sign\"></i></button></div></div><div id=\"track"+currentTrackNumber+"\" class=\"span10 track\"></div></div></div>");
+	    $("#selectTrack"+currentTrackNumber).click(function(){
+		var printTrackNumber = currentTrackNumber;
+		$("#trackEffectsHeader").html("Track "+printTrackNumber);
+		$("#trackEffects").css("display","block");
+	    });
 	    $("#track"+(i+1)+"title").storage({
 		storageKey : 'track'+(i+1)
 	    });
@@ -229,6 +235,9 @@ $(document).ready(function(){
     });
     $("#step-backward").click(function(){
         $('body').trigger('stepBackward-event');
+    });
+    $("#trackEffectsClose").click(function(){
+	$("#trackEffects").css("display","none");
     });
     var c=document.getElementById("timeline");
     var ctx=c.getContext("2d");
