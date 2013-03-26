@@ -31,8 +31,7 @@ As much as possible from the following list of features will be implemented by t
   <li>User-uploaded samples</li>
 </ul>
 
-<br>
-<br>
+
 
 <p>The breakdown of work will be the following:</p>
 Adam:
@@ -45,7 +44,19 @@ Adam:
   <li>Record functionality</li>
 </ul>
 
+Pietro:
+<ul>
+  <li>Complete sample scheduling and cursor timing</li>
+  <li>Track-specific audio controls</li>
+  <li>Global playback audio controls</li>
+  <li>Filtering and equalization effects</li>
+  <li>Audio file export functionality</li>
+  
+</ul>
 
+</p>
+
+<p>
 Projects that have helped our progress so far are 
 <a href = https://github.com/katspaugh/wavesurfer.js target="blank"> Wavesurfer.js</a> for generating waveform graphics and
 <a href = https://github.com/cwilso/metronome target="blank">Web Audio Metronome</a> for playback scheduling.
@@ -59,6 +70,8 @@ The technologies we have used so far or are planning to use:
   <li>jsNode backend for writing JSON data</li>
 </ul>
 
+<br>
+<br>
 Adam Levine and Pietro Verrecchia <br>
 MUMT 307: Audio and Computing 2 <br>
 McGill University
