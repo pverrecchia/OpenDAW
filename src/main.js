@@ -1,7 +1,7 @@
 var ac = new (window.AudioContext || window.webkitAudioContext);
 
-//var masterGainNode = ac.createGainNode();
-//masterGainNode.connect(ac.destination);
+var masterGainNode = ac.createGainNode();
+masterGainNode.connect(ac.destination);
 
 
 var buffers = []; //contains AudioBuffer and id# of samples in workspace
