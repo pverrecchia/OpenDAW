@@ -76,6 +76,7 @@ var wavesurfer = (function () {
 		accept: ".librarySample",
 		drop: function( event, ui ) {
 		    var startBar = Math.floor((ui.offset.left-$(this).offset().left)/6);
+		    var sampleStartTime = startBar - Math.floor(startBar/15);
 		    console.log(startBar);
 		    var span = document.createElement('span');
 		    var sampleID = ui.helper.attr("data-id");
@@ -111,7 +112,14 @@ var wavesurfer = (function () {
 			audioContext: ac
 		    });
 		    wavesurfer.load(sampleURL);
-		    
+		    if(buffers[sampleID]==undefined){
+			load(sampleURL, sampleID);
+		    }
+		    if(times[sampleStartTime] == null){
+			times[sampleStartTime] = [sampleID];
+		    } else {
+			times[sampleStartTime].push(sampleID);
+		    }
 		}
 	    });
 	}
