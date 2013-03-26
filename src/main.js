@@ -97,7 +97,7 @@ var wavesurfer = (function () {
 			containment: "parent",
 			grid: [pixelsPer16, 0],		//grid snaps to 16th notes
 			stop: function() {
-			    $( "#sample" + song.id + "Span").attr('data-startTime',parseInt($( "#sample" + song.id + "Span").css('left')));
+			    $( "#sample" + sampleID + "Span").attr('data-startTime',parseInt($( "#sample" + sampleID + "Span").css('left')));
 			}
 		    });
 		    
