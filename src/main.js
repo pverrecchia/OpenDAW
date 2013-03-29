@@ -217,13 +217,13 @@ initSched({
 
 
 $('body').bind('playPause-event', function(e){
-    play2();
+    schedPlay(ac.currentTime);
 });
-$('body').bind('pause-event', function(e){
-    stop2();
+$('body').bind('stop-event', function(e){
+    schedStop();
 });
 $('body').bind('stepBackward-event', function(e){
-    //scheduler.playAt(0);
+    schedStepBack();
 });
 
 $(document).ready(function(){
@@ -232,7 +232,7 @@ $(document).ready(function(){
         $('body').trigger('playPause-event');
     });
     $("#pause").click(function(){
-        $('body').trigger('pause-event');
+        $('body').trigger('stop-event');
     });
     $("#step-backward").click(function(){
         $('body').trigger('stepBackward-event');
@@ -240,21 +240,6 @@ $(document).ready(function(){
     $("#trackEffectsClose").click(function(){
 	$("#trackEffects").css("display","none");
     });
-    var c=document.getElementById("timeline");
-    var ctx=c.getContext("2d");
-    ctx.font = '8pt Calibri';
-    ctx.textAlign = 'center';
-    //timeline draws bars at 1/4 notes
-    for(var i=0;i<500;i+=pixelsPer4){	
-        ctx.moveTo(i,0);
-        ctx.lineTo(i,10); 	
-        ctx.stroke();
-    }
-    ctx.fillText("Bar",10,20);
-    var bar = 2;
-    for(var i=40;i<500;i+=40){
-        ctx.fillText(bar, i, 20);
-        bar++;
-    }
+   drawTimeline();
 	
 });

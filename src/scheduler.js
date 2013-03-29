@@ -1,9 +1,12 @@
 'use strict';
 var source = null;
 var isPlaying = false;		// Are we currently playing?
+var isPaused = false;
+var isStopped = true;
 var startTime;			// The start time of the entire sequence.
-var current16thNote;		// What note is currently last scheduled?
+var current16thNote =0;		// What note is currently last scheduled?
 var tempo = 128.0;		// tempo (in beats per minute)
+var secondsPerBeat = 60.0/tempo;
 var lookahead = 25.0;		// How frequently to call scheduling function 
 				//(in milliseconds)
 var scheduleAheadTime = 0.1;	// How far ahead to schedule audio (sec)
@@ -23,6 +26,9 @@ var notesInQueue = [];      	// the notes that have been put into the web audio,
 	
 //array of source objects that are active at a given time			
 var activeSources =[];
+
+var pauseTime;
+var pauseBeat;
 
 //variables for cursor
 var k =0;
@@ -45,10 +51,8 @@ window.requestAnimFrame = (function(){
 
 function nextNote() {
     // Advance current note and time by a 16th note...
-    var secondsPerBeat = 60.0 / tempo;	// Notice this picks up the CURRENT 
-    // tempo value to calculate beat length.
+   
     nextNoteTime += 0.25 * secondsPerBeat;
-    nextCursorTime += secondsPerBeat;
     // Add beat length to last beat time
     current16thNote++;	// Advance the beat number, wrap to zero
     
@@ -58,20 +62,30 @@ function scheduleNote( beatNumber, noteTime) {
     // push the note on the queue, even if we're not playing.
     notesInQueue.push( { note: beatNumber, time: noteTime } );
     var samples;
+    
+    if (isPlaying) {
+		    activeSources.forEach(function(element, index){
+			if (element.sourceNode.playbackState == 3) {
+			    activeSources.splice(index, 1);
+			}
+		    });	
+		}
    
     if(times[beatNumber] != null){
 	samples = times[beatNumber];
-	    
+	console.log(samples);
+	//console.log(times[beatNumber].track);
 	for(var i = 0; i<samples.length; i++){
 	    
 	    source = ac.createBufferSource();
 	    source.connect(masterGainNode);
 	    
-	    source.buffer = buffers[samples[i]].buffer;
+	    source.buffer = buffers[samples[i].id].buffer;
 	    
-	    activeSources.push(source);
+	    //push source node and the scheduled start time of the sample
+	    activeSources.push({sourceNode: source, sourceStartBar: beatNumber});
 	    source.start(noteTime);
-	    source.stop(noteTime + buffers[samples[i]].buffer.duration);  
+	    //source.stop(noteTime + buffers[samples[i]].buffer.duration);  
 	}
     }
 }
@@ -82,41 +96,96 @@ function scheduler() {
 	while (nextNoteTime < ac.currentTime + scheduleAheadTime ) {
 		scheduleNote( current16thNote, nextNoteTime );
 		nextNote();
-		
-		//get rid of finshed sources in activeSources array
-		activeSources.forEach(function(element, index){
-		    if (element.playbackState == 3) {
-			activeSources.splice(index, 1);
-		    }
-		});
-		
+
 	}
 	timerID = window.setTimeout( scheduler, lookahead );
 	
 	
 }
 
-function play2() {
-//if(isPlaying) return;
-//return if already playing
-    isPlaying = !isPlaying;
-
-    if (isPlaying) { // start playing
-	k=0;
-	nextK=k;
-	cnt = 2;
-	current16thNote = 0;
+function schedPlay(time) {
+    //time input is ac.currentTime passed from main.js
+    
+    //if not playing, then play
+    if (!isPlaying) {
+	console.log("playing");
+	//if resuming from a pause
+	if (isPaused) {
+	    console.log("pause resume");
+	    //play all active sources at percents
+	    console.log(activeSources);
+	    activeSources.forEach(function(element, index){
+		var percent = (current16thNote-element.sourceStartBar) / (element.sourceNode.buffer.duration/(secondsPerBeat*0.25));
+		element.sourceNode.start(element.sourceNode.buffer.duration * percent);
+		
+	    });
+	    
+	    current16thNote = pauseBeat;
+	}
+	
+	 isPlaying = !isPlaying;
+	 isPaused = !isPlaying;
+	 
+	if(isPlaying){ 
 	nextNoteTime = ac.currentTime;
-	scheduler();	// kick off scheduling
+	scheduler();
+	}
+    //if playing, then pause
     } else {
-	activeSources.forEach(function(element){
-	    element.stop(0);
-	});
 	window.clearTimeout( timerID );
+	activeSources.forEach(function(element){
+	    element.sourceNode.stop(0);
+	});
+	
+	console.log("paused");
+	isPlaying = !isPlaying;
+	isPaused = !isPlaying;
+	
+	pauseTime = time;
+	pauseBeat = k;
+	
+	//console.log(activeSources);
+	console.log(current16thNote);
     }
 }
 
+function schedStop(){
+   window.clearTimeout( timerID );
+   activeSources.forEach(function(element){
+	    element.sourceNode.stop(0);
+	});
+   
+    k=0;
+    nextK=k;
+    current16thNote = 0;
+    
+    //clear cursor
+    drawTimeline();
+    
+    if (isPlaying) {
+	 isPlaying = false;
+    }
+    
+    if (isPaused) {
+	isPaused = false;
+    }
+    
+    isStopped = true;
+}
 
+function schedStepBack() {
+    if (isPlaying) {
+	 schedStop();
+    }else{
+	k=0;
+	nextK=k;
+	current16thNote = 0;
+	drawTimeline();
+	
+    }
+    drawCursor(0);
+    
+}
 function draw() {
     var currentNote = last16thNoteDrawn;
     var currentTime = ac.currentTime;
@@ -124,37 +193,23 @@ function draw() {
      while (notesInQueue.length && notesInQueue[0].time < currentTime) {
         currentNote = notesInQueue[0].note;
         notesInQueue.splice(0,1);   // remove note from queue
-	
-	//4,4,4,3 counter
-	if (k == nextK) {
-	    
-	    //if (cnt==4) {
-	//	nextK+=3;
-	//	cnt=0;
-	  //  }else{
+	 if (isPlaying) {
+	    if (k == nextK) {
 		nextK+=4;
-	    //}
-	    
-	    canvasContext.clearRect(0,0,canvas.width, canvas.height);
-	    drawTimeline();
-	    canvasContext.fillStyle = "FF9900";
-	    
-	    //if (cnt == 1) {
-		//canvasContext.fillRect( (k +1 + Math.floor(k/15))*pixelsPer16 , 0, pixelsPer4, 10 );	    
-	    //}else{
-		canvasContext.fillRect( (k )*pixelsPer16, 0, pixelsPer4, 10 );
-	    //}
-	 
-	   cnt++; 
-	}
-	k++
+    
+		drawTimeline();
+		drawCursor(k);
+	    }
+	    k++
+	 }
     }
+    
     // set up to draw again
     requestAnimFrame(draw);
 }
 
 function drawTimeline(){
-    
+    canvasContext.clearRect(0,0,canvas.width, canvas.height);
     canvasContext.fillStyle = "black";
     canvasContext.lineWidth = 1;
     for(var i=0;i<500;i+=pixelsPer4){	
@@ -162,19 +217,56 @@ function drawTimeline(){
         canvasContext.lineTo(i,10); 	
         canvasContext.stroke();
     }
-    /*canvasContext.fillText("Bar",10,20);
+    canvasContext.fillText("Bar",10,20);
+    
     var bar = 2;
-    for(var i=40;i<500;i+=40){
+    for(var i=35;i<500;i+=(2*pixelsPer4)){
         canvasContext.fillText(bar, i, 20);
-        bar++;
-    }*/
+        bar+=2;
+    }
+}
+
+function drawCursor(bar) {
+    canvasContext.fillStyle = "FF9900";
+	    
+    canvasContext.fillRect(bar*pixelsPer16, 0, pixelsPer4, 10 );
+}
+
+function cursorJump(bar) {
+    if (isStopped) {
+	isStopped = false;
+	isPaused = true;
+    }
+    drawTimeline();
+    drawCursor(bar*4);
+    
+   if (isPlaying) {
+    activeSources.forEach(function(element){
+	     element.sourceNode.stop(0);
+	 });	
+   }
+    
+    k=bar*4;
+    nextK=k;
+    current16thNote = k;
+}
+
+function loadActiveSources() {
     
 }
 
 function initSched(params){
-    
     canvas = document.getElementById( "timeline" );
+    canvas.addEventListener("click" , function(e){
+						    var relX = e.offsetX;
+						    var bar =Math.floor(relX/pixelsPer4);
+						    //console.log(bar);
+						    cursorJump(bar);
+						}, false);
+			    
     canvasContext = canvas.getContext( '2d' );
+    canvasContext.font = '8pt Calibri';
+    canvasContext.textAlign = 'center';
     requestAnimFrame(draw);	// start the drawing loop.
 }
 
