@@ -175,7 +175,6 @@ function schedStop(){
 
 function schedStepBack() {
     
-    
     if (isPlaying) {
 	 schedStop();
     }else{
@@ -183,7 +182,6 @@ function schedStepBack() {
 	nextK=k;
 	current16thNote = 0;
 	drawTimeline();
-	
     }
     drawCursor(0);
     
@@ -251,6 +249,10 @@ function cursorJump(bar) {
     k=bar*4;
     nextK=k;
     current16thNote = k;
+    if (isPaused) {
+	pauseBeat = k;
+    }
+    //console.log(current16thNote);
 }
 
 function loadActiveSources() {
