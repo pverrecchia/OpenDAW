@@ -3,6 +3,9 @@ var ac = new (window.AudioContext || window.webkitAudioContext);
 var masterGainNode = ac.createGainNode();
 masterGainNode.connect(ac.destination);
 
+//array of track master gain nodes
+var trackMasterGains = [];
+var trackInputNodes = [];
 
 var buffers = []; //contains AudioBuffer and id# of samples in workspace
 var times = []; //contains start times of samples and their id#
@@ -16,6 +19,8 @@ jQuery.removeFromArray = function(value, arr) {
     });
 };
 	
+var globalNumberOfTracks;
+
 var wavesurfer = (function () {
     'use strict';
 
@@ -88,13 +93,25 @@ var wavesurfer = (function () {
 
     var processData = function (json) {
 	var numberOfTracks = parseInt(json.projectInfo.tracks);
+	//create track-specific nodes
+	globalNumberOfTracks = numberOfTracks;
+	createNodes(numberOfTracks);
+	
 	for(var i=0;i<numberOfTracks;i++){
-	    var currentTrackNumber = i+1;
-	    $("#trackBed").append("<div class=\"span9\"><div class=\"row-fluid\" id=\"selectTrack"+currentTrackNumber+"\"><div class=\"span2 well\" style=\"height: 84px;\"><p id=\"track"+currentTrackNumber+"title\">Track"+currentTrackNumber+"</p><div class=\"btn-group\"><button class=\"btn btn-mini\"><i class=\"icon-headphones\"></i></button><button class=\"btn btn-mini\"><i class=\"icon-volume-off\"></i></button><button class=\"btn btn-mini\"><i class=\"icon-plus-sign\"></i></button></div></div><div id=\"track"+currentTrackNumber+"\" class=\"span10 track\"></div></div></div>");
+	   var currentTrackNumber = i+1;
+	    $("#trackBed").append("<div class=\"span9\"><div class=\"row-fluid\" id=\"selectTrack"+currentTrackNumber+"\"><div class=\"span2 well\" style=\"height: 84px;\"><p id=\"track"+currentTrackNumber+"title\">Track"+currentTrackNumber+"</p><div class=\"btn-group\"><button class=\"btn btn-mini\" id = \"solo"+currentTrackNumber+"\"><i class=\"icon-headphones\"></i></button><button class=\"btn btn-mini\" id = \"mute"+currentTrackNumber+"\"><i class=\"icon-volume-off\"></i></button><button class=\"btn btn-mini\"><i class=\"icon-plus-sign\"></i></button></div></div><div id=\"track"+currentTrackNumber+"\" class=\"span10 track\"></div></div></div>");
 	    $("#selectTrack"+currentTrackNumber).click(function(){
 		var printTrackNumber = $(this).attr('id').split('selectTrack')[1];
 		$("#trackEffectsHeader").html("Track "+printTrackNumber);
 		$("#trackEffects").css("display","block");
+	    });
+	    $("#mute"+currentTrackNumber).click(function(){
+		var muteTrackNumber = $(this).attr('id').split('mute')[1];
+		$('body').trigger('mute-event', muteTrackNumber);
+	    });
+	     $("#solo"+currentTrackNumber).click(function(){
+		var soloTrackNumber = $(this).attr('id').split('solo')[1];
+		$('body').trigger('solo-event', soloTrackNumber);
 	    });
 	    $("#track"+(i+1)+"title").storage({
 		storageKey : 'track'+(i+1)
@@ -225,6 +242,12 @@ $('body').bind('stop-event', function(e){
 $('body').bind('stepBackward-event', function(e){
     schedStepBack();
 });
+$('body').bind('mute-event', function(e, trackNumber){
+    muteTrack(trackNumber);
+});
+$('body').bind('solo-event', function(e, trackNumber){
+    solo(trackNumber);
+});
 
 $(document).ready(function(){
     $("#effectSortable").sortable({
@@ -246,3 +269,17 @@ $(document).ready(function(){
    drawTimeline();
 	
 });
+
+function createNodes(numTracks) {
+    //for each track create a master gain node. specific tracks represented by array index i
+    for (var i = 1; i <= numTracks; i++) {
+	var trackMasterGainNode = ac.createGainNode();
+	var trackInputNode = ac.createGainNode();
+	
+	trackMasterGainNode.connect(masterGainNode);
+	trackInputNode.connect(trackMasterGainNode);
+	
+	trackMasterGains[i] = trackMasterGainNode;
+	trackInputNodes[i] = trackInputNode
+    }
+}

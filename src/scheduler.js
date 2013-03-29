@@ -73,7 +73,7 @@ function scheduleNote( beatNumber, noteTime) {
    
     if(times[beatNumber] != null){
 	samples = times[beatNumber];
-	console.log(samples);
+	//console.log(samples);
 	//console.log(times[beatNumber].track);
 	for(var i = 0; i<samples.length; i++){
 	    
