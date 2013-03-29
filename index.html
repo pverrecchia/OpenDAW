@@ -27,6 +27,54 @@
             height: 380px;
         }
         
+        
+        #effectSortable {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #effectSortable li {
+            margin: 3px 3px 3px 0;
+            background-color: #E0E0E0;
+            border: 1px solid #000000;
+            border-radius: 10px;
+            padding: 1px;
+            float: left;
+            width: 190px;
+            height: 80px;
+            font-size: 4em;
+            text-align: center;
+        }
+        
+        .effectsBed {
+            margin-left: 80px;
+            position: absolute;
+            top: 3px;
+        }
+        
+        .effectClose {
+            float: right;
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 20px;
+            text-shadow: 0 1px 0 #fff;
+            opacity: .2;
+            filter: alpha(opacity=20);
+            cursor: pointer;
+            background: transparent;
+            border: 0;
+            -webkit-appearance: none;
+            padding-top: 10px;
+        }
+        
+        .effectClose:hover, .effectClose:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+            opacity: .4;
+        }
+        
         .track {
             height: 82px;
             position: relative;
@@ -43,11 +91,6 @@
             border-radius: 10px;
         }
         
-        #trackEffects {
-            position: fixed;
-            bottom: 0;
-            display: none;
-        }
         
         .ui-resizable-helper { border: 2px dotted #00F; }
         
@@ -62,7 +105,8 @@
         }
         
         #trackEffects{
-            height: 90px;
+            display: none;
+            height: 95px;
             width: 100%;
             position: absolute;
             left: 0;
@@ -114,6 +158,11 @@
                             <div class="tab-pane sidebarTab" id="effects">
                                 <ul id="effectList" class="nav nav-list">
                                    <li class="nav-header">Effects</li>
+                                   <li><a href="#">Reverb</a></li>
+                                   <li><a href="#">Filter</a></li>
+                                   <li><a href="#">Compressor</a></li>
+                                   <li><a href="#">Chorus</a></li>
+                                   <li><a href="#">Delay</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -138,7 +187,33 @@
                     <div class="row-fluid" >
                         <div class="span12 well" id="trackEffects">
                             <button id="trackEffectsClose" class="close">&times;</button>
+                            <div>
                             <h4 id="trackEffectsHeader"></h4>
+                            </div>
+                            <div class="effectsBed">
+                                <ul id="effectSortable">
+                                <li class="effect">
+                                    <h6>Reverb</h6>
+                                    <button class="effectClose">&times;</button>
+                                </li>
+                                <li class="effect">
+                                    <h6>Chorus</h6>
+                                    <button class="effectClose">&times;</button>
+                                </li>
+                                <li class="effect">
+                                    <h6>Filter</h6>
+                                    <button class="effectClose">&times;</button>
+                                </li>
+                                <li class="effect">
+                                    <h6>Delay</h6>
+                                    <button class="effectClose">&times;</button>
+                                </li>
+                                <li class="effect">
+                                    <h6>Compressor</h6>
+                                    <button class="effectClose">&times;</button>
+                                </li>
+                                <ul>
+                            </div>
                         </div>
                     </div>
                 </div>

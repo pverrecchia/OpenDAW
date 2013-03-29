@@ -92,7 +92,7 @@ var wavesurfer = (function () {
 	    var currentTrackNumber = i+1;
 	    $("#trackBed").append("<div class=\"span9\"><div class=\"row-fluid\" id=\"selectTrack"+currentTrackNumber+"\"><div class=\"span2 well\" style=\"height: 84px;\"><p id=\"track"+currentTrackNumber+"title\">Track"+currentTrackNumber+"</p><div class=\"btn-group\"><button class=\"btn btn-mini\"><i class=\"icon-headphones\"></i></button><button class=\"btn btn-mini\"><i class=\"icon-volume-off\"></i></button><button class=\"btn btn-mini\"><i class=\"icon-plus-sign\"></i></button></div></div><div id=\"track"+currentTrackNumber+"\" class=\"span10 track\"></div></div></div>");
 	    $("#selectTrack"+currentTrackNumber).click(function(){
-		var printTrackNumber = currentTrackNumber;
+		var printTrackNumber = $(this).attr('id').split('selectTrack')[1];
 		$("#trackEffectsHeader").html("Track "+printTrackNumber);
 		$("#trackEffects").css("display","block");
 	    });
@@ -227,6 +227,7 @@ $('body').bind('stepBackward-event', function(e){
 });
 
 $(document).ready(function(){
+    $("#effectSortable").sortable();
     $("#playPause").click(function(){
         $('body').trigger('playPause-event');
     });
