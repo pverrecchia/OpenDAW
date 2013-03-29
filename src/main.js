@@ -77,8 +77,8 @@ var wavesurfer = (function () {
             var wavesurfer = Object.create(WaveSurfer);
             wavesurfer.init({
                 canvas: canvas,
-                waveColor: 'violet',
-                progressColor: 'purple',
+                waveColor: '#08c',
+                progressColor: '#08c',
                 loadingColor: 'purple',
                 cursorColor: 'navy',
                 audioContext: ac
