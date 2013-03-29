@@ -174,7 +174,8 @@ function schedStop(){
 }
 
 function schedStepBack() {
-    drawCursor(0);
+    
+    
     if (isPlaying) {
 	 schedStop();
     }else{
@@ -184,7 +185,7 @@ function schedStepBack() {
 	drawTimeline();
 	
     }
-    
+    drawCursor(0);
     
 }
 function draw() {
