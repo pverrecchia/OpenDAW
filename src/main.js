@@ -167,10 +167,10 @@ var wavesurfer = (function () {
 		//store the times
 		$.each(currentSample.startTimes, function(){
 		    var currentStartTime = this;
-		    if(times[currentStartTime] == null){
-			times[currentStartTime] = [currentSample.id];
+		 if(times[currentStartTime] == null){
+			times[currentStartTime] = [{id: currentSample.id, track: currentSample.track}];
 		    } else {
-			times[currentStartTime].push(currentSample.id);
+			times[currentStartTime].push({id: currentSample.id, track: currentSample.track});
 		    }
 		});
 	    }
