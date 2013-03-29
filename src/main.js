@@ -38,7 +38,7 @@ var wavesurfer = (function () {
 	});
         $.each(startTimes, function(){
 	    if(sampleNumber == 0){
-		obj = ({bufferURL: song.url, id: song.id, startTimes: song.startTime});
+		obj = ({bufferURL: song.url, id: song.id, startTimes: song.startTime, track: song.track});
 	    }
 	    var currentStartTime = song.startTime[sampleNumber];
             var span = document.createElement('span');

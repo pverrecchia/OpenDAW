@@ -78,7 +78,7 @@ function scheduleNote( beatNumber, noteTime) {
 	for(var i = 0; i<samples.length; i++){
 	    
 	    source = ac.createBufferSource();
-	    source.connect(masterGainNode);
+	    source.connect(trackInputNodes[samples[i].track]);
 	    
 	    source.buffer = buffers[samples[i].id].buffer;
 	    
