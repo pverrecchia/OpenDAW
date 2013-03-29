@@ -227,7 +227,10 @@ $('body').bind('stepBackward-event', function(e){
 });
 
 $(document).ready(function(){
-    $("#effectSortable").sortable();
+    $("#effectSortable").sortable({
+	cancel: "canvas,input"
+    });
+    $(".dial").knob();
     $("#playPause").click(function(){
         $('body').trigger('playPause-event');
     });

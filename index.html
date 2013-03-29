@@ -45,6 +45,7 @@
             height: 80px;
             font-size: 4em;
             text-align: center;
+            position: relative;
         }
         
         .effectsBed {
@@ -54,7 +55,6 @@
         }
         
         .effectClose {
-            float: right;
             font-size: 20px;
             font-weight: bold;
             line-height: 20px;
@@ -65,7 +65,9 @@
             background: transparent;
             border: 0;
             -webkit-appearance: none;
-            padding-top: 10px;
+            position: absolute;
+            right: 0px;
+            top: 0px;
         }
         
         .effectClose:hover, .effectClose:focus {
@@ -73,6 +75,35 @@
             text-decoration: none;
             cursor: pointer;
             opacity: .4;
+        }
+        
+        .knobs {
+            position: absolute;
+            left: 5px;
+            top: 35px;
+        }
+        
+        .left-knob-label {
+            font-size: 10px;
+            margin-left: 5px;
+            position: absolute;
+            top: 17px;
+        }
+        
+        .middle-knob-label {
+            font-size: 10px;
+            padding-bottom: 20px;
+            top: 17px;
+            left: 75px;
+            position: absolute;
+        }
+        
+        .right-knob-label {
+            font-size: 10px;
+            margin-right: 5px;
+            position: absolute;
+            right: 5px;
+            top: 17px;
         }
         
         .track {
@@ -191,22 +222,30 @@
                             <div class="effectsBed">
                                 <ul id="effectSortable">
                                 <li class="effect">
-                                    <h6>Reverb</h6>
+                                    <h6 style="margin:0px 0;">Reverb</h6>
+                                    <p class="left-knob-label">Room Size</p>
+                                    <p class="middle-knob-label">Diffusion</p>
+                                    <p class="right-knob-label">Wet/Dry</p>
+                                    <span class="knobs">
+                                        <input data-fgColor="#08c" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" class="dial">
+                                        <input data-fgColor="#51a351" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" class="dial">
+                                        <input data-fgColor="#bd362f" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" class="dial">
+                                    </span>
                                     <button class="effectClose">&times;</button>
                                 </li>
-                                <li class="effect">
+                                <li>
                                     <h6>Chorus</h6>
                                     <button class="effectClose">&times;</button>
                                 </li>
-                                <li class="effect">
+                                <li>
                                     <h6>Filter</h6>
                                     <button class="effectClose">&times;</button>
                                 </li>
-                                <li class="effect">
+                                <li>
                                     <h6>Delay</h6>
                                     <button class="effectClose">&times;</button>
                                 </li>
-                                <li class="effect">
+                                <li>
                                     <h6>Compressor</h6>
                                     <button class="effectClose">&times;</button>
                                 </li>
@@ -226,6 +265,7 @@
         <script src="src/drawer.js"></script>
         <script src="src/scheduler.js"></script>
         <script src="src/storage.js"></script>
+        <script src="src/jquery.knob.js"></script>
         <script src="src/main.js"></script>
     </body>
 </html>
