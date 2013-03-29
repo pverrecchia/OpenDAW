@@ -231,7 +231,7 @@ $(document).ready(function(){
     $("#playPause").click(function(){
         $('body').trigger('playPause-event');
     });
-    $("#pause").click(function(){
+    $("#stop").click(function(){
         $('body').trigger('stop-event');
     });
     $("#step-backward").click(function(){
