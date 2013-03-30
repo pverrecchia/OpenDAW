@@ -20,3 +20,8 @@ function solo(trackNumber) {
     }
 
 }
+
+function setTrackVolume(trackNumber,newValue) {
+    var node = trackVolumeGains[trackNumber];
+    node.gain.value = newValue/100;
+}

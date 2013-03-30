@@ -5,6 +5,7 @@ masterGainNode.connect(ac.destination);
 
 //array of track master gain nodes
 var trackMasterGains = [];
+var trackVolumeGains = [];
 var trackInputNodes = [];
 
 var buffers = []; //contains AudioBuffer and id# of samples in workspace
@@ -99,7 +100,19 @@ var wavesurfer = (function () {
 	
 	for(var i=0;i<numberOfTracks;i++){
 	   var currentTrackNumber = i+1;
-	    $("#trackBed").append("<div class=\"span9\"><div class=\"row-fluid\" id=\"selectTrack"+currentTrackNumber+"\"><div class=\"span2 well\" style=\"height: 84px;\"><p id=\"track"+currentTrackNumber+"title\">Track"+currentTrackNumber+"</p><div class=\"btn-group\"><button class=\"btn btn-mini\" id = \"solo"+currentTrackNumber+"\"><i class=\"icon-headphones\"></i></button><button class=\"btn btn-mini\" id = \"mute"+currentTrackNumber+"\"><i class=\"icon-volume-off\"></i></button><button class=\"btn btn-mini\"><i class=\"icon-plus-sign\"></i></button></div></div><div id=\"track"+currentTrackNumber+"\" class=\"span10 track\"></div></div></div>");
+	    $("#trackBed").append("<div class=\"span9\"><div class=\"row-fluid\" id=\"selectTrack"+currentTrackNumber+"\"><div class=\"span2 trackBox\" style=\"height: 84px;\"><p style=\"margin: 0 0 0 0;\" id=\"track"+currentTrackNumber+"title\">Track"+currentTrackNumber+"</p><div style=\"margin: 5px 0 5px 0;\" id=\"volumeSlider"+currentTrackNumber+"\"></div><button type=\"button\" class=\"btn btn-mini\" id = \"solo"+currentTrackNumber+"\"><i class=\"icon-headphones\"></i></button><button type=\"button\" class=\"btn btn-mini\" id = \"mute"+currentTrackNumber+"\"><i class=\"icon-volume-off\"></i></button><button type=\"button\" class=\"btn btn-mini\"><i class=\"icon-plus-sign\"></i></button></div><div id=\"track"+currentTrackNumber+"\" class=\"span10 track\"></div></div></div>");
+	    $("#volumeSlider"+currentTrackNumber).slider({
+		value: 80,
+		orientation: "horizontal",
+		range: "min",
+		min: 0,
+		max: 100,
+		animate: true,
+		slide: function( event, ui ) {
+		    var muteTrackNumber = $(this).attr('id').split('volumeSlider')[1];
+		    setTrackVolume(muteTrackNumber, ui.value );
+		}
+	    });
 	    $("#selectTrack"+currentTrackNumber).click(function(){
 		var printTrackNumber = $(this).attr('id').split('selectTrack')[1];
 		$("#trackEffectsHeader").html("Track "+printTrackNumber);
@@ -254,6 +267,7 @@ $(document).ready(function(){
 	cancel: "canvas,input"
     });
     $(".dial").knob();
+    $('.btn-mini').button();
     $("#playPause").click(function(){
         $('body').trigger('playPause-event');
     });
@@ -275,11 +289,15 @@ function createNodes(numTracks) {
     for (var i = 1; i <= numTracks; i++) {
 	var trackMasterGainNode = ac.createGainNode();
 	var trackInputNode = ac.createGainNode();
+	var trackVolumeNode = ac.createGainNode();
+
 	
 	trackMasterGainNode.connect(masterGainNode);
-	trackInputNode.connect(trackMasterGainNode);
+	trackVolumeNode.connect(trackMasterGainNode);
+	trackInputNode.connect(trackVolumeNode);
 	
 	trackMasterGains[i] = trackMasterGainNode;
-	trackInputNodes[i] = trackInputNode
+	trackVolumeGains[i] = trackVolumeNode;
+	trackInputNodes[i] = trackInputNode;
     }
 }
