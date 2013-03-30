@@ -7,6 +7,10 @@ masterGainNode.connect(ac.destination);
 var trackMasterGains = [];
 var trackVolumeGains = [];
 var trackInputNodes = [];
+var trackCompressors = [];
+
+//the currently selected track (for editing effects etc.)
+var activeTrack;
 
 var buffers = []; //contains AudioBuffer and id# of samples in workspace
 var times = []; //contains start times of samples and their id#
@@ -115,6 +119,7 @@ var wavesurfer = (function () {
 	    });
 	    $("#selectTrack"+currentTrackNumber).click(function(){
 		var printTrackNumber = $(this).attr('id').split('selectTrack')[1];
+		activeTrack = printTrackNumber;
 		$("#trackEffectsHeader").html("Track "+printTrackNumber);
 		$("#trackEffects").css("display","block");
 	    });
@@ -263,8 +268,43 @@ $('body').bind('solo-event', function(e, trackNumber){
 });
 
 $(document).ready(function(){
+    $(".effectDrag").draggable({
+	revert: true,
+	helper: "clone"
+    });
     $("#effectSortable").sortable({
 	cancel: "canvas,input"
+    });
+    $("#trackEffects").droppable({
+	accept: ".effectDrag",
+	drop: function(event, ui){
+	    $("#"+ui.draggable[0].textContent).removeClass('effect');
+	    if(ui.draggable[0].textContent == "Compressor"){
+		var trackCompressor = ac.createDynamicsCompressor();
+		var inputNode = trackInputNodes[activeTrack];
+		var volumeNode = trackVolumeGains[activeTrack];
+		inputNode.disconnect();
+		inputNode.connect(trackCompressor);
+		trackCompressor.connect(volumeNode);
+		trackCompressors[activeTrack] = trackCompressor;
+	    }
+	}
+    });
+
+    $("#compressorThresholdKnob").knob({
+	change : function(v) {
+	    setCompressorThresholdValue(activeTrack,v);
+	}
+    });
+    $("#compressorRatioKnob").knob({
+	change : function(v) {
+	    setCompressorRatioValue(activeTrack,v);
+	}
+    });
+    $("#compressorAttackKnob").knob({
+	change : function(v) {
+	    setCompressorAttackValue(activeTrack,v);
+	}
     });
     $(".dial").knob();
     $('.btn-mini').button();
@@ -290,7 +330,6 @@ function createNodes(numTracks) {
 	var trackMasterGainNode = ac.createGainNode();
 	var trackInputNode = ac.createGainNode();
 	var trackVolumeNode = ac.createGainNode();
-
 	
 	trackMasterGainNode.connect(masterGainNode);
 	trackVolumeNode.connect(trackMasterGainNode);
@@ -300,4 +339,6 @@ function createNodes(numTracks) {
 	trackVolumeGains[i] = trackVolumeNode;
 	trackInputNodes[i] = trackInputNode;
     }
+
+
 }

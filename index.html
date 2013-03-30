@@ -48,6 +48,10 @@
             position: relative;
         }
         
+        .effect{
+            display: none;
+        }
+        
         .effectsBed {
             margin-left: 80px;
             position: absolute;
@@ -197,11 +201,11 @@
                             <div class="tab-pane sidebarTab" id="effects">
                                 <ul id="effectList" class="nav nav-list">
                                    <li class="nav-header">Effects</li>
-                                   <li><a href="#">Reverb</a></li>
-                                   <li><a href="#">Filter</a></li>
-                                   <li><a href="#">Compressor</a></li>
-                                   <li><a href="#">Chorus</a></li>
-                                   <li><a href="#">Delay</a></li>
+                                   <li class="effectDrag"><a href="#">Reverb</a></li>
+                                   <li class="effectDrag"><a href="#">Filter</a></li>
+                                   <li class="effectDrag"><a href="#">Compressor</a></li>
+                                   <li class="effectDrag"><a href="#">Chorus</a></li>
+                                   <li class="effectDrag"><a href="#">Delay</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -231,7 +235,7 @@
                             </div>
                             <div class="effectsBed">
                                 <ul id="effectSortable">
-                                <li class="effect">
+                                <li class="effect" id="Reverb">
                                     <h6 style="margin:0px 0;">Reverb</h6>
                                     <p class="left-knob-label">Room Size</p>
                                     <p class="middle-knob-label">Diffusion</p>
@@ -243,27 +247,27 @@
                                     </span>
                                     <button class="effectClose">&times;</button>
                                 </li>
-                                <li>
+                                <li class="effect" id="Chorus">
                                     <h6>Chorus</h6>
                                     <button class="effectClose">&times;</button>
                                 </li>
-                                <li>
+                                <li class="effect" id="Filter">
                                     <h6>Filter</h6>
                                     <button class="effectClose">&times;</button>
                                 </li>
-                                <li>
+                                <li class="effect" id="Delay">
                                     <h6>Delay</h6>
                                     <button class="effectClose">&times;</button>
                                 </li>
-                                <li>
+                                <li class="effect" id="Compressor">
                                     <h6 style="margin:0px 0;">Compressor</h6>
                                     <p class="left-knob-label">Threshold</p>
                                     <p class="middle-knob-label">Ratio</p>
                                     <p class="right-knob-label">Attack</p>
                                     <span class="knobs">
-                                        <input data-fgColor="#08c" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="-100" data-max=0 class="dial">
-                                        <input data-fgColor="#51a351" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" class="dial">
-                                        <input data-fgColor="#bd362f" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" class="dial">
+                                        <input id="compressorThresholdKnob" data-fgColor="#08c" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="-100" data-max="-1" class="dial" value="-24">
+                                        <input id="compressorRatioKnob" data-fgColor="#51a351" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="1" data-max="20" class="dial" value="12">
+                                        <input id="compressorAttackKnob" data-fgColor="#bd362f" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="0" data-max="1000" class="dial" value="3">
                                     </span>
                                     <button class="effectClose">&times;</button>
                                 </li>

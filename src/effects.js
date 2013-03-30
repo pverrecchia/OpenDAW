@@ -25,3 +25,18 @@ function setTrackVolume(trackNumber,newValue) {
     var node = trackVolumeGains[trackNumber];
     node.gain.value = newValue/100;
 }
+
+function setCompressorThresholdValue(trackNumber,threshold){
+    var node = trackCompressors[trackNumber];
+    node.threshold.value = threshold;
+}
+
+function setCompressorRatioValue(trackNumber,ratio){
+    var node = trackCompressors[trackNumber];
+    node.ratio.value = ratio;
+}
+
+function setCompressorAttackValue(trackNumber,attack){
+    var node = trackCompressors[trackNumber];
+    node.attack.value = attack/1000;
+}
