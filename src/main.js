@@ -273,7 +273,12 @@ $(document).ready(function(){
 	helper: "clone"
     });
     $("#effectSortable").sortable({
-	cancel: "canvas,input"
+	cancel: "canvas,input",
+	/*
+	sort: function(event, ui){
+	     console.log($( "#effectSortable" ).sortable( "toArray" ))
+	}*/
+	
     });
     $("#trackEffects").droppable({
 	accept: ".effectDrag",
@@ -288,9 +293,15 @@ $(document).ready(function(){
 		trackCompressor.connect(volumeNode);
 		trackCompressors[activeTrack] = trackCompressor;
 	    }
+	  
+	   console.log($( "#effectSortable" ).sortable( "toArray" ))
+	 
 	}
+	
     });
-
+    
+   
+    
     $("#compressorThresholdKnob").knob({
 	change : function(v) {
 	    setCompressorThresholdValue(activeTrack,v);
