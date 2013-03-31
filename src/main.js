@@ -258,7 +258,7 @@ $('body').bind('stop-event', function(e){
     schedStop();
 });
 $('body').bind('stepBackward-event', function(e){
-    schedStepBack();
+    schedStepBack(ac.currentTime);
 });
 $('body').bind('mute-event', function(e, trackNumber){
     muteTrack(trackNumber);
@@ -306,6 +306,8 @@ $(document).ready(function(){
 	    setCompressorAttackValue(activeTrack,v);
 	}
     });
+    
+    
     $(".dial").knob();
     $('.btn-mini').button();
     $("#playPause").click(function(){
@@ -320,6 +322,8 @@ $(document).ready(function(){
     $("#trackEffectsClose").click(function(){
 	$("#trackEffects").css("display","none");
     });
+    
+    
    drawTimeline();
 	
 });

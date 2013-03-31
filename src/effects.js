@@ -44,7 +44,7 @@ function solo(trackNumber) {
 
 function setTrackVolume(trackNumber,newValue) {
     var node = trackVolumeGains[trackNumber];
-    node.gain.value = newValue/100;
+    node.gain.value = (newValue/100)* (newValue/100);
 }
 
 function setCompressorThresholdValue(trackNumber,threshold){
@@ -61,3 +61,14 @@ function setCompressorAttackValue(trackNumber,attack){
     var node = trackCompressors[trackNumber];
     node.attack.value = attack/1000;
 }
+
+function setFilterCutoffValue(trackNumber,freq){
+    //var node = trackFilters[trackNumber];
+    node.frequency.value = freq;
+}
+
+function setFilterQValue(trackNumber,Q){
+    //var node = trackFilters[trackNumber];
+    node.Q.value = Q;
+}
+

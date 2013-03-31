@@ -173,14 +173,16 @@ function schedStop(){
     isStopped = true;
 }
 
-function schedStepBack() {
+function schedStepBack(time) {
     
     if (isPlaying) {
 	 schedStop();
     }else{
+	//schedPlay(time)
+	
 	k=0;
 	nextK=k;
-	current16thNote = 0;
+	pauseBeat = 0;
 	drawTimeline();
     }
     drawCursor(0);
