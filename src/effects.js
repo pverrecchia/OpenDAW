@@ -1,21 +1,42 @@
 function muteTrack(trackNumber) {
     var node = trackMasterGains[trackNumber];
-    if(node.gain.value){
-        node.gain.value = 0;   
-    }else{
-        node.gain.value = 1;
+    if(!node.isMuted){
+        node.node.gain.value = 0;
+        node.isMuted = true;
+    }
+    else if (node.isMuted){
+        node.node.gain.value = 1;
+        node.isMuted = false;
     }
 }
 
 function solo(trackNumber) {
-    for (var i=1; i <= globalNumberOfTracks; i++) {
-        var node = trackMasterGains[i];
-        if(i != trackNumber){  
-            if(node.gain.value){
-                node.gain.value = 0;   
-            }else{
-                node.gain.value = 1;
-            }
+    var thisNode = trackMasterGains[trackNumber];
+    if (!thisNode.isSolo) {
+        thisNode.isSolo = true;
+            
+        for (var i=1; i <= globalNumberOfTracks; i++) {
+            var node = trackMasterGains[i];
+            
+                if(i != trackNumber){  
+                    if(!node.isMuted){
+                        node.node.gain.value = 0;
+                        node.isMuted = true;
+                    }
+                }
+        }
+    }else if (thisNode.isSolo) {
+        thisNode.isSolo = false;
+            
+        for (var i=1; i <= globalNumberOfTracks; i++) {
+            var node = trackMasterGains[i];
+            
+                if(i != trackNumber){  
+                    if(node.isMuted){
+                        node.node.gain.value = 1;
+                        node.isMuted = false;
+                    }
+                }
         }
     }
 

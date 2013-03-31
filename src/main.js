@@ -335,7 +335,7 @@ function createNodes(numTracks) {
 	trackVolumeNode.connect(trackMasterGainNode);
 	trackInputNode.connect(trackVolumeNode);
 	
-	trackMasterGains[i] = trackMasterGainNode;
+	trackMasterGains[i] = {node: trackMasterGainNode, isMuted: false, isSolo: false};
 	trackVolumeGains[i] = trackVolumeNode;
 	trackInputNodes[i] = trackInputNode;
     }
