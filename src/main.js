@@ -12,6 +12,9 @@ var trackCompressors = [];
 //the currently selected track (for editing effects etc.)
 var activeTrack;
 
+//json of effect data
+var effects;
+
 var buffers = []; //contains AudioBuffer and id# of samples in workspace
 var times = []; //contains start times of samples and their id#
 var pixelsPer16 = 6; 			//pixels per 16th note. used for grid snapping
@@ -98,6 +101,7 @@ var wavesurfer = (function () {
 
     var processData = function (json) {
 	var numberOfTracks = parseInt(json.projectInfo.tracks);
+	effects = json.projectInfo.effects;
 	//create track-specific nodes
 	globalNumberOfTracks = numberOfTracks;
 	createNodes(numberOfTracks);
@@ -105,6 +109,17 @@ var wavesurfer = (function () {
 	for(var i=0;i<numberOfTracks;i++){
 	   var currentTrackNumber = i+1;
 	    $("#trackBed").append("<div class=\"span9\"><div class=\"row-fluid\" id=\"selectTrack"+currentTrackNumber+"\"><div class=\"span2 trackBox\" style=\"height: 84px;\"><p style=\"margin: 0 0 0 0;\" id=\"track"+currentTrackNumber+"title\">Track"+currentTrackNumber+"</p><div style=\"margin: 5px 0 5px 0;\" id=\"volumeSlider"+currentTrackNumber+"\"></div><button type=\"button\" class=\"btn btn-mini\" id = \"solo"+currentTrackNumber+"\"><i class=\"icon-headphones\"></i></button><button type=\"button\" class=\"btn btn-mini\" id = \"mute"+currentTrackNumber+"\"><i class=\"icon-volume-off\"></i></button><button type=\"button\" class=\"btn btn-mini\"><i class=\"icon-plus-sign\"></i></button></div><div id=\"track"+currentTrackNumber+"\" class=\"span10 track\"></div></div></div>");
+	    $.each(effects[i],function(){
+		if(this.type == "Compressor"){
+		    var trackCompressor = ac.createDynamicsCompressor();
+		    var inputNode = trackInputNodes[currentTrackNumber];
+		    var volumeNode = trackVolumeGains[currentTrackNumber];
+		    inputNode.disconnect();
+		    inputNode.connect(trackCompressor);
+		    trackCompressor.connect(volumeNode);
+		    trackCompressors[currentTrackNumber] = trackCompressor;
+		}
+	    });
 	    $("#volumeSlider"+currentTrackNumber).slider({
 		value: 80,
 		orientation: "horizontal",
@@ -120,6 +135,18 @@ var wavesurfer = (function () {
 	    $("#selectTrack"+currentTrackNumber).click(function(){
 		var printTrackNumber = $(this).attr('id').split('selectTrack')[1];
 		activeTrack = printTrackNumber;
+		//compensation for off by one (track1 = effects[0])
+		$(".effect").addClass("hidden");
+		$.each(effects[activeTrack-1], function(){
+		    var currentEffect = this;
+		    $("#"+currentEffect.type).removeClass("hidden");
+		    if(currentEffect.type == "Compressor"){
+			$("#compressorThresholdKnob").val(currentEffect.threshold);
+			$("#compressorRatioKnob").val(currentEffect.ratio);
+			$("#compressorAttackKnob").val(currentEffect.attack*1000);
+		    }
+		});
+		Object.keys(effects[activeTrack-1]);
 		$("#trackEffectsHeader").html("Track "+printTrackNumber);
 		$("#trackEffects").css("display","block");
 	    });
@@ -283,8 +310,11 @@ $(document).ready(function(){
     $("#trackEffects").droppable({
 	accept: ".effectDrag",
 	drop: function(event, ui){
-	    $("#"+ui.draggable[0].textContent).removeClass('effect');
+	    $("#"+ui.draggable[0].textContent).removeClass('hidden');
 	    if(ui.draggable[0].textContent == "Compressor"){
+		$("#compressorThresholdKnob").val(-24);
+		$("#compressorRatioKnob").val(12);
+		$("#compressorAttackKnob").val(3);
 		var trackCompressor = ac.createDynamicsCompressor();
 		var inputNode = trackInputNodes[activeTrack];
 		var volumeNode = trackVolumeGains[activeTrack];
@@ -292,6 +322,13 @@ $(document).ready(function(){
 		inputNode.connect(trackCompressor);
 		trackCompressor.connect(volumeNode);
 		trackCompressors[activeTrack] = trackCompressor;
+		effects[activeTrack-1].push({
+		    type: "Compressor",
+		    threshold: "-24",
+		    ratio: "12",
+		    attack: ".003"
+		});
+		console.log(effects[activeTrack-1]);
 	    }
 	  
 	   console.log($( "#effectSortable" ).sortable( "toArray" ))
