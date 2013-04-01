@@ -113,7 +113,7 @@ function createTrackReverb() {
     rev1Gain.connect(wetGain);
     
     conv1.connect(rev1Gain);
-    loadReverbIR('http://www.madebypietro.com/BelleMeade.wav', conv1);
+    loadReverbIR('src/data/ir/BelleMeade.wav', conv1);
    
     
     reverbIn.connect(dryGain);

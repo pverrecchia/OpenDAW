@@ -332,6 +332,32 @@ $(document).ready(function(){
 	accept: ".effectDrag",
 	drop: function(event, ui){
 	    $("#"+ui.draggable[0].textContent).removeClass('hidden');
+	    if(ui.draggable[0].textContent == "Reverb"){
+		$("#reverbWetDryKnob").val(50).trigger('change');
+		
+		var trackReverb = createTrackReverb();
+		var inputNode = trackInputNodes[activeTrack];
+		var trackCompressor = trackCompressors[activeTrack];
+		
+		inputNode.disconnect();
+		inputNode.connect(trackReverb[0]);
+		
+		if (trackFilters[activeTrack] != null ) {
+		    trackReverb[1].connect(trackFilters[activeTrack]);
+		}else if (trackCompressors[activeTrack != null]) {
+		    trackReverb[1].connect(trackCompressors[activeTrack]);
+		}else{
+		    trackReverb[1].connect(trackVolumeGains[activeTrack]);
+		}
+		
+		trackReverbs[activeTrack] = trackReverb;
+		effects[activeTrack-1].push({
+		    type: "Reverb",
+		    roomSize: "30",
+		    diffusion: "30",
+		    wetDry: "50"
+		});
+	    }
 	    if(ui.draggable[0].textContent == "Filter"){
 		$("#filterCutoffKnob").val(30).trigger('change');
 		$("#filterQKnob").val(1).trigger('change');
@@ -339,9 +365,21 @@ $(document).ready(function(){
 		var trackFilter = ac.createBiquadFilter();
 		var inputNode = trackInputNodes[activeTrack];
 		var volumeNode = trackVolumeGains[activeTrack];
-		inputNode.disconnect();
-		inputNode.connect(trackFilter);
-		trackFilter.connect(volumeNode);
+		
+		if (trackReverbs[activeTrack] != null) {
+		    trackReverbs[activeTrack][1].disconnect();
+		    trackReverbs[activeTrack][1].connect(trackFilter);
+		}else { 
+		    inputNode.disconnect();
+		    inputNode.connect(trackFilter);
+		}
+		
+		if (trackCompressors[activeTrack] != null){
+		    trackFilter.connect(trackCompressors[activeTrack]);
+		}else {
+		    trackFilter.connect(volumeNode);
+		}
+		
 		trackFilters[activeTrack] = trackFilter;
 		effects[activeTrack-1].push({
 		    type: "Filter",
@@ -357,9 +395,20 @@ $(document).ready(function(){
 		var trackCompressor = ac.createDynamicsCompressor();
 		var inputNode = trackInputNodes[activeTrack];
 		var volumeNode = trackVolumeGains[activeTrack];
-		inputNode.disconnect();
-		inputNode.connect(trackCompressor);
+		
+		if (trackFilters[activeTrack] != null){
+		    trackFilters[activeTrack].disconnect();
+		    trackFilters[activeTrack].connect(trackCompressor);
+		}else if (trackReverbs[activeTrack] != null) {
+		    trackReverbs[activeTrack].disconnect();
+		    trackReverbs[activeTrack].connect(trackCompressor);
+		}else {
+		    inputNode.disconnect();
+		    inputNode.connect(trackCompressor);
+		}
+		
 		trackCompressor.connect(volumeNode);
+		
 		trackCompressors[activeTrack] = trackCompressor;
 		effects[activeTrack-1].push({
 		    type: "Compressor",
@@ -369,24 +418,9 @@ $(document).ready(function(){
 		});
 		//console.log(effects[activeTrack-1]);
 	    }
-	     if(ui.draggable[0].textContent == "Reverb"){
-		$("#reverbWetDryKnob").val(50).trigger('change');
-		
-		var trackReverb = createTrackReverb();
-		var inputNode = trackInputNodes[activeTrack];
-		var trackCompressor = trackCompressors[activeTrack];
-		inputNode.disconnect();
-		inputNode.connect(trackReverb[0]);
-		trackReverb[1].connect(trackCompressor);
-		trackReverbs[activeTrack] = trackReverb;
-		effects[activeTrack-1].push({
-		    type: "Reverb",
-		    roomSize: "30",
-		    diffusion: "30",
-		    wetDry: "50"
-		});
-		//console.log(effects[activeTrack-1]);
-	    }
+	   
+	
+	    
 	 
 	}
 	
@@ -459,6 +493,11 @@ $(document).ready(function(){
     $("#reverbWetDryKnob").knob({
 	change : function(v) {
 	    setReverbWetDryValue(activeTrack,v);
+	    $.each(effects[activeTrack-1], function(){
+		if(this.type == "Reverb"){
+		    this.wetDry = v;
+		}
+	    });
 	}
     });
     
