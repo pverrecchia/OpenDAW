@@ -9,6 +9,7 @@ var trackVolumeGains = [];
 var trackInputNodes = [];
 var trackCompressors = [];
 var trackReverbs = [];
+var trackFilters = [];
 
 //the currently selected track (for editing effects etc.)
 var activeTrack;
@@ -120,6 +121,15 @@ var wavesurfer = (function () {
 		    trackCompressor.connect(volumeNode);
 		    trackCompressors[currentTrackNumber] = trackCompressor;
 		}
+		if(this.type == "Filter"){
+		    var trackFilter = ac.createBiquadFilter();
+		    var inputNode = trackInputNodes[currentTrackNumber];
+		    var volumeNode = trackVolumeGains[currentTrackNumber];
+		    inputNode.disconnect();
+		    inputNode.connect(trackFilter);
+		    trackFilter.connect(volumeNode);
+		    trackFilters[currentTrackNumber] = trackFilter;
+		}
 	    });
 	    $("#volumeSlider"+currentTrackNumber).slider({
 		value: 80,
@@ -142,9 +152,14 @@ var wavesurfer = (function () {
 		    var currentEffect = this;
 		    $("#"+currentEffect.type).removeClass("hidden");
 		    if(currentEffect.type == "Compressor"){
-			$("#compressorThresholdKnob").val(currentEffect.threshold);
-			$("#compressorRatioKnob").val(currentEffect.ratio);
-			$("#compressorAttackKnob").val(currentEffect.attack*1000);
+			$("#compressorThresholdKnob").val(currentEffect.threshold).trigger('change');
+			$("#compressorRatioKnob").val(currentEffect.ratio).trigger('change');
+			$("#compressorAttackKnob").val(currentEffect.attack*1000).trigger('change');
+		    }
+		    if(currentEffect.type == "Filter"){
+			$("#filterCutoffKnob").val(currentEffect.cutoff).trigger('change');
+			$("#filterQKnob").val(currentEffect.q).trigger('change');
+			$("#filterTypeKnob").val(currentEffect.filterType).trigger('change');
 		    }
 		    if(currentEffect.type == "Reverb"){
 			$("#reverbWetDryKnob").val(currentEffect.wetDry);
@@ -317,10 +332,28 @@ $(document).ready(function(){
 	accept: ".effectDrag",
 	drop: function(event, ui){
 	    $("#"+ui.draggable[0].textContent).removeClass('hidden');
+	    if(ui.draggable[0].textContent == "Filter"){
+		$("#filterCutoffKnob").val(30).trigger('change');
+		$("#filterQKnob").val(1).trigger('change');
+		$("#filterTypeKnob").val(0).trigger('change');
+		var trackFilter = ac.createBiquadFilter();
+		var inputNode = trackInputNodes[activeTrack];
+		var volumeNode = trackVolumeGains[activeTrack];
+		inputNode.disconnect();
+		inputNode.connect(trackFilter);
+		trackFilter.connect(volumeNode);
+		trackFilters[activeTrack] = trackFilter;
+		effects[activeTrack-1].push({
+		    type: "Filter",
+		    cutoff: "30",
+		    q: "1",
+		    filterType: "0"
+		});
+	    }
 	    if(ui.draggable[0].textContent == "Compressor"){
-		$("#compressorThresholdKnob").val(-24);
-		$("#compressorRatioKnob").val(12);
-		$("#compressorAttackKnob").val(3);
+		$("#compressorThresholdKnob").val(-24).trigger('change');
+		$("#compressorRatioKnob").val(12).trigger('change');
+		$("#compressorAttackKnob").val(3).trigger('change');
 		var trackCompressor = ac.createDynamicsCompressor();
 		var inputNode = trackInputNodes[activeTrack];
 		var volumeNode = trackVolumeGains[activeTrack];
@@ -354,8 +387,6 @@ $(document).ready(function(){
 		});
 		//console.log(effects[activeTrack-1]);
 	    }
-	  
-	   //console.log($( "#effectSortable" ).sortable( "toArray" ))
 	 
 	}
 	
@@ -366,16 +397,62 @@ $(document).ready(function(){
     $("#compressorThresholdKnob").knob({
 	change : function(v) {
 	    setCompressorThresholdValue(activeTrack,v);
+	    $.each(effects[activeTrack-1], function(){
+		if(this.type == "Compressor"){
+		    this.threshold = v;
+		}
+	    });
 	}
     });
     $("#compressorRatioKnob").knob({
 	change : function(v) {
 	    setCompressorRatioValue(activeTrack,v);
+	    $.each(effects[activeTrack-1], function(){
+		if(this.type == "Compressor"){
+		    this.ratio = v;
+		}
+	    });
 	}
     });
     $("#compressorAttackKnob").knob({
 	change : function(v) {
 	    setCompressorAttackValue(activeTrack,v);
+	    $.each(effects[activeTrack-1], function(){
+		if(this.type == "Compressor"){
+		    this.attack = v/1000;
+		}
+	    });
+	}
+    });
+    
+    $("#filterCutoffKnob").knob({
+	change : function(v) {
+	    setFilterCutoffValue(activeTrack,v);
+	    $.each(effects[activeTrack-1], function(){
+		if(this.type == "Filter"){
+		    this.cutoff = v;
+		}
+	    });
+	}
+    });
+    $("#filterQKnob").knob({
+	change : function(v) {
+	    setFilterQValue(activeTrack,v);
+	    $.each(effects[activeTrack-1], function(){
+		if(this.type == "Filter"){
+		    this.q = v;
+		}
+	    });
+	}
+    });
+    $("#filterTypeKnob").knob({
+	change : function(v) {
+	    setFilterType(activeTrack,v);
+	    $.each(effects[activeTrack-1], function(){
+		if(this.type == "Filter"){
+		    this.filterType = v;
+		}
+	    });
 	}
     });
     

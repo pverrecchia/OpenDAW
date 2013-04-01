@@ -203,9 +203,8 @@
                                    <li class="nav-header">Effects</li>
                                    <li class="effectDrag"><a href="#">Reverb</a></li>
                                    <li class="effectDrag"><a href="#">Filter</a></li>
-                                   <li class="effectDrag"><a href="#">Compressor</a></li>
-                                   <li class="effectDrag"><a href="#">Chorus</a></li>
                                    <li class="effectDrag"><a href="#">Delay</a></li>
+                                   <li class="effectDrag"><a href="#">Compressor</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -247,12 +246,16 @@
                                     </span>
                                     <button class="effectClose">&times;</button>
                                 </li>
-                                <li class="hidden effect" id="Chorus">
-                                    <h6>Chorus</h6>
-                                    <button class="effectClose">&times;</button>
-                                </li>
                                 <li class="hidden effect" id="Filter">
-                                    <h6>Filter</h6>
+                                    <h6 style="margin:0px 0;">Filter</h6>
+                                    <p class="left-knob-label">Cutoff</p>
+                                    <p class="middle-knob-label">Q</p>
+                                    <p class="right-knob-label">Type</p>
+                                    <span class="knobs">
+                                        <input id="filterCutoffKnob" data-fgColor="#bd362f" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="0" data-max="100" class="dial" value="30">
+                                        <input id="filterQKnob" data-fgColor="#f89406" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="1" data-max="10" class="dial" value="1">
+                                        <input id="filterTypeKnob" data-fgColor="#222222" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="0" data-max="2" class="dial" value="0">
+                                    </span>
                                     <button class="effectClose">&times;</button>
                                 </li>
                                 <li class="hidden effect" id="Delay">

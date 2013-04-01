@@ -3,7 +3,7 @@
         {"tempo":"128","tracks":"3","effects":
             [
                 [{"type":"Compressor","threshold":"-12","ratio":"10","attack":".003"}],
-                [],
+                [{"type":"Filter","cutoff":"30","q":"1","filterType":"0"}],
                 []
             ]
         },

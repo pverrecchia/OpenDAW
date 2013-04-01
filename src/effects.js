@@ -1,3 +1,18 @@
+function logslider(position) {
+  // position will be between 0 and 100
+  var minp = 0;
+  var maxp = 100;
+
+  // The result should be between 40hz an 20000hz
+  var minv = Math.log(40);
+  var maxv = Math.log(20000);
+
+  // calculate adjustment factor
+  var scale = (maxv-minv) / (maxp-minp);
+
+  return Math.exp(minv + scale*(position-minp));
+}
+
 function muteTrack(trackNumber) {
     var node = trackMasterGains[trackNumber];
     if(!node.isMuted){
@@ -63,12 +78,12 @@ function setCompressorAttackValue(trackNumber,attack){
 }
 
 function setFilterCutoffValue(trackNumber,freq){
-    //var node = trackFilters[trackNumber];
-    node.frequency.value = freq;
+    var node = trackFilters[trackNumber];
+    node.frequency.value = logslider(freq);
 }
 
 function setFilterQValue(trackNumber,Q){
-    //var node = trackFilters[trackNumber];
+    var node = trackFilters[trackNumber];
     node.Q.value = Q;
 }
 
@@ -130,3 +145,15 @@ function createTrackReverb() {
     request.send();
     
 }
+
+function setFilterType(trackNumber,type){
+    var node = trackFilters[trackNumber];
+    if(type == 0){
+        node.type = 0;
+    } else if(type == 1){
+        node.type = 1;
+    } else if(type == 2){
+        node.type = 2;
+    }
+}
+
