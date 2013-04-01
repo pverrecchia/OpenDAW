@@ -72,3 +72,61 @@ function setFilterQValue(trackNumber,Q){
     node.Q.value = Q;
 }
 
+function setReverbWetDryValue(trackNumber, v){
+    var wet = v/100;
+    var dry = 1-wet;
+    //set wetGain node gain
+    trackReverbs[trackNumber][4].gain.value = wet;
+    
+    //set dryGain node gain
+    trackReverbs[trackNumber][5].gain.value = dry;
+    
+}
+
+function createTrackReverb() {
+    var reverbNetwork = [6];
+    
+    var reverbIn = ac.createGainNode();
+    var dryGain = ac.createGainNode();
+    var wetGain = ac.createGainNode();
+    var reverbOut = ac.createGainNode();
+    var conv1 = ac.createConvolver();
+    var rev1Gain = ac.createGainNode();
+    
+    wetGain.connect(reverbOut);
+    dryGain.connect(reverbOut);
+    rev1Gain.connect(wetGain);
+    
+    conv1.connect(rev1Gain);
+    loadReverbIR('http://www.madebypietro.com/BelleMeade.wav', conv1);
+   
+    
+    reverbIn.connect(dryGain);
+    reverbIn.connect(conv1);
+    
+    wetGain.gain.value = 0.5;
+    dryGain.gain.value = 0.5;
+    
+    reverbNetwork[0]=reverbIn;
+    reverbNetwork[1]=reverbOut;
+    reverbNetwork[2]=conv1;
+    reverbNetwork[3]=rev1Gain;
+    reverbNetwork[4]=wetGain;
+    reverbNetwork[5]=dryGain;
+    
+    return reverbNetwork;
+}
+
+ function loadReverbIR(url, convNode) {
+    // As with the main sound source, 
+    // the Impulse Response loads asynchronously
+    var request = new XMLHttpRequest();
+    request.open("GET", url, true);
+    request.responseType = "arraybuffer";
+
+    request.onload = function () {
+	convNode.buffer = ac.createBuffer(request.response, false); 
+    }
+    request.send();
+    
+}

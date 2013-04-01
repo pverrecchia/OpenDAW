@@ -8,6 +8,7 @@ var trackMasterGains = [];
 var trackVolumeGains = [];
 var trackInputNodes = [];
 var trackCompressors = [];
+var trackReverbs = [];
 
 //the currently selected track (for editing effects etc.)
 var activeTrack;
@@ -144,6 +145,11 @@ var wavesurfer = (function () {
 			$("#compressorThresholdKnob").val(currentEffect.threshold);
 			$("#compressorRatioKnob").val(currentEffect.ratio);
 			$("#compressorAttackKnob").val(currentEffect.attack*1000);
+		    }
+		    if(currentEffect.type == "Reverb"){
+			$("#reverbWetDryKnob").val(currentEffect.wetDry);
+			//$("#compressorRatioKnob").val(currentEffect.ratio);
+			//$("#compressorAttackKnob").val(currentEffect.attack*1000);
 		    }
 		});
 		Object.keys(effects[activeTrack-1]);
@@ -328,10 +334,28 @@ $(document).ready(function(){
 		    ratio: "12",
 		    attack: ".003"
 		});
-		console.log(effects[activeTrack-1]);
+		//console.log(effects[activeTrack-1]);
+	    }
+	     if(ui.draggable[0].textContent == "Reverb"){
+		$("#reverbWetDryKnob").val(50).trigger('change');
+		
+		var trackReverb = createTrackReverb();
+		var inputNode = trackInputNodes[activeTrack];
+		var trackCompressor = trackCompressors[activeTrack];
+		inputNode.disconnect();
+		inputNode.connect(trackReverb[0]);
+		trackReverb[1].connect(trackCompressor);
+		trackReverbs[activeTrack] = trackReverb;
+		effects[activeTrack-1].push({
+		    type: "Reverb",
+		    roomSize: "30",
+		    diffusion: "30",
+		    wetDry: "50"
+		});
+		//console.log(effects[activeTrack-1]);
 	    }
 	  
-	   console.log($( "#effectSortable" ).sortable( "toArray" ))
+	   //console.log($( "#effectSortable" ).sortable( "toArray" ))
 	 
 	}
 	
@@ -355,6 +379,11 @@ $(document).ready(function(){
 	}
     });
     
+    $("#reverbWetDryKnob").knob({
+	change : function(v) {
+	    setReverbWetDryValue(activeTrack,v);
+	}
+    });
     
     $(".dial").knob();
     $('.btn-mini').button();
@@ -391,6 +420,5 @@ function createNodes(numTracks) {
 	trackVolumeGains[i] = trackVolumeNode;
 	trackInputNodes[i] = trackInputNode;
     }
-
-
 }
+
