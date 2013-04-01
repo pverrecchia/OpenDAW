@@ -20,7 +20,7 @@ var bpm = 128;
     
 jQuery.removeFromArray = function(value, arr) {
     return jQuery.grep(arr, function(elem, index) {
-        return elem !== value;
+        return elem.id !== value;
     });
 };
 	
@@ -68,9 +68,9 @@ var wavesurfer = (function () {
                     $(this).attr('data-startTime',parseInt($(this).css('left'))/pixelsPer16);
 		    var newStartTime = $(this).attr('data-startTime');
 		    if(times[newStartTime] == null){
-			times[newStartTime] = [song.id];
+			times[newStartTime] = [{id: song.id, track: song.track}];
 		    } else {
-			times[newStartTime].push(song.id);
+			times[newStartTime].push({id: song.id, track: song.track});
 		    }
                 }
             });
@@ -163,9 +163,9 @@ var wavesurfer = (function () {
 			    $(this).attr('data-startTime',parseInt($(this).css('left'))/pixelsPer16);
 			    var newStartTime = $(this).attr('data-startTime');
 			    if(times[newStartTime] == null){
-				times[newStartTime] = [sampleID];
+				times[newStartTime] = [{id: sampleID, track: currentTrackNumber}];
 			    } else {
-				times[newStartTime].push(sampleID);
+				times[newStartTime].push({id: sampleID, track: currentTrackNumber});
 			    }
 			}
 		    });
@@ -184,9 +184,9 @@ var wavesurfer = (function () {
 			load(sampleURL, sampleID);
 		    }
 		    if(times[sampleStartTime] == null){
-			times[sampleStartTime] = [sampleID];
+			times[sampleStartTime] = [{id: sampleID, track: currentTrackNumber}];
 		    } else {
-			times[sampleStartTime].push(sampleID);
+			times[sampleStartTime].push({id: sampleID, track: currentTrackNumber});
 		    }
 		}
 	    });
