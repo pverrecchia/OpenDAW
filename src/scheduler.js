@@ -9,7 +9,7 @@ var tempo = 128.0;		// tempo (in beats per minute)
 var secondsPerBeat = 60.0/tempo;
 var lookahead = 25.0;		// How frequently to call scheduling function 
 				//(in milliseconds)
-var scheduleAheadTime = 0.1;	// How far ahead to schedule audio (sec)
+var scheduleAheadTime = 0.2;	// How far ahead to schedule audio (sec)
 				// This is calculated from lookahead, and overlaps 
 				// with next interval (in case the timer is late)
 var nextNoteTime = 0.0;		// when the next note is due.
