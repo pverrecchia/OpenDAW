@@ -10,6 +10,7 @@ var trackInputNodes = [];
 var trackCompressors = [];
 var trackReverbs = [];
 var trackFilters = [];
+var trackDelays = [];
 
 //the currently selected track (for editing effects etc.)
 var activeTrack;
@@ -22,6 +23,7 @@ var times = []; //contains start times of samples and their id#
 var pixelsPer16 = 6; 			//pixels per 16th note. used for grid snapping
 var pixelsPer4 = 4*pixelsPer16;		//pixels per 1/4 note	used for sample canvas size
 var bpm = 128;
+var secondsPer16 = 0.25 * 60 / bpm;
     
 jQuery.removeFromArray = function(value, arr) {
     return jQuery.grep(arr, function(elem, index) {
@@ -165,6 +167,11 @@ var wavesurfer = (function () {
 			$("#reverbWetDryKnob").val(currentEffect.wetDry);
 			//$("#compressorRatioKnob").val(currentEffect.ratio);
 			//$("#compressorAttackKnob").val(currentEffect.attack*1000);
+		    }
+		    if(currentEffect.type == "Delay"){
+			$("#delayTimeKnob").val(currentEffect.time);
+			$("#delayFeedbackKnob").val(currentEffect.feedback);
+			$("#delayWetDryKnob").val(currentEffect.wetDry);
 		    }
 		});
 		Object.keys(effects[activeTrack-1]);
@@ -337,7 +344,7 @@ $(document).ready(function(){
 		
 		var trackReverb = createTrackReverb();
 		var inputNode = trackInputNodes[activeTrack];
-		var trackCompressor = trackCompressors[activeTrack];
+		var volumeNode = trackVolumeGains[activeTrack];
 		
 		inputNode.disconnect();
 		inputNode.connect(trackReverb[0]);
@@ -346,8 +353,10 @@ $(document).ready(function(){
 		    trackReverb[1].connect(trackFilters[activeTrack]);
 		}else if (trackCompressors[activeTrack != null]) {
 		    trackReverb[1].connect(trackCompressors[activeTrack]);
+		}else if(trackDelays[activeTrack] != null){
+		    trackReverb[1].connect(trackDelays[activeTrack][0]);
 		}else{
-		    trackReverb[1].connect(trackVolumeGains[activeTrack]);
+		    trackReverb[1].connect(volumeNode);
 		}
 		
 		trackReverbs[activeTrack] = trackReverb;
@@ -376,7 +385,9 @@ $(document).ready(function(){
 		
 		if (trackCompressors[activeTrack] != null){
 		    trackFilter.connect(trackCompressors[activeTrack]);
-		}else {
+		}else if(trackDelays[activeTrack] != null){
+		    trackFilter.connect(trackDelays[activeTrack][0]);
+		}else{
 		    trackFilter.connect(volumeNode);
 		}
 		
@@ -400,14 +411,18 @@ $(document).ready(function(){
 		    trackFilters[activeTrack].disconnect();
 		    trackFilters[activeTrack].connect(trackCompressor);
 		}else if (trackReverbs[activeTrack] != null) {
-		    trackReverbs[activeTrack].disconnect();
-		    trackReverbs[activeTrack].connect(trackCompressor);
+		    trackReverbs[activeTrack][1].disconnect();
+		    trackReverbs[activeTrack][1].connect(trackCompressor);
 		}else {
 		    inputNode.disconnect();
 		    inputNode.connect(trackCompressor);
 		}
 		
-		trackCompressor.connect(volumeNode);
+		if (trackDelays[activeTrack] != null) {
+		    trackCompressor.connect(trackDelays[activeTrack][0]);
+		}else{
+		    trackCompressor.connect(volumeNode);
+		}   
 		
 		trackCompressors[activeTrack] = trackCompressor;
 		effects[activeTrack-1].push({
@@ -417,6 +432,38 @@ $(document).ready(function(){
 		    attack: ".003"
 		});
 		//console.log(effects[activeTrack-1]);
+	    }
+	    if(ui.draggable[0].textContent == "Delay"){
+		$("#delayTimeKnob").val(8).trigger('change');
+		$("#delayFeedbackKnob").val(20).trigger('change');
+		$("#delayWetDryKnob").val(50).trigger('change');
+		var trackDelay = createTrackDelay();
+		var inputNode = trackInputNodes[activeTrack];
+		var volumeNode = trackVolumeGains[activeTrack];
+		
+		if (trackFilters[activeTrack] != null){
+		    trackFilters[activeTrack].disconnect();
+		    trackFilters[activeTrack].connect(trackDelay[0]);
+		}else if (trackReverbs[activeTrack] != null) {
+		    trackReverbs[activeTrack][1].disconnect();
+		    trackReverbs[activeTrack][1].connect(trackDelay[0]);
+		}else if(trackCompressors[activeTrack] != null) {
+		    trackCompressors[activeTrack].disconnect();
+		    trackCompressors[activeTrack].connect(trackDelay[0]);
+		}else{
+		    inputNode.disconnect();
+		    inputNode.connect(trackDelay[0]);
+		}
+		
+		trackDelay[1].connect(volumeNode);
+		
+		trackDelays[activeTrack] = trackDelay;
+		effects[activeTrack-1].push({
+		    type: "Delay",
+		    time: "8",
+		    feedback: "20",
+		    wetDry: "50"
+		});
 	    }
 	   
 	
@@ -500,6 +547,38 @@ $(document).ready(function(){
 	    });
 	}
     });
+    
+    $("#delayTimeKnob").knob({
+	change : function(v) {
+	    setDelayTimeValue(activeTrack,v);
+	    $.each(effects[activeTrack-1], function(){
+		if(this.type == "Delay"){
+		    this.time = v;
+		}
+	    });
+	}
+    });
+    $("#delayFeedbackKnob").knob({
+	change : function(v) {
+	    setDelayFeedbackValue(activeTrack,v);
+	    $.each(effects[activeTrack-1], function(){
+		if(this.type == "Delay"){
+		    this.feedback = v;
+		}
+	    });
+	}
+    });
+    $("#delayWetDryKnob").knob({
+	change : function(v) {
+	    setDelayWetDryValue(activeTrack,v);
+	    $.each(effects[activeTrack-1], function(){
+		if(this.type == "Delay"){
+		    this.wetDry = v;
+		}
+	    });
+	}
+    });
+    
     
     $(".dial").knob();
     $('.btn-mini').button();

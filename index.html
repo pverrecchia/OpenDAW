@@ -259,7 +259,15 @@
                             <button class="effectClose">&times;</button>
                         </li>
                         <li class="hidden effect" id="Delay">
-                            <h6>Delay</h6>
+                            <h6 style="margin:0px 0;">Delay</h6>
+                            <p class="left-knob-label">Delay Time</p>
+                            <p class="middle-knob-label">Feedback</p>
+                            <p class="right-knob-label">Wet/Dry</p>
+                             <span class="knobs">
+                                <input id="delayTimeKnob" data-fgColor="#bd362f" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="0" data-max="64" class="dial" value="30">
+                                <input id="delayFeedbackKnob" data-fgColor="#f89406" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="1" data-max="100" class="dial" value="1">
+                                <input id="delayWetDryKnob" data-fgColor="#222222" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="0" data-max="100" class="dial" value="0">
+                            </span>
                             <button class="effectClose">&times;</button>
                         </li>
                         <li class="hidden effect" id="Compressor">

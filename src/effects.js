@@ -94,8 +94,34 @@ function setReverbWetDryValue(trackNumber, v){
     trackReverbs[trackNumber][4].gain.value = wet;
     
     //set dryGain node gain
-    trackReverbs[trackNumber][5].gain.value = dry;
+    trackReverbs[trackNumber][5].gain.value = dry; 
+}
+
+function setDelayWetDryValue(trackNumber, v) {
+    var wet = v/100;
+    var dry = 1-wet;
     
+    //set wet gain node
+    trackDelays[trackNumber][3].gain.value = wet;
+    
+    //set dry gain node
+    trackDelays[activeTrack][2].gain.value = dry;
+}
+
+function setDelayTimeValue(trackNumber, v) {
+    var time = v*secondsPer16;
+    
+    //access delay node
+    trackDelays[activeTrack][4].delayTime.value =time;
+}
+
+function setDelayFeedbackValue(trackNumber, v) {
+    v = v/100;
+    if (v >= 1.0) {
+        v = 0.9999
+    }
+    
+    trackDelays[trackNumber][5].gain.value = v;
 }
 
 function createTrackReverb() {
@@ -155,5 +181,38 @@ function setFilterType(trackNumber,type){
     } else if(type == 2){
         node.type = 2;
     }
+}
+
+function createTrackDelay() {
+    var delayNetwork = [6];
+    
+    var delayIn = ac.createGainNode();
+    var delayOut = ac.createGainNode();
+    var dryGain = ac.createGainNode();
+    var wetGain = ac.createGainNode();
+    var fbGain = ac.createGainNode();
+    var delayNode = ac.createDelayNode();
+    
+    wetGain.connect(delayOut);
+    dryGain.connect(delayOut);
+    delayIn.connect(dryGain);
+    delayIn.connect(delayNode);
+    delayNode.connect(fbGain);
+    delayNode.connect(wetGain);
+    fbGain.connect(delayNode);
+    
+    dryGain.gain.value = 0.5;
+    wetGain.gain.value = 0.5;
+    fbGain.gain.value = 0.1;
+    
+    delayNetwork[0] = delayIn;
+    delayNetwork[1] = delayOut;
+    delayNetwork[2] = dryGain;
+    delayNetwork[3] = wetGain;
+    delayNetwork[4] = delayNode;
+    delayNetwork[5] = fbGain;
+    
+    return delayNetwork;
+    
 }
 
