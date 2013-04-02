@@ -5,7 +5,7 @@ var isPaused = false;
 var isStopped = true;
 var startTime;			// The start time of the entire sequence.
 var current16thNote =0;		// What note is currently last scheduled?
-var tempo = bpm;		// tempo (in beats per minute). defined in main.js
+var tempo = 128;		// tempo (in beats per minute). defined in main.js
 var secondsPerBeat = 60.0/tempo;
 var lookahead = 25.0;		// How frequently to call scheduling function 
 				//(in milliseconds)
