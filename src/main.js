@@ -207,6 +207,13 @@ var wavesurfer = (function () {
 		    
 		    var recordingDuration;
 		    
+		    var startBar;
+		    if(pauseBeat==undefined){
+			startBar = 0;
+		    } else {
+			startBar = pauseBeat;
+		    }
+		    
 		    activeRecorder.getBuffer(function(recordingBuffer){
 			recordingDuration = recordingBuffer[0].length/ac.sampleRate;
 			
@@ -223,8 +230,29 @@ var wavesurfer = (function () {
 			$("#track"+recordTrackNumber).append(span);
 			$("#recording" + recordingCount + "Span").append(canvas);
 			$("#recording" + recordingCount + "Span").width(parseFloat(recordingDuration) * ((pixelsPer4*bpm)/60));
-			$("#recording" + recordingCount + "Span").css('left',"" + pauseBeat*pixelsPer16 + "px");
+			$("#recording" + recordingCount + "Span").attr('data-startTime',startBar);
+			$("#recording" + recordingCount + "Span").css('left',"" + startBar*pixelsPer16 + "px");
 			$("#recording" + recordingCount + "Span").css('position','absolute');
+			$("#recording" + recordingCount + "Span").draggable({
+			    axis: "x",
+			    containment: "parent",
+			    grid: [pixelsPer16, 0],		//grid snaps to 16th notes
+			    stop: function() {
+				//get rid of old entry in table
+				var currentRecordingCount = parseInt($(this).attr('id').split('recording')[1]);
+				var currentStartBar = $(this).attr('data-startTime');
+				times[currentStartBar] = jQuery.removeFromArray(currentRecordingCount, times[currentStartBar]);
+				$(this).attr('data-startTime',parseInt($(this).css('left'))/pixelsPer16);
+				var newStartTime = $(this).attr('data-startTime');
+				if(times[newStartTime] == null){
+				    times[newStartTime] = [{id: currentRecordingCount, track: recordTrackNumber}];
+				} else {
+				    times[newStartTime].push({id: currentRecordingCount, track: recordTrackNumber});
+				}
+				console.log("Old Start Time: "+ currentStartBar);
+				console.log("New Start Time: "+ newStartTime);
+			    }
+			});
 			canvas.width = parseFloat(recordingDuration) * ((pixelsPer4*bpm)/60);
 			canvas.height = 80;
 			
@@ -241,12 +269,7 @@ var wavesurfer = (function () {
 			    });
 			    wavesurfer.load(url);
 			    buffers[recordingCount] = {buffer: newBuffer};
-			    var startBar;
-			    if(pauseBeat==undefined){
-				startBar = 0;
-			    } else {
-				startBar = pauseBeat;
-			    }
+			    
 			    if(times[startBar] == null){
 				times[startBar] = [{id: recordingCount, track: recordTrackNumber}];
 			    } else {
