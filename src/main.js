@@ -200,6 +200,7 @@ var wavesurfer = (function () {
 		    //input.connect(ac.destination);
 		    activeRecorder = new Recorder(input);
 		    activeRecorder.record();
+		    schedPlay(ac.currentTime);
 		} else {
 		    //Stop Recording
 		    activeRecorder.stop();
@@ -210,8 +211,10 @@ var wavesurfer = (function () {
 			recordingDuration = recordingBuffer[0].length/ac.sampleRate;
 			
 			var newBuffer = ac.createBuffer( 2, recordingBuffer[0].length, ac.sampleRate );
+			//var newSource = ac.createBufferSourceNode();
 			newBuffer.getChannelData(0).set(recordingBuffer[0]);
 			newBuffer.getChannelData(1).set(recordingBuffer[1]);
+			//newSource.buffer = newBuffer;
 			
 			var span = document.createElement('span');
 			span.id = "recording" + recordingCount + "Span";
@@ -220,6 +223,8 @@ var wavesurfer = (function () {
 			$("#track"+recordTrackNumber).append(span);
 			$("#recording" + recordingCount + "Span").append(canvas);
 			$("#recording" + recordingCount + "Span").width(parseFloat(recordingDuration) * ((pixelsPer4*bpm)/60));
+			$("#recording" + recordingCount + "Span").css('left',"" + pauseBeat*pixelsPer16 + "px");
+			$("#recording" + recordingCount + "Span").css('position','absolute');
 			canvas.width = parseFloat(recordingDuration) * ((pixelsPer4*bpm)/60);
 			canvas.height = 80;
 			
@@ -236,15 +241,22 @@ var wavesurfer = (function () {
 			    });
 			    wavesurfer.load(url);
 			    buffers[recordingCount] = {buffer: newBuffer};
-			    if(times[0] == null){
-				times[0] = [{id: recordingCount, track: recordTrackNumber}];
+			    var startBar;
+			    if(pauseBeat==undefined){
+				startBar = 0;
 			    } else {
-				times[0].push({id: recordingCount, track: recordTrackNumber});
+				startBar = pauseBeat;
 			    }
+			    if(times[startBar] == null){
+				times[startBar] = [{id: recordingCount, track: recordTrackNumber}];
+			    } else {
+				times[startBar].push({id: recordingCount, track: recordTrackNumber});
+			    }
+			    recordingCount++;
 			});
 		    });
 		    
-		    recordingCount++;
+		    
 		    
 		}
 		
