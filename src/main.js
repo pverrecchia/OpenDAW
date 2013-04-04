@@ -118,7 +118,7 @@ var wavesurfer = (function () {
 	
 	for(var i=0;i<numberOfTracks;i++){
 	   var currentTrackNumber = i+1;
-	    $("#tracks").append("<div class=\"row-fluid\" id=\"selectTrack"+currentTrackNumber+"\"><div class=\"span2 trackBox\" style=\"height: 84px;\"><p style=\"margin: 0 0 0 0;\" id=\"track"+currentTrackNumber+"title\">Track"+currentTrackNumber+"</p><div style=\"margin: 5px 0 5px 0;\" id=\"volumeSlider"+currentTrackNumber+"\"></div><button type=\"button\" class=\"btn btn-mini\" id = \"solo"+currentTrackNumber+"\"><i class=\"icon-headphones\"></i></button><button type=\"button\" class=\"btn btn-mini\" id = \"mute"+currentTrackNumber+"\"><i class=\"icon-volume-off\"></i></button><button type=\"button\" class=\"btn btn-mini\" data-toggle=\"button\" id = \"record"+currentTrackNumber+"\"><i class=\"icon-plus-sign\"></i></button></div><div id=\"track"+currentTrackNumber+"\" class=\"span10 track\"></div></div>");
+	    $("#tracks").append("<div class=\"row-fluid\" id=\"selectTrack"+currentTrackNumber+"\"><div class=\"span2 trackBox\" style=\"height: 84px;\"><p style=\"margin: 0 0 0 0;\" id=\"track"+currentTrackNumber+"title\">Track"+currentTrackNumber+"</p><div style=\"margin: 5px 0 5px 0;\" id=\"volumeSlider"+currentTrackNumber+"\"></div><div class=\"btn-toolbar\" style=\"margin-top: 0px;\"><div class=\"btn-group\"><button type=\"button\" class=\"btn btn-mini\" id = \"solo"+currentTrackNumber+"\"><i class=\"icon-headphones\"></i></button><button type=\"button\" class=\"btn btn-mini\" id = \"mute"+currentTrackNumber+"\"><i class=\"icon-volume-off\"></i></button></div><div class=\"btn-group\"><button type=\"button\" class=\"btn btn-mini\" data-toggle=\"button\" id = \"record"+currentTrackNumber+"\"><i class=\"icon-plus-sign\"></i></button></div></div></div><div id=\"track"+currentTrackNumber+"\" class=\"span10 track\"></div></div>");
 	    $.each(effects[i],function(){
 		if(this.type == "Compressor"){
 		    var trackCompressor = ac.createDynamicsCompressor();
@@ -185,10 +185,12 @@ var wavesurfer = (function () {
 		$("#trackEffects").css("display","block");
 	    });
 	    $("#mute"+currentTrackNumber).click(function(){
+		$(this).button('toggle');
 		var muteTrackNumber = $(this).attr('id').split('mute')[1];
 		$('body').trigger('mute-event', muteTrackNumber);
 	    });
 	     $("#solo"+currentTrackNumber).click(function(){
+		$(this).button('toggle');
 		var soloTrackNumber = $(this).attr('id').split('solo')[1];
 		$('body').trigger('solo-event', soloTrackNumber);
 	    });
