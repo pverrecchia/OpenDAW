@@ -76,7 +76,8 @@ var wavesurfer = (function () {
                 grid: [pixelsPer16, 0],		//grid snaps to 16th notes
                 stop: function() {
 		    //get rid of old entry in table
-		    times[currentStartTime] = jQuery.removeFromArray(song.id, times[currentStartTime]);
+		    var currentStartBar = $(this).attr('data-startTime');
+		    times[currentStartBar] = jQuery.removeFromArray(song.id, times[currentStartBar]);
                     $(this).attr('data-startTime',parseInt($(this).css('left'))/pixelsPer16);
 		    var newStartTime = $(this).attr('data-startTime');
 		    if(times[newStartTime] == null){
@@ -312,7 +313,8 @@ var wavesurfer = (function () {
 			containment: "parent",
 			grid: [pixelsPer16, 0],		//grid snaps to 16th notes
 			stop: function() {
-			    times[startBar] = jQuery.removeFromArray(sampleID, times[startBar]);
+			    var currentStartBar = $(this).attr('data-startTime');
+			    times[currentStartBar] = jQuery.removeFromArray(sampleID, times[currentStartBar]);
 			    $(this).attr('data-startTime',parseInt($(this).css('left'))/pixelsPer16);
 			    var newStartTime = $(this).attr('data-startTime');
 			    if(times[newStartTime] == null){
