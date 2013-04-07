@@ -155,6 +155,12 @@
             height: 95px;
             position: relative;
         }
+        
+        #reverbList{
+            width: 100%;
+            font-size: 10px;
+            
+        }
     </style>
     </head>
     <body>
@@ -236,13 +242,19 @@
                         <ul id="effectSortable">
                         <li class="hidden effect" id="Reverb">
                             <h6 style="margin:0px 0;">Reverb</h6>
-                            <p class="left-knob-label">Room Size</p>
-                            <p class="middle-knob-label">Diffusion</p>
+                            <p class="left-knob-label">Reverb Type</p>
+                            
                             <p class="right-knob-label">Wet/Dry</p>
                             <span class="knobs">
-                                <input data-fgColor="#08c" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" class="dial">
-                                <input data-fgColor="#51a351" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" class="dial">
+                                <!--<form>
+                                <select id="reverbList">
+                                    <option>reverb1</option>
+                                    <option>reverb2</option>  
+                                </select>
+                            </form> -->
                                 <input id = "reverbWetDryKnob" data-fgColor="#bd362f" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" class="dial">
+                                
+                                
                             </span>
                             <button class="effectClose">&times;</button>
                         </li>
@@ -264,7 +276,7 @@
                             <p class="middle-knob-label">Feedback</p>
                             <p class="right-knob-label">Wet/Dry</p>
                              <span class="knobs">
-                                <input id="delayTimeKnob" data-fgColor="#bd362f" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="0" data-max="64" class="dial" value="30">
+                                <input id="delayTimeKnob" data-fgColor="#bd362f" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="0" data-max="8" class="dial" value="1">
                                 <input id="delayFeedbackKnob" data-fgColor="#f89406" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="1" data-max="100" class="dial" value="1">
                                 <input id="delayWetDryKnob" data-fgColor="#222222" data-linecap=round data-angleOffset=-125 data-angleArc=250 data-width="50" data-min="0" data-max="100" class="dial" value="0">
                             </span>

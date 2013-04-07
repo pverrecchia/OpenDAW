@@ -20,6 +20,7 @@ var effects;
 
 var buffers = []; //contains AudioBuffer and id# of samples in workspace
 var times = []; //contains start times of samples and their id#
+var reverbIRs = []
 var pixelsPer16 = 6; 			//pixels per 16th note. used for grid snapping
 var pixelsPer4 = 4*pixelsPer16;		//pixels per 1/4 note	used for sample canvas size
 var bpm = 128;
@@ -165,8 +166,7 @@ var wavesurfer = (function () {
 		    }
 		    if(currentEffect.type == "Reverb"){
 			$("#reverbWetDryKnob").val(currentEffect.wetDry);
-			//$("#compressorRatioKnob").val(currentEffect.ratio);
-			//$("#compressorAttackKnob").val(currentEffect.attack*1000);
+			
 		    }
 		    if(currentEffect.type == "Delay"){
 			$("#delayTimeKnob").val(currentEffect.time);
@@ -342,6 +342,7 @@ $(document).ready(function(){
 	    if(ui.draggable[0].textContent == "Reverb"){
 		$("#reverbWetDryKnob").val(50).trigger('change');
 		
+		
 		var trackReverb = createTrackReverb();
 		var inputNode = trackInputNodes[activeTrack];
 		var volumeNode = trackVolumeGains[activeTrack];
@@ -434,7 +435,7 @@ $(document).ready(function(){
 		//console.log(effects[activeTrack-1]);
 	    }
 	    if(ui.draggable[0].textContent == "Delay"){
-		$("#delayTimeKnob").val(8).trigger('change');
+		$("#delayTimeKnob").val(1).trigger('change');
 		$("#delayFeedbackKnob").val(20).trigger('change');
 		$("#delayWetDryKnob").val(50).trigger('change');
 		var trackDelay = createTrackDelay();
@@ -460,7 +461,7 @@ $(document).ready(function(){
 		trackDelays[activeTrack] = trackDelay;
 		effects[activeTrack-1].push({
 		    type: "Delay",
-		    time: "8",
+		    time: "1",
 		    feedback: "20",
 		    wetDry: "50"
 		});
@@ -548,6 +549,8 @@ $(document).ready(function(){
 	}
     });
     
+    //$("#reverbList").onchange= setReverbIR()
+    
     $("#delayTimeKnob").knob({
 	change : function(v) {
 	    setDelayTimeValue(activeTrack,v);
@@ -599,6 +602,8 @@ $(document).ready(function(){
    drawTimeline();
 	
 });
+
+
 
 function createNodes(numTracks) {
     //for each track create a master gain node. specific tracks represented by array index i

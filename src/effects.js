@@ -139,7 +139,7 @@ function createTrackReverb() {
     rev1Gain.connect(wetGain);
     
     conv1.connect(rev1Gain);
-    loadReverbIR('src/data/ir/BelleMeade.wav', conv1);
+    loadReverbIR('reverb1', conv1);
    
     
     reverbIn.connect(dryGain);
@@ -158,9 +158,19 @@ function createTrackReverb() {
     return reverbNetwork;
 }
 
- function loadReverbIR(url, convNode) {
-    // As with the main sound source, 
-    // the Impulse Response loads asynchronously
+ function loadReverbIR(reverb, convNode) {
+    var url;
+    switch (reverb) {
+        case 'reverb1':
+            url = 'src/data/ir/BelleMeade.wav';
+            
+        break;
+        
+        case 'reverb2':
+            url = 'src/data/ir/ir_rev_short.wav'
+        break;
+    }
+  
     var request = new XMLHttpRequest();
     request.open("GET", url, true);
     request.responseType = "arraybuffer";
@@ -171,6 +181,13 @@ function createTrackReverb() {
     request.send();
     
 }
+
+/*function setReverbIR(trackNumber, reverb){
+    var reverbList=document.getElementById("reverbList");
+    var ir = value=reverbList.options[reverbList.selectedIndex].text;
+    
+    loadReverbIR(ir, trackReverbs[trackNumber][2].buffer);
+}*/
 
 function setFilterType(trackNumber,type){
     var node = trackFilters[trackNumber];
@@ -203,7 +220,7 @@ function createTrackDelay() {
     
     dryGain.gain.value = 0.5;
     wetGain.gain.value = 0.5;
-    fbGain.gain.value = 0.1;
+    fbGain.gain.value = 0.2;
     
     delayNetwork[0] = delayIn;
     delayNetwork[1] = delayOut;
