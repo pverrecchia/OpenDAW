@@ -27,6 +27,9 @@
             height: 380px;
         }
         
+        #VUmeterCanvas {
+            padding-left: 15px;
+        }
         
         #effectSortable {
             list-style-type: none;
@@ -196,6 +199,7 @@
                                 <ul id="libraryList" class="nav nav-list">
                                    <li class="nav-header">Library</li>
                                 </ul>
+                                <canvas id="VUmeterCanvas" width="60" height="130" style="display: block;"></canvas>
                             </div>
                             <div class="tab-pane sidebarTab" id="upload">
                                 <ul id="uploadList" class="nav nav-list">
@@ -310,7 +314,9 @@
         <script src="src/scheduler.js"></script>
         <script src="src/storage.js"></script>
         <script src="src/jquery.knob.js"></script>
+        <script src="src/recorder.js"></script>
         <script src="src/effects.js"></script>
         <script src="src/main.js"></script>
+        <script src="src/vumeter.js"></script>
     </body>
 </html>

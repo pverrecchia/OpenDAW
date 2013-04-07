@@ -266,7 +266,6 @@ function initSched(params){
     canvas.addEventListener("click" , function(e){
 						    var relX = e.offsetX;
 						    var bar =Math.floor(relX/pixelsPer4);
-						    //console.log(bar);
 						    cursorJump(bar);
 						}, false);
 			    

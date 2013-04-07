@@ -1,7 +1,12 @@
 var ac = new (window.AudioContext || window.webkitAudioContext);
+navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
 
 var masterGainNode = ac.createGainNode();
 masterGainNode.connect(ac.destination);
+
+var micStream;
+var activeRecorder;
+var recordingCount = 1000;
 
 //array of track master gain nodes
 var trackMasterGains = [];
@@ -72,7 +77,8 @@ var wavesurfer = (function () {
                 grid: [pixelsPer16, 0],		//grid snaps to 16th notes
                 stop: function() {
 		    //get rid of old entry in table
-		    times[currentStartTime] = jQuery.removeFromArray(song.id, times[currentStartTime]);
+		    var currentStartBar = $(this).attr('data-startTime');
+		    times[currentStartBar] = jQuery.removeFromArray(song.id, times[currentStartBar]);
                     $(this).attr('data-startTime',parseInt($(this).css('left'))/pixelsPer16);
 		    var newStartTime = $(this).attr('data-startTime');
 		    if(times[newStartTime] == null){
@@ -113,7 +119,7 @@ var wavesurfer = (function () {
 	
 	for(var i=0;i<numberOfTracks;i++){
 	   var currentTrackNumber = i+1;
-	    $("#tracks").append("<div class=\"row-fluid\" id=\"selectTrack"+currentTrackNumber+"\"><div class=\"span2 trackBox\" style=\"height: 84px;\"><p style=\"margin: 0 0 0 0;\" id=\"track"+currentTrackNumber+"title\">Track"+currentTrackNumber+"</p><div style=\"margin: 5px 0 5px 0;\" id=\"volumeSlider"+currentTrackNumber+"\"></div><button type=\"button\" class=\"btn btn-mini\" id = \"solo"+currentTrackNumber+"\"><i class=\"icon-headphones\"></i></button><button type=\"button\" class=\"btn btn-mini\" id = \"mute"+currentTrackNumber+"\"><i class=\"icon-volume-off\"></i></button><button type=\"button\" class=\"btn btn-mini\"><i class=\"icon-plus-sign\"></i></button></div><div id=\"track"+currentTrackNumber+"\" class=\"span10 track\"></div></div>");
+	    $("#tracks").append("<div class=\"row-fluid\" id=\"selectTrack"+currentTrackNumber+"\"><div class=\"span2 trackBox\" style=\"height: 84px;\"><p style=\"margin: 0 0 0 0;\" id=\"track"+currentTrackNumber+"title\">Track"+currentTrackNumber+"</p><div style=\"margin: 5px 0 5px 0;\" id=\"volumeSlider"+currentTrackNumber+"\"></div><div class=\"btn-toolbar\" style=\"margin-top: 0px;\"><div class=\"btn-group\"><button type=\"button\" class=\"btn btn-mini\" id = \"solo"+currentTrackNumber+"\"><i class=\"icon-headphones\"></i></button><button type=\"button\" class=\"btn btn-mini\" id = \"mute"+currentTrackNumber+"\"><i class=\"icon-volume-off\"></i></button></div><div class=\"btn-group\"><button type=\"button\" class=\"btn btn-mini\" data-toggle=\"button\" id = \"record"+currentTrackNumber+"\"><i class=\"icon-plus-sign\"></i></button></div></div></div><div id=\"track"+currentTrackNumber+"\" class=\"span10 track\"></div></div>");
 	    $.each(effects[i],function(){
 		if(this.type == "Compressor"){
 		    var trackCompressor = ac.createDynamicsCompressor();
@@ -179,12 +185,107 @@ var wavesurfer = (function () {
 		$("#trackEffects").css("display","block");
 	    });
 	    $("#mute"+currentTrackNumber).click(function(){
+		$(this).button('toggle');
 		var muteTrackNumber = $(this).attr('id').split('mute')[1];
 		$('body').trigger('mute-event', muteTrackNumber);
 	    });
 	     $("#solo"+currentTrackNumber).click(function(){
+		$(this).button('toggle');
 		var soloTrackNumber = $(this).attr('id').split('solo')[1];
 		$('body').trigger('solo-event', soloTrackNumber);
+	    });
+	    $("#record"+currentTrackNumber).click(function(){
+		var recordTrackNumber = $(this).attr('id').split('record')[1];
+		$(this).button('toggle');
+		if($(this).hasClass('active')){
+		    //Start Recording
+		    var input = ac.createMediaStreamSource(micStream);
+		    //input.connect(ac.destination);
+		    activeRecorder = new Recorder(input);
+		    activeRecorder.record();
+		    schedPlay(ac.currentTime);
+		} else {
+		    //Stop Recording
+		    activeRecorder.stop();
+		    
+		    var recordingDuration;
+		    
+		    var startBar;
+		    if(pauseBeat==undefined){
+			startBar = 0;
+		    } else {
+			startBar = pauseBeat;
+		    }
+		    
+		    activeRecorder.getBuffer(function(recordingBuffer){
+			recordingDuration = recordingBuffer[0].length/ac.sampleRate;
+			
+			var newBuffer = ac.createBuffer( 2, recordingBuffer[0].length, ac.sampleRate );
+			//var newSource = ac.createBufferSourceNode();
+			newBuffer.getChannelData(0).set(recordingBuffer[0]);
+			newBuffer.getChannelData(1).set(recordingBuffer[1]);
+			//newSource.buffer = newBuffer;
+			
+			var span = document.createElement('span');
+			span.id = "recording" + recordingCount + "Span";
+			var canvas = document.createElement('canvas');
+			canvas.id = "recording" + recordingCount + "Canvas";
+			$("#track"+recordTrackNumber).append(span);
+			$("#recording" + recordingCount + "Span").append(canvas);
+			$("#recording" + recordingCount + "Span").width(parseFloat(recordingDuration) * ((pixelsPer4*bpm)/60));
+			$("#recording" + recordingCount + "Span").attr('data-startTime',startBar);
+			$("#recording" + recordingCount + "Span").css('left',"" + startBar*pixelsPer16 + "px");
+			$("#recording" + recordingCount + "Span").css('position','absolute');
+			$("#recording" + recordingCount + "Span").draggable({
+			    axis: "x",
+			    containment: "parent",
+			    grid: [pixelsPer16, 0],		//grid snaps to 16th notes
+			    stop: function() {
+				//get rid of old entry in table
+				var currentRecordingCount = parseInt($(this).attr('id').split('recording')[1]);
+				var currentStartBar = $(this).attr('data-startTime');
+				times[currentStartBar] = jQuery.removeFromArray(currentRecordingCount, times[currentStartBar]);
+				$(this).attr('data-startTime',parseInt($(this).css('left'))/pixelsPer16);
+				var newStartTime = $(this).attr('data-startTime');
+				if(times[newStartTime] == null){
+				    times[newStartTime] = [{id: currentRecordingCount, track: recordTrackNumber}];
+				} else {
+				    times[newStartTime].push({id: currentRecordingCount, track: recordTrackNumber});
+				}
+				console.log("Old Start Time: "+ currentStartBar);
+				console.log("New Start Time: "+ newStartTime);
+			    }
+			});
+			canvas.width = parseFloat(recordingDuration) * ((pixelsPer4*bpm)/60);
+			canvas.height = 80;
+			
+			activeRecorder.exportWAV(function(blob){
+			    var url = URL.createObjectURL(blob);
+			    var wavesurfer = Object.create(WaveSurfer);
+			    wavesurfer.init({
+				canvas: canvas,
+				waveColor: '#08c',
+				progressColor: '#08c',
+				loadingColor: 'purple',
+				cursorColor: 'navy',
+				audioContext: ac
+			    });
+			    wavesurfer.load(url);
+			    buffers[recordingCount] = {buffer: newBuffer};
+			    
+			    if(times[startBar] == null){
+				times[startBar] = [{id: recordingCount, track: recordTrackNumber}];
+			    } else {
+				times[startBar].push({id: recordingCount, track: recordTrackNumber});
+			    }
+			    recordingCount++;
+			});
+		    });
+		    
+		    
+		    
+		}
+		
 	    });
 	    $("#track"+(i+1)+"title").storage({
 		storageKey : 'track'+(i+1)
@@ -214,7 +315,8 @@ var wavesurfer = (function () {
 			containment: "parent",
 			grid: [pixelsPer16, 0],		//grid snaps to 16th notes
 			stop: function() {
-			    times[startBar] = jQuery.removeFromArray(sampleID, times[startBar]);
+			    var currentStartBar = $(this).attr('data-startTime');
+			    times[currentStartBar] = jQuery.removeFromArray(sampleID, times[currentStartBar]);
 			    $(this).attr('data-startTime',parseInt($(this).css('left'))/pixelsPer16);
 			    var newStartTime = $(this).attr('data-startTime');
 			    if(times[newStartTime] == null){
@@ -583,8 +685,9 @@ $(document).ready(function(){
     });
     
     
+    
     $(".dial").knob();
-    $('.btn-mini').button();
+
     $("#playPause").click(function(){
         $('body').trigger('playPause-event');
     });
@@ -621,4 +724,22 @@ function createNodes(numTracks) {
 	trackInputNodes[i] = trackInputNode;
     }
 }
+
+function startUserMedia(stream) {
+    micStream = stream;
+}
+
+window.onload = function init() {
+    try {
+      // webkit shim
+      navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
+      window.URL = window.URL || window.webkitURL;
+      
+    } catch (e) {
+      alert('No web audio support in this browser!');
+    }
+    
+    navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
+    });
+};
 
