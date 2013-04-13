@@ -57,6 +57,11 @@ function solo(trackNumber) {
 
 }
 
+function setMasterVolume(newValue) {
+    var node = masterGainNode;
+    node.gain.value = (newValue/100)* (newValue/100);
+}
+
 function setTrackVolume(trackNumber,newValue) {
     var node = trackVolumeGains[trackNumber];
     node.gain.value = (newValue/100)* (newValue/100);

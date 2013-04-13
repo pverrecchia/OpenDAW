@@ -28,7 +28,16 @@
         }
         
         #VUmeterCanvas {
-            padding-left: 15px;
+            position: absolute;
+            top: 5px;
+            left: 12px;
+        }
+        
+        #masterVolume {
+            height: 72px;
+            position: absolute;
+            top: 14px;
+            left: 48px;
         }
         
         #effectSortable {
@@ -159,6 +168,12 @@
             position: relative;
         }
         
+        #masterControl{
+            display: none;
+            height: 95px;
+            position: relative;
+        }
+        
         #reverbList{
             width: 100%;
             font-size: 10px;
@@ -199,7 +214,6 @@
                                 <ul id="libraryList" class="nav nav-list">
                                    <li class="nav-header">Library</li>
                                 </ul>
-                                <canvas id="VUmeterCanvas" width="60" height="130" style="display: block;"></canvas>
                             </div>
                             <div class="tab-pane sidebarTab" id="upload">
                                 <ul id="uploadList" class="nav nav-list">
@@ -237,7 +251,7 @@
                 </div>
             </div>
             <div class="row-fluid" >
-                <div class="span12 well" id="trackEffects">
+                <div class="span11 well" id="trackEffects">
                     <button id="trackEffectsClose" class="close">&times;</button>
                     <div>
                         <h4 id="trackEffectsHeader"></h4>
@@ -300,6 +314,10 @@
                         </li>
                         <ul>
                     </div>
+                </div>
+                <div id="masterControl" class="span1 well">
+                    <canvas id="VUmeterCanvas" width="30" height="80" style="display: block;"></canvas>
+                    <div id="masterVolume"></div>
                 </div>
                 </div>
             </div>

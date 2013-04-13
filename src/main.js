@@ -2,6 +2,7 @@ var ac = new (window.AudioContext || window.webkitAudioContext);
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
 
 var masterGainNode = ac.createGainNode();
+masterGainNode.gain.value = .8;
 masterGainNode.connect(ac.destination);
 
 var micStream;
@@ -183,6 +184,7 @@ var wavesurfer = (function () {
 		Object.keys(effects[activeTrack-1]);
 		$("#trackEffectsHeader").html("Track "+printTrackNumber);
 		$("#trackEffects").css("display","block");
+		$("#masterControl").css("display","block");
 	    });
 	    $("#mute"+currentTrackNumber).click(function(){
 		$(this).button('toggle');
@@ -699,8 +701,19 @@ $(document).ready(function(){
     });
     $("#trackEffectsClose").click(function(){
 	$("#trackEffects").css("display","none");
+	$("#masterControl").css("display","none");
     });
     
+    $( "#masterVolume" ).slider({
+      orientation: "vertical",
+      range: "min",
+      min: 0,
+      max: 100,
+      value: 80,
+      slide: function( event, ui ) {
+	setMasterVolume(ui.value );
+      }
+    });
     
    drawTimeline();
 	
