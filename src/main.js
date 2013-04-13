@@ -17,6 +17,7 @@ var trackCompressors = [];
 var trackReverbs = [];
 var trackFilters = [];
 var trackDelays = [];
+var trackTremolos = [];
 
 //the currently selected track (for editing effects etc.)
 var activeTrack;
@@ -777,22 +778,23 @@ function createTrack(trackNumber){
 	drop: function( event, ui ) {
 	    var startBar = Math.floor((ui.offset.left-$(this).offset().left)/6);
 	    var sampleStartTime = startBar;
+	    var rand = parseInt(Math.random() * 10000);
 	    var span = document.createElement('span');
 	    var sampleID = ui.helper.attr("data-id");
 	    var sampleDuration = ui.helper.attr("data-duration");
 	    var sampleURL = ui.helper.attr("data-url");
-	    span.id = "sample" + sampleID + "Span";
+	    span.id = "sample" + sampleID + "Span" + rand;
 	    var canvas = document.createElement('canvas');
-	    canvas.id = "sample" + sampleID + "Canvas";
+	    canvas.id = "sample" + sampleID + "Canvas" + rand;
 	    $(this).append(span);
-	    $("#sample" + sampleID + "Span").append(canvas);
-	    $("#sample" + sampleID + "Span").width(parseFloat(sampleDuration) * ((pixelsPer4*bpm)/60));
+	    $("#sample" + sampleID + "Span" + rand).append(canvas);
+	    $("#sample" + sampleID + "Span" + rand).width(parseFloat(sampleDuration) * ((pixelsPer4*bpm)/60));
 	    canvas.width = parseFloat(sampleDuration) * ((pixelsPer4*bpm)/60);
 	    canvas.height = 80;
-	    $( "#sample" + sampleID + "Span").attr('data-startTime',startBar);
-	    $( "#sample" + sampleID + "Span").css('left',"" + startBar*pixelsPer16 + "px");
-	    $( "#sample" + sampleID + "Span").css('position','absolute');
-	    $( "#sample" + sampleID + "Span").draggable({
+	    $( "#sample" + sampleID + "Span" + rand).attr('data-startTime',startBar);
+	    $( "#sample" + sampleID + "Span" + rand).css('left',"" + startBar*pixelsPer16 + "px");
+	    $( "#sample" + sampleID + "Span" + rand).css('position','absolute');
+	    $( "#sample" + sampleID + "Span" + rand).draggable({
 		axis: "x",
 		containment: "parent",
 		grid: [pixelsPer16, 0],		//grid snaps to 16th notes
