@@ -29,7 +29,7 @@ var times = []; //contains start times of samples and their id#
 var reverbIRs = []
 var pixelsPer16 = 6; 			//pixels per 16th note. used for grid snapping
 var pixelsPer4 = 4*pixelsPer16;		//pixels per 1/4 note	used for sample canvas size
-var bpm = 128;
+var bpm = tempo;
 var secondsPer16 = 0.25 * 60 / bpm;
     
 jQuery.removeFromArray = function(value, arr) {
@@ -238,6 +238,7 @@ $(document).ready(function(){
 	drop: function(event, ui){
 	    $("#"+ui.draggable[0].textContent).removeClass('hidden');
 	    if(ui.draggable[0].textContent == "Reverb"){
+		$("#reverbIrSelectKnob").val(0).trigger('change');
 		$("#reverbWetDryKnob").val(50).trigger('change');
 		
 		
@@ -252,6 +253,8 @@ $(document).ready(function(){
 		    trackReverb[1].connect(trackFilters[activeTrack]);
 		}else if (trackCompressors[activeTrack != null]) {
 		    trackReverb[1].connect(trackCompressors[activeTrack]);
+		}else if (trackTremolos[activeTrack != null]) {
+		    trackReverb[1].connect(trackTremolos[activeTrack][0]);
 		}else if(trackDelays[activeTrack] != null){
 		    trackReverb[1].connect(trackDelays[activeTrack][0]);
 		}else{
@@ -261,8 +264,7 @@ $(document).ready(function(){
 		trackReverbs[activeTrack] = trackReverb;
 		effects[activeTrack-1].push({
 		    type: "Reverb",
-		    roomSize: "30",
-		    diffusion: "30",
+		    ir:  "0",
 		    wetDry: "50"
 		});
 	    }
@@ -284,6 +286,8 @@ $(document).ready(function(){
 		
 		if (trackCompressors[activeTrack] != null){
 		    trackFilter.connect(trackCompressors[activeTrack]);
+		}else if (trackTremolos[activeTrack != null]) {
+		    trackFilter.connect(trackTremolos[activeTrack][0]);
 		}else if(trackDelays[activeTrack] != null){
 		    trackFilter.connect(trackDelays[activeTrack][0]);
 		}else{
@@ -317,7 +321,9 @@ $(document).ready(function(){
 		    inputNode.connect(trackCompressor);
 		}
 		
-		if (trackDelays[activeTrack] != null) {
+		 if (trackTremolos[activeTrack != null]) {
+		    trackCompressor.connect(trackTremolos[activeTrack][0]);
+		}else if (trackDelays[activeTrack] != null) {
 		    trackCompressor.connect(trackDelays[activeTrack][0]);
 		}else{
 		    trackCompressor.connect(volumeNode);
@@ -329,6 +335,42 @@ $(document).ready(function(){
 		    threshold: "-24",
 		    ratio: "12",
 		    attack: ".003"
+		});
+		//console.log(effects[activeTrack-1]);
+	    }
+	    if(ui.draggable[0].textContent == "Tremolo"){
+		
+		$("#tremoloRateKnob").val(1).trigger('change');
+		$("#tremoloDepthKnob").val(10).trigger('change');
+		var trackTremolo = createTrackTremolo();
+		var inputNode = trackInputNodes[activeTrack];
+		var volumeNode = trackVolumeGains[activeTrack];
+		
+		if (trackCompressors[activeTrack] != null){
+		    trackCompressors[activeTrack].disconnect();
+		    trackCompressors[activeTrack].connect(trackTremolo[0]);
+		}else if(trackFilters[activeTrack] != null) {
+		    trackFilters[activeTrack].disconnect();
+		    trackFilters[activeTrack].connect(trackTremolo[0]);
+		}else if (trackReverbs[activeTrack] != null) {
+		    trackReverbs[activeTrack][1].disconnect();
+		    trackReverbs[activeTrack][1].connect(trackTremolo[0]);
+		}else {
+		    inputNode.disconnect();
+		    inputNode.connect(trackTremolo[0]);
+		}
+		
+		if (trackDelays[activeTrack] != null) {
+		    trackTremolo[1].connect(trackDelays[activeTrack][0]);
+		}else{
+		    trackTremolo[1].connect(volumeNode);
+		}   
+		
+		trackTremolos[activeTrack] = trackTremolo;
+		effects[activeTrack-1].push({
+		    type: "Tremolo",
+		    rate: "1",
+		    depth: "10"
 		});
 		//console.log(effects[activeTrack-1]);
 	    }
@@ -349,6 +391,9 @@ $(document).ready(function(){
 		}else if(trackCompressors[activeTrack] != null) {
 		    trackCompressors[activeTrack].disconnect();
 		    trackCompressors[activeTrack].connect(trackDelay[0]);
+		}else if(trackTremolos[activeTrack] != null) {
+		    trackTremolos[activeTrack][1].disconnect();
+		    trackTremolos[activeTrack][1].connect(trackDelay[0]);
 		}else{
 		    inputNode.disconnect();
 		    inputNode.connect(trackDelay[0]);
@@ -446,6 +491,16 @@ $(document).ready(function(){
 	    });
 	}
     });
+      $("#reverbIrSelectKnob").knob({
+	change : function(v) {
+	    setReverbIr(activeTrack,v);
+	    $.each(effects[activeTrack-1], function(){
+		if(this.type == "Reverb"){
+		    this.ir = v;
+		}
+	    });
+	}
+    });
     
     //$("#reverbList").onchange= setReverbIR()
     
@@ -475,6 +530,27 @@ $(document).ready(function(){
 	    $.each(effects[activeTrack-1], function(){
 		if(this.type == "Delay"){
 		    this.wetDry = v;
+		}
+	    });
+	}
+    });
+    
+      $("#tremoloRateKnob").knob({
+	change : function(v) {
+	    setTremoloRateValue(activeTrack,v);
+	    $.each(effects[activeTrack-1], function(){
+		if(this.type == "Tremolo"){
+		    this.rate = v;
+		}
+	    });
+	}
+    });
+    $("#tremoloDepthKnob").knob({
+	change : function(v) {
+	    setTremoloDepthValue(activeTrack,v);
+	    $.each(effects[activeTrack-1], function(){
+		if(this.type == "Tremolo"){
+		    this.depth = v;
 		}
 	    });
 	}
@@ -572,12 +648,17 @@ function createTrack(trackNumber){
 	    }
 	    if(currentEffect.type == "Reverb"){
 		$("#reverbWetDryKnob").val(currentEffect.wetDry);
+		$("#reverbIrSelectKnob").val(currentEffect.ir);
 		
 	    }
 	    if(currentEffect.type == "Delay"){
 		$("#delayTimeKnob").val(currentEffect.time);
 		$("#delayFeedbackKnob").val(currentEffect.feedback);
 		$("#delayWetDryKnob").val(currentEffect.wetDry);
+	    }
+	    if(currentEffect.type == "Tremelo"){
+		$("#tremeloRateKnob").val(currentEffect.rate).trigger('change');
+		$("#tremeloDepthKnob").val(currentEffect.depth).trigger('change');
 	    }
 	});
 	Object.keys(effects[activeTrack-1]);
