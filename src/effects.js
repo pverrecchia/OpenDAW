@@ -1,3 +1,5 @@
+var reverbIrBuffers = [];
+
 function logslider(position) {
   // position will be between 0 and 100
   var minp = 0;
@@ -57,6 +59,11 @@ function solo(trackNumber) {
 
 }
 
+function setMasterVolume(newValue) {
+    var node = masterGainNode;
+    node.gain.value = (newValue/100)* (newValue/100);
+}
+
 function setTrackVolume(trackNumber,newValue) {
     var node = trackVolumeGains[trackNumber];
     node.gain.value = (newValue/100)* (newValue/100);
@@ -97,6 +104,17 @@ function setReverbWetDryValue(trackNumber, v){
     trackReverbs[trackNumber][5].gain.value = dry; 
 }
 
+function setReverbIr(trackNumber, v){
+    //if reverb buffer has already been loaded from wav file, use the exisiting arrayBuffer
+   if (reverbIrBuffers[v] != null) {
+    trackReverbs[trackNumber][2].buffer = reverbIrBuffers[v]
+    
+    //if not, create an arrayBuffer object from the wav file 
+   }else{
+    loadReverbIR(v, trackReverbs[trackNumber][2]);
+   }
+}
+
 function setDelayWetDryValue(trackNumber, v) {
     var wet = v/100;
     var dry = 1-wet;
@@ -105,20 +123,20 @@ function setDelayWetDryValue(trackNumber, v) {
     trackDelays[trackNumber][3].gain.value = wet;
     
     //set dry gain node
-    trackDelays[activeTrack][2].gain.value = dry;
+    trackDelays[trackNumber][2].gain.value = dry;
 }
 
 function setDelayTimeValue(trackNumber, v) {
     var time = v*secondsPer16;
     
     //access delay node
-    trackDelays[activeTrack][4].delayTime.value =time;
+    trackDelays[trackNumber][4].delayTime.value =time;
 }
 
 function setDelayFeedbackValue(trackNumber, v) {
     v = v/100;
     if (v >= 1.0) {
-        v = 0.9999
+        v = 0.99
     }
     
     trackDelays[trackNumber][5].gain.value = v;
@@ -139,7 +157,7 @@ function createTrackReverb() {
     rev1Gain.connect(wetGain);
     
     conv1.connect(rev1Gain);
-    loadReverbIR('reverb1', conv1);
+    loadReverbIR(0, conv1);
    
     
     reverbIn.connect(dryGain);
@@ -161,12 +179,11 @@ function createTrackReverb() {
  function loadReverbIR(reverb, convNode) {
     var url;
     switch (reverb) {
-        case 'reverb1':
+        case 0:
             url = 'src/data/ir/BelleMeade.wav';
-            
         break;
         
-        case 'reverb2':
+        case 1:
             url = 'src/data/ir/ir_rev_short.wav'
         break;
     }
@@ -176,7 +193,8 @@ function createTrackReverb() {
     request.responseType = "arraybuffer";
 
     request.onload = function () {
-	convNode.buffer = ac.createBuffer(request.response, false); 
+	convNode.buffer = ac.createBuffer(request.response, false);
+        reverbIrBuffers[reverb] = convNode.buffer;
     }
     request.send();
     
@@ -231,5 +249,49 @@ function createTrackDelay() {
     
     return delayNetwork;
     
+}
+
+function createTrackTremolo() {
+    var tremoloNetwork = [5];
+    
+    var tremoloIn = ac.createGainNode();
+    var tremoloOut = ac.createGainNode();
+    var lfoGain = ac.createGainNode();
+    var lfo = ac.createOscillator();
+    var depth = ac.createGainNode();
+    
+    lfo.type = lfo.SINE;
+    lfo.frequency = 0.1;
+    
+    lfoGain.gain.value = 1; 
+    
+    depth.connect(tremoloOut);
+    tremoloIn.connect(depth);
+    lfoGain.connect(depth.gain);
+    lfo.connect(lfoGain);
+   
+    lfo.start(0);
+    
+    tremoloNetwork[0] = tremoloIn;
+    tremoloNetwork[1] = tremoloOut;
+    tremoloNetwork[2] = lfoGain;
+    tremoloNetwork[3] = lfo;
+    tremoloNetwork[4] = depth;
+
+    return tremoloNetwork; 
+}
+
+function setTremoloRateValue(trackNumber, v) {
+    
+    //access rate node
+     //trackTremolos[trackNumber][3].stop();
+    trackTremolos[trackNumber][3].frequency=v;
+     //trackTremolos[trackNumber][3].start();
+}
+
+function setTremoloDepthValue(trackNumber, v) {
+    v=v/200;
+    //access lfo gain node
+    trackTremolos[trackNumber][2].gain.value=v;
 }
 

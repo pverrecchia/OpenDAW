@@ -35,6 +35,8 @@ var k =0;
 var cnt =2;
 var nextK = k;
 
+var timelineWidth;
+
 // First, let's shim the requestAnimationFrame API, with a setTimeout fallback
 window.requestAnimFrame = (function(){
     return  window.requestAnimationFrame ||
@@ -214,15 +216,15 @@ function drawTimeline(){
     canvasContext.clearRect(0,0,canvas.width, canvas.height);
     canvasContext.fillStyle = "black";
     canvasContext.lineWidth = 1;
-    for(var i=0;i<500;i+=pixelsPer4){	
+    for(var i=0;i<timelineWidth;i+=pixelsPer4){	
         canvasContext.moveTo(i,0);
         canvasContext.lineTo(i,10); 	
         canvasContext.stroke();
     }
-    canvasContext.fillText("Bar",10,20);
+    canvasContext.fillText("Bar",6,20);
     
     var bar = 2;
-    for(var i=35;i<500;i+=(2*pixelsPer4)){
+    for(var i=31;i<timelineWidth;i+=(2*pixelsPer4)){
         canvasContext.fillText(bar, i, 20);
         bar+=2;
     }
@@ -261,6 +263,19 @@ function loadActiveSources() {
     
 }
 
+function resetCanvas (e) {
+    // resize the canvas - but remember - this clears the canvas too.
+    timelineWidth = (.7446808510638297 * window.innerWidth - 20) * .829787234042553 - 20; 
+    canvas.width = timelineWidth;
+    
+
+    //make sure we scroll to the top left.
+    //window.scrollTo(0,0);
+    drawTimeline();
+    drawCursor(k);
+     //requestAnimFrame(draw);	// start the drawing loop.
+}
+
 function initSched(params){
     canvas = document.getElementById( "timeline" );
     canvas.addEventListener("click" , function(e){
@@ -272,7 +287,15 @@ function initSched(params){
     canvasContext = canvas.getContext( '2d' );
     canvasContext.font = '8pt Calibri';
     canvasContext.textAlign = 'center';
+    
+    //0.744... is hardcoded for bootstrap span9 and 0.829 is for span 10. -20s are for left margins on each
+    timelineWidth = (.7446808510638297 * window.innerWidth - 20) * .829787234042553 - 20; 
+    canvas.width = timelineWidth;
+    
     requestAnimFrame(draw);	// start the drawing loop.
+    
+    window.onorientationchange = resetCanvas;
+    window.onresize = resetCanvas
 }
 
 window.addEventListener("load", initSched);
