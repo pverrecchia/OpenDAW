@@ -21,6 +21,12 @@
         .sidebar {
             height: 400px;
             min-width: 130px;
+            position: relative;
+        }
+        
+        .sidebarTabs {
+            position: absolute;
+            bottom: 0px;
         }
         
         .sidebarTab {
@@ -131,6 +137,25 @@
             margin-bottom: 10px;
         }
         
+        .addTrack{
+            opacity: .4;
+            border: 1px solid #e3e3e3;
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            padding: 5px;
+            transition:opacity .5s;
+            margin-bottom: 10px;
+        }
+        
+        .addTrack:hover{
+            opacity: 100;
+        }
+        
+        .plusButton {
+            width: 50%;
+            margin: 0 auto;
+        }
+        
         .trackBox {
             height: 82px;
             position: relative;
@@ -230,7 +255,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <ul class="nav nav-pills">
+                        <ul class="nav nav-pills sidebarTabs">
                             <li class="active"><a href="#library" data-toggle="tab">Library</a></li>
                             <li><a href="#upload" data-toggle="tab">Upload</a></li>
                             <li><a href="#effects" data-toggle="tab">Effects</a></li>
@@ -248,6 +273,9 @@
                             </canvas>
                         </div>
                     </div>
+                </div>
+                <div id="newTrackButton" class="span9 addTrack">
+                    <a id="addTrackButton" href="#"><p class="text-center"><i class="icon-plus-sign"></i></p></a>
                 </div>
             </div>
             <div class="row-fluid" >
