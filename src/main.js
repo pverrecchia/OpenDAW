@@ -40,6 +40,7 @@ jQuery.removeFromArray = function(value, arr) {
 };
 	
 var globalNumberOfTracks;
+var globalWavesurfers = [];
 
 var wavesurfer = (function () {
     'use strict';
@@ -64,6 +65,7 @@ var wavesurfer = (function () {
             var span = document.createElement('span');
             span.id = "sample" + song.id + "Span" + sampleNumber;
             var canvas = document.createElement('canvas');
+	    canvas.className = "sample";
             canvas.id = "sample" + song.id + "Canvas" + sampleNumber;
             $("#track"+song.track).append(span);
             $("#sample" + song.id + "Span" + sampleNumber).append(canvas);
@@ -105,6 +107,7 @@ var wavesurfer = (function () {
                 audioContext: ac
             });
             wavesurfer.load(song.url);
+	    globalWavesurfers.push(wavesurfer);
             sampleNumber++;
         });
 
@@ -580,13 +583,62 @@ $(document).ready(function(){
     });
     $("#zoomIn").click(function(){
         $('body').trigger('zoomIn-event');
+	var WavesurferCanvases = $(".sample");
+	$.each(WavesurferCanvases,function(){
+	    var wavesurferCanvas = this;
+	    var oldWidth = wavesurferCanvas.width;
+	    wavesurferCanvas.width = oldWidth*2;
+	    $($(wavesurferCanvas).parent()[0]).css("width",oldWidth*2);
+	    var oldLeft = parseInt($($(wavesurferCanvas).parent()[0]).css("left"));
+	    $($(wavesurferCanvas).parent()[0]).css("left",""+oldLeft*2+"px");
+	    $.each(globalWavesurfers, function(){
+		var wavesurfer = this;
+		wavesurfer.drawer.clear();
+		wavesurfer.drawer.width = oldWidth*2;
+		wavesurfer.drawer.drawBuffer(wavesurfer.backend.currentBuffer);
+	    });
+	});
     });
     $("#zoomOut").click(function(){
         $('body').trigger('zoomOut-event');
+	var WavesurferCanvases = $(".sample");
+	$.each(WavesurferCanvases,function(){
+	    var wavesurferCanvas = this;
+	    var oldWidth = wavesurferCanvas.width;
+	    wavesurferCanvas.width = oldWidth/2 + 1;
+	    $($(wavesurferCanvas).parent()[0]).css("width",oldWidth/2 + 1);
+	    var oldLeft = parseInt($($(wavesurferCanvas).parent()[0]).css("left"));
+	    $($(wavesurferCanvas).parent()[0]).css("left",""+oldLeft/2+"px");
+	    $.each(globalWavesurfers, function(){
+		var wavesurfer = this;
+		wavesurfer.drawer.clear();
+		wavesurfer.drawer.width = oldWidth/2 + 1;
+		wavesurfer.drawer.drawBuffer(wavesurfer.backend.currentBuffer);
+	    });
+	});
     });
     $("#trackEffectsClose").click(function(){
 	$("#trackEffects").css("display","none");
 	$("#masterControl").css("display","none");
+    });
+    
+    $("#resizeButton").click(function(){
+	var WavesurferCanvases = $(".sample");
+	$.each(WavesurferCanvases,function(){
+	    var wavesurferCanvas = this;
+	    var oldWidth = wavesurferCanvas.width;
+	    wavesurferCanvas.width = oldWidth/2 + 1;
+	    $($(wavesurferCanvas).parent()[0]).css("width",oldWidth/2 + 1);
+	    var oldLeft = parseInt($($(wavesurferCanvas).parent()[0]).css("left"));
+	    $($(wavesurferCanvas).parent()[0]).css("left",""+oldLeft/2+"px");
+	    $.each(globalWavesurfers, function(){
+		var wavesurfer = this;
+		wavesurfer.drawer.clear();
+		wavesurfer.drawer.width = oldWidth/2 + 1;
+		wavesurfer.drawer.drawBuffer(wavesurfer.backend.currentBuffer);
+	    });
+	});
+
     });
     
     $( "#masterVolume" ).slider({
@@ -726,6 +778,7 @@ function createTrack(trackNumber){
 		var span = document.createElement('span');
 		span.id = "recording" + recordingCount + "Span";
 		var canvas = document.createElement('canvas');
+		canvas.className = "sample";
 		canvas.id = "recording" + recordingCount + "Canvas";
 		$("#track"+recordTrackNumber).append(span);
 		$("#recording" + recordingCount + "Span").append(canvas);
@@ -768,6 +821,7 @@ function createTrack(trackNumber){
 			audioContext: ac
 		    });
 		    wavesurfer.load(url);
+		    globalWavesurfers.push(wavesurfer);
 		    buffers[recordingCount] = {buffer: newBuffer};
 		    
 		    if(times[startBar] == null){
@@ -799,6 +853,7 @@ function createTrack(trackNumber){
 	    var sampleURL = ui.helper.attr("data-url");
 	    span.id = "sample" + sampleID + "Span" + rand;
 	    var canvas = document.createElement('canvas');
+	    canvas.className = "sample";
 	    canvas.id = "sample" + sampleID + "Canvas" + rand;
 	    $(this).append(span);
 	    $("#sample" + sampleID + "Span" + rand).append(canvas);
@@ -835,6 +890,7 @@ function createTrack(trackNumber){
 		audioContext: ac
 	    });
 	    wavesurfer.load(sampleURL);
+	    globalWavesurfers.push(wavesurfer);
 	    if(buffers[sampleID]==undefined){
 		load(sampleURL, sampleID);
 	    }

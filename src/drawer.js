@@ -79,7 +79,6 @@ WaveSurfer.Drawer = {
     
     redraw: function () {
         var my = this;
-
         this.clear();
         this.roundRectangle(0,0,this.width, this.height, this.params.radius);
         // Draw WebAudio buffer peaks.
