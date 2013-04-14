@@ -127,7 +127,7 @@ function schedPlay(time) {
 	    });
 	    
 	    current16thNote = pauseBeat;
-	    playTime =  playTime + current16thNote*secondsPer16;
+	    playTime =  playTime - current16thNote*secondsPer16;
 	    //console.log(pauseBeat);
 	    
 	}
@@ -237,7 +237,7 @@ function drawTimeline(){
         canvasContext.lineTo(i,10); 	
         canvasContext.stroke();
     }
-    canvasContext.fillText("Bar",6,20);
+    canvasContext.fillText("Bar",4,20);
     
     var bar = 2;
     for(var i=31;i<timelineWidth;i+=(2*pixelsPer4)){
@@ -249,27 +249,19 @@ function drawTimeline(){
 function timelineZoomIn() {
     canvasContext.clearRect(0,0,canvas.width, canvas.height);
     zoom /= 2;
-    
     resetCanvas();
-   
-    
     console.log("in");
 }
 
 function timelineZoomOut() {
     canvasContext.clearRect(0,0,canvas.width, canvas.height);
     zoom *= 2;
- 
-    
-    
     resetCanvas();
-    
-    
     console.log("out");
 }
+
 function drawCursor(bar) {
     canvasContext.fillStyle = "FF9900";
-	    
     canvasContext.fillRect(bar*pixelsPer16/zoom, 0, pixelsPer4/zoom, 10 );
 }
 
@@ -314,11 +306,11 @@ function clockOutput(t){
 
 function formatTime(t) {
     
-    var msec = Math.round((t % 1)*100);
+    var msec = Math.floor((t % 1)*100);
     var seconds = Math.floor(t % 60)
     var minutes =  Math.floor((t / 60) % 60);
 
-    if (!(msec % 10)) {msec = "0"+msec;}
+    if (msec < 10){msec = "0"+msec;}
     if (minutes < 10) {minutes = "0"+minutes;}
     if (seconds < 10) {seconds = "0"+seconds;}
     
