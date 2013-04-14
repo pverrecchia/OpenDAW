@@ -593,6 +593,7 @@ $(document).ready(function(){
 	    $($(wavesurferCanvas).parent()[0]).css("left",""+oldLeft*2+"px");
 	    $.each(globalWavesurfers, function(){
 		var wavesurfer = this;
+		console.log("Test");
 		wavesurfer.drawer.clear();
 		wavesurfer.drawer.width = oldWidth*2;
 		wavesurfer.drawer.drawBuffer(wavesurfer.backend.currentBuffer);
