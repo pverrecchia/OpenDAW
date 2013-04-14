@@ -249,7 +249,7 @@ function drawTimeline(){
 function timelineZoomIn() {
     canvasContext.clearRect(0,0,canvas.width, canvas.height);
     zoom /= 2;
-    zoom4 *= 2;
+    
     resetCanvas();
    
     
@@ -259,7 +259,7 @@ function timelineZoomIn() {
 function timelineZoomOut() {
     canvasContext.clearRect(0,0,canvas.width, canvas.height);
     zoom *= 2;
-    zoom4 /= 2;
+ 
     
     
     resetCanvas();
@@ -270,7 +270,7 @@ function timelineZoomOut() {
 function drawCursor(bar) {
     canvasContext.fillStyle = "FF9900";
 	    
-    canvasContext.fillRect(bar*pixelsPer16, 0, pixelsPer4, 10 );
+    canvasContext.fillRect(bar*pixelsPer16/zoom, 0, pixelsPer4/zoom, 10 );
 }
 
 function cursorJump(bar) {
@@ -332,11 +332,9 @@ function resetCanvas (e) {
     
     timelineWidth = (.7446808510638297 * window.innerWidth - 20) * .829787234042553 - 20; 
     
-    if (zoom >=1) {
-	timelineWidth *= zoom;
+    if (zoom <=1) {
+	timelineWidth /= zoom;
     }
-    
-    
     
     canvas.width = timelineWidth;
     
