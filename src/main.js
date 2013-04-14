@@ -622,24 +622,6 @@ $(document).ready(function(){
 	$("#masterControl").css("display","none");
     });
     
-    $("#resizeButton").click(function(){
-	var WavesurferCanvases = $(".sample");
-	$.each(WavesurferCanvases,function(){
-	    var wavesurferCanvas = this;
-	    var oldWidth = wavesurferCanvas.width;
-	    wavesurferCanvas.width = oldWidth/2 + 1;
-	    $($(wavesurferCanvas).parent()[0]).css("width",oldWidth/2 + 1);
-	    var oldLeft = parseInt($($(wavesurferCanvas).parent()[0]).css("left"));
-	    $($(wavesurferCanvas).parent()[0]).css("left",""+oldLeft/2+"px");
-	    $.each(globalWavesurfers, function(){
-		var wavesurfer = this;
-		wavesurfer.drawer.clear();
-		wavesurfer.drawer.width = oldWidth/2 + 1;
-		wavesurfer.drawer.drawBuffer(wavesurfer.backend.currentBuffer);
-	    });
-	});
-
-    });
     
     $( "#masterVolume" ).slider({
       orientation: "vertical",

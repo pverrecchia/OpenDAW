@@ -1,8 +1,7 @@
 {
     "projectInfo" :
-        {"tempo":"128","tracks":"5","effects":
+        {"tempo":"128","tracks":"4","effects":
             [
-                [],
                 [],
                 [],
                 [],
@@ -29,6 +28,6 @@
         {"id":"22","url":"src/data/samples/fhg_tops_125_soft_shaker.wav","track":"1","startTime":[],"duration":"1.9199999570846558"},
         {"id":"23","url":"src/data/samples/fhg_tops_125_soulfuric_top.wav","track":"1","startTime":[],"duration":"1.9199999570846558"},
         {"id":"24","url":"src/data/samples/fhg_snare_disco.wav","track":"1","startTime":[],"duration":"0.24691610038280487"},
-        {"id":"25","url":"src/data/samples/fhg_drloop_125_deepskips.wav","track":"5","startTime":[64,96],"duration":"3.8399999141693115"}
+        {"id":"25","url":"src/data/samples/fhg_drloop_125_deepskips.wav","track":"5","startTime":[],"duration":"3.8399999141693115"}
     ]
 }
