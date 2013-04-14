@@ -37,6 +37,8 @@ var cnt =2;
 var nextK = k;
 
 var timelineWidth;
+var zoom = 1;
+var zoom4;
 
 // First, let's shim the requestAnimationFrame API, with a setTimeout fallback
 window.requestAnimFrame = (function(){
@@ -125,7 +127,7 @@ function schedPlay(time) {
 	    });
 	    
 	    current16thNote = pauseBeat;
-	    playTime =  playTime-pauseTime;
+	    playTime =  playTime + current16thNote*secondsPer16;
 	    //console.log(pauseBeat);
 	    
 	}
@@ -180,7 +182,8 @@ function schedStop(){
 	isPaused = false;
     }
     
-    clockTime = 0;
+    clockOutput(0);
+    
     isStopped = true;
 }
 
@@ -197,17 +200,20 @@ function schedStepBack(time) {
 	drawTimeline();
     }
     drawCursor(0);
-    clockTime = 0;
+    
+    clockOutput(0);
     
 }
 function draw() {
     var currentNote = last16thNoteDrawn;
     var currentTime = ac.currentTime;
-    clockOutput();
+    
      while (notesInQueue.length && notesInQueue[0].time < currentTime) {
         currentNote = notesInQueue[0].note;
         notesInQueue.splice(0,1);   // remove note from queue
 	 if (isPlaying) {
+	    clockOutput();
+	    
 	    if (k == nextK) {
 		nextK+=4;
     
@@ -235,11 +241,32 @@ function drawTimeline(){
     
     var bar = 2;
     for(var i=31;i<timelineWidth;i+=(2*pixelsPer4)){
-        canvasContext.fillText(bar, i, 20);
+        canvasContext.fillText(bar*zoom, i, 20);
         bar+=2;
     }
 }
 
+function timelineZoomIn() {
+    canvasContext.clearRect(0,0,canvas.width, canvas.height);
+    zoom /= 2;
+    zoom4 *= 2;
+    resetCanvas();
+   
+    
+    console.log("in");
+}
+
+function timelineZoomOut() {
+    canvasContext.clearRect(0,0,canvas.width, canvas.height);
+    zoom *= 2;
+    zoom4 /= 2;
+    
+    
+    resetCanvas();
+    
+    
+    console.log("out");
+}
 function drawCursor(bar) {
     canvasContext.fillStyle = "FF9900";
 	    
@@ -266,6 +293,7 @@ function cursorJump(bar) {
     if (isPaused) {
 	pauseBeat = k;
     }
+    clockOutput(k);
     //console.log(current16thNote);
 }
 
@@ -273,16 +301,31 @@ function loadActiveSources() {
     
 }
 
-function clockOutput(){
-    
+function clockOutput(t){
+    clockTime = t*secondsPer16;
     if (isPlaying) {
 	 clockTime = ac.currentTime - playTime;
     }
-   
-    $("#clock").html(clockTime);
-    //.log(clockTime);
     
+    clockTime = formatTime(clockTime);
+    $("#clock").html(clockTime);
+
 }
+
+function formatTime(t) {
+    
+    var msec = Math.round((t % 1)*100);
+    var seconds = Math.floor(t % 60)
+    var minutes =  Math.floor((t / 60) % 60);
+
+    if (!(msec % 10)) {msec = "0"+msec;}
+    if (minutes < 10) {minutes = "0"+minutes;}
+    if (seconds < 10) {seconds = "0"+seconds;}
+    
+    t = minutes+':'+seconds+':'+msec;
+    return t;
+}
+    
 
 function resetCanvas (e) {
     // resize the canvas - but remember - this clears the canvas too.
@@ -317,6 +360,9 @@ function initSched(params){
     
     window.onorientationchange = resetCanvas;
     window.onresize = resetCanvas
+    
+   
+
 }
 
 window.addEventListener("load", initSched);

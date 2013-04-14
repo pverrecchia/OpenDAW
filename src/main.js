@@ -220,6 +220,14 @@ $('body').bind('solo-event', function(e, trackNumber){
     solo(trackNumber);
 });
 
+$('body').bind('zoomIn-event', function(e){
+    timelineZoomIn();
+});
+
+$('body').bind('zoomOut-event', function(e){
+    timelineZoomOut();
+});
+
 $(document).ready(function(){
     $(".effectDrag").draggable({
 	revert: true,
@@ -569,6 +577,12 @@ $(document).ready(function(){
     });
     $("#step-backward").click(function(){
         $('body').trigger('stepBackward-event');
+    });
+    $("#zoomIn").click(function(){
+        $('body').trigger('zoomIn-event');
+    });
+    $("#zoomOut").click(function(){
+        $('body').trigger('zoomOut-event');
     });
     $("#trackEffectsClose").click(function(){
 	$("#trackEffects").css("display","none");
