@@ -329,7 +329,15 @@ function formatTime(t) {
 
 function resetCanvas (e) {
     // resize the canvas - but remember - this clears the canvas too.
+    
     timelineWidth = (.7446808510638297 * window.innerWidth - 20) * .829787234042553 - 20; 
+    
+    if (zoom >=1) {
+	timelineWidth *= zoom;
+    }
+    
+    
+    
     canvas.width = timelineWidth;
     
 
@@ -361,7 +369,7 @@ function initSched(params){
     window.onorientationchange = resetCanvas;
     window.onresize = resetCanvas
     
-   
+   clockOutput(0);
 
 }
 
