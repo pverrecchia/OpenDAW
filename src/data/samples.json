@@ -1,17 +1,34 @@
 {
     "projectInfo" :
-        {"tempo":"128","tracks":"3","effects":
+        {"tempo":"128","tracks":"5","effects":
             [
-                [{"type":"Compressor","threshold":"-12","ratio":"10","attack":".003"}],
-                [{"type":"Filter","cutoff":"30","q":"1","filterType":"0"}],
+                [],
+                [],
+                [],
+                [],
                 []
             ]
         },
     "samples": [
-        {"id":"1","url":"src/data/samples/Bliss_BlipLead.mp3","track":"1","startTime":[],"duration":"15.2555103302"},
-        {"id":"2","url":"src/data/samples/Bliss_Bassline2.mp3","track":"1","startTime":[],"duration":"15.2555103302"},
-        {"id":"3","url":"src/data/samples/Bliss_Rhodes.mp3","track":"3","startTime":[0],"duration":"15.2555103302"},
-        {"id":"4","url":"src/data/samples/hats.wav","track":"1","startTime":[0, 32],"duration":"1.8750113248825073"},
-        {"id":"5","url":"src/data/samples/kick.wav","track":"2","startTime":[0, 16, 32, 48],"duration":"1.8750113248825073"}
+        {"id":"6","url":"src/data/samples/fhg_bassloop_125_jzzfunk_A.wav","track":"1","startTime":[0,32,64,96],"duration":"3.8399999141693115"},
+        {"id":"7","url":"src/data/samples/fhg_bassloop_125_jzzfunk_D.wav","track":"1","startTime":[],"duration":"3.8399999141693115"},
+        {"id":"8","url":"src/data/samples/fhg_bassloop_125_jzzfunk_F.wav","track":"1","startTime":[],"duration":"3.8399999141693115"},
+        {"id":"9","url":"src/data/samples/fhg_bassloop_125_jzzfunk_G.wav","track":"1","startTime":[],"duration":"3.8399999141693115"},
+        {"id":"10","url":"src/data/samples/fhg_brass_fall_A.wav","track":"4","startTime":[64],"duration":"0.5108389854431152"},
+        {"id":"11","url":"src/data/samples/fhg_brass_fall_C.wav","track":"4","startTime":[32],"duration":"0.6762811541557312"},
+        {"id":"12","url":"src/data/samples/fhg_drmhit_crash_909.wav","track":"1","startTime":[],"duration":"1.122244954109192"},
+        {"id":"13","url":"src/data/samples/fhg_guitloop_125_jazzfunk_A.wav","track":"2","startTime":[0,32,64,96],"duration":"3.8399999141693115"},
+        {"id":"14","url":"src/data/samples/fhg_guitloop_125_superstrum_D.wav","track":"1","startTime":[],"duration":"3.8399999141693115"},
+        {"id":"15","url":"src/data/samples/fhg_keys_wurlie_125_D_E_D.wav","track":"1","startTime":[],"duration":"3.8399999141693115"},
+        {"id":"16","url":"src/data/samples/fhg_keys_wurlie_125_E_D.wav","track":"1","startTime":[],"duration":"3.8399999141693115"},
+        {"id":"17","url":"src/data/samples/fhg_keys_wurlie_125_F_D#.wav","track":"1","startTime":[],"duration":"3.8399999141693115"},
+        {"id":"18","url":"src/data/samples/fhg_sax_125_funky_AG.wav","track":"1","startTime":[],"duration":"2.504852533340454"},
+        {"id":"19","url":"src/data/samples/fhg_sax_125_jazzy_D.wav","track":"1","startTime":[],"duration":"1.9199999570846558"},
+        {"id":"20","url":"src/data/samples/fhg_tops_125_sleaze_hats.wav","track":"1","startTime":[],"duration":"1.9199999570846558"},
+        {"id":"21","url":"src/data/samples/fhg_tops_125_smooth_as_funk.wav","track":"3","startTime":[64,80,96,112],"duration":"1.9199999570846558"},
+        {"id":"22","url":"src/data/samples/fhg_tops_125_soft_shaker.wav","track":"1","startTime":[],"duration":"1.9199999570846558"},
+        {"id":"23","url":"src/data/samples/fhg_tops_125_soulfuric_top.wav","track":"1","startTime":[],"duration":"1.9199999570846558"},
+        {"id":"24","url":"src/data/samples/fhg_snare_disco.wav","track":"1","startTime":[],"duration":"0.24691610038280487"},
+        {"id":"25","url":"src/data/samples/fhg_drloop_125_deepskips.wav","track":"5","startTime":[64,96],"duration":"3.8399999141693115"}
     ]
 }
