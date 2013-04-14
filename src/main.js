@@ -587,17 +587,17 @@ $(document).ready(function(){
 	$.each(WavesurferCanvases,function(){
 	    var wavesurferCanvas = this;
 	    var oldWidth = wavesurferCanvas.width;
-	    wavesurferCanvas.width = oldWidth*2;
-	    $($(wavesurferCanvas).parent()[0]).css("width",oldWidth*2);
+	    var newWidth = oldWidth*2;
+	    wavesurferCanvas.width = newWidth;
+	    $($(wavesurferCanvas).parent()[0]).css("width",newWidth+"px");
 	    var oldLeft = parseInt($($(wavesurferCanvas).parent()[0]).css("left"));
 	    $($(wavesurferCanvas).parent()[0]).css("left",""+oldLeft*2+"px");
-	    $.each(globalWavesurfers, function(){
-		var wavesurfer = this;
-		console.log("Test");
-		wavesurfer.drawer.clear();
-		wavesurfer.drawer.width = oldWidth*2;
-		wavesurfer.drawer.drawBuffer(wavesurfer.backend.currentBuffer);
-	    });
+	});
+	$.each(globalWavesurfers, function(){
+	    var wavesurfer = this;
+	    wavesurfer.drawer.clear();
+	    wavesurfer.drawer.width  = wavesurfer.drawer.width*2;
+	    wavesurfer.drawer.drawBuffer(wavesurfer.backend.currentBuffer);
 	});
     });
     $("#zoomOut").click(function(){
@@ -607,15 +607,15 @@ $(document).ready(function(){
 	    var wavesurferCanvas = this;
 	    var oldWidth = wavesurferCanvas.width;
 	    wavesurferCanvas.width = oldWidth/2 + 1;
-	    $($(wavesurferCanvas).parent()[0]).css("width",oldWidth/2 + 1);
+	    $($(wavesurferCanvas).parent()[0]).css("width",oldWidth/2 + 1+"px");
 	    var oldLeft = parseInt($($(wavesurferCanvas).parent()[0]).css("left"));
 	    $($(wavesurferCanvas).parent()[0]).css("left",""+oldLeft/2+"px");
-	    $.each(globalWavesurfers, function(){
-		var wavesurfer = this;
-		wavesurfer.drawer.clear();
-		wavesurfer.drawer.width = oldWidth/2 + 1;
-		wavesurfer.drawer.drawBuffer(wavesurfer.backend.currentBuffer);
-	    });
+	});
+	$.each(globalWavesurfers, function(){
+	    var wavesurfer = this;
+	    wavesurfer.drawer.clear();
+	    wavesurfer.drawer.width = wavesurfer.drawer.width/2 + 1;
+	    wavesurfer.drawer.drawBuffer(wavesurfer.backend.currentBuffer);
 	});
     });
     $("#trackEffectsClose").click(function(){
