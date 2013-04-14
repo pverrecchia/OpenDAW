@@ -29,7 +29,8 @@ var activeSources =[];
 
 var pauseTime;
 var pauseBeat;
-
+var playTime;
+var clockTime = 0;
 //variables for cursor
 var k =0;
 var cnt =2;
@@ -111,11 +112,12 @@ function schedPlay(time) {
     //if not playing, then play
     if (!isPlaying) {
 	console.log("playing");
+	playTime = time;
 	//if resuming from a pause
 	if (isPaused) {
 	    console.log("pause resume");
 	    //play all active sources at percents
-	    console.log(activeSources);
+	    //console.log(activeSources);
 	    activeSources.forEach(function(element, index){
 		var percent = (current16thNote-element.sourceStartBar) / (element.sourceNode.buffer.duration/(secondsPerBeat*0.25));
 		element.sourceNode.start(element.sourceNode.buffer.duration * percent);
@@ -123,14 +125,20 @@ function schedPlay(time) {
 	    });
 	    
 	    current16thNote = pauseBeat;
+	    playTime =  playTime-pauseTime;
+	    //console.log(pauseBeat);
+	    
 	}
 	
 	 isPlaying = !isPlaying;
 	 isPaused = !isPlaying;
 	 
+	//clockTime = current16thNote*secondsPer16;
+	
 	if(isPlaying){ 
 	nextNoteTime = ac.currentTime;
 	scheduler();
+	clockOutput();
 	}
     //if playing, then pause
     } else {
@@ -143,7 +151,7 @@ function schedPlay(time) {
 	isPlaying = !isPlaying;
 	isPaused = !isPlaying;
 	
-	pauseTime = time;
+	pauseTime = time-playTime;
 	pauseBeat = k;
 	
 	//console.log(activeSources);
@@ -172,6 +180,7 @@ function schedStop(){
 	isPaused = false;
     }
     
+    clockTime = 0;
     isStopped = true;
 }
 
@@ -188,12 +197,13 @@ function schedStepBack(time) {
 	drawTimeline();
     }
     drawCursor(0);
+    clockTime = 0;
     
 }
 function draw() {
     var currentNote = last16thNoteDrawn;
     var currentTime = ac.currentTime;
- 
+    clockOutput();
      while (notesInQueue.length && notesInQueue[0].time < currentTime) {
         currentNote = notesInQueue[0].note;
         notesInQueue.splice(0,1);   // remove note from queue
@@ -260,6 +270,17 @@ function cursorJump(bar) {
 }
 
 function loadActiveSources() {
+    
+}
+
+function clockOutput(){
+    
+    if (isPlaying) {
+	 clockTime = ac.currentTime - playTime;
+    }
+   
+    $("#clock").html(clockTime);
+    //.log(clockTime);
     
 }
 
