@@ -9,12 +9,25 @@ OpenDAW is an open source online digital audio workstation (DAW) based on the
 ![ScreenShot](https://raw.github.com/pvererecchia/OpenDAW/master/img/opendaw.PNG)
 <br>
 
+<h3>Update 2: April 22, 2013</h3>
 
-Update 2: April 22, 2013
-<br>
-<br>
+<p>
+<h6>Features</h6>
+New features
+</p>
 
-Progress since last update:
+<p>
+<h6>Design</h6>
+
+</p>
+
+<p>
+<h6>Effects</h6>
+built in effects and custom effects nodes
+</p>
+
+<br>
+<h6>Progress since last update:</h6>
 <ul>
   <li>Read/Write .json file for adding and rearranging samples in the workspace as well as seperate projects</li>
   <li><del>Add track functionality</del> <i>completed</i></li>
@@ -30,18 +43,15 @@ Progress since last update:
   <li>User-uploaded samples</li>
 </ul>
 
+<a href = "https://docs.google.com/presentation/d/1BJaS6c8hqJ_MFRLzce2q5IobM6fkv_2eIF2FPUToPyk/pub?start=false&loop=false&delayms=3000" target = "blank">Class presentation</a>
 
 
-Update 1: March 26, 2013
-<br>
-<br>
-
+<h3>Update 1: March 26, 2013</h3>
+<p>
 So far, various audio clips can be placed on multiple tracks at arbitrary start times according to a 
 (currently preprogrammed) .json file. The look-ahead scheduler is accurate enough to seamlessly playback looping samples
 in perfect time (even for worst case javascript threading). Samples can be placed at sixteenth note resolution. 
-
-<br>
-<br>
+</p>
 
 As much as possible from the following list of features will be implemented by the project deadline:
 
@@ -98,8 +108,6 @@ The technologies we have used so far or are planning to use:
   <li>jsNode backend for writing JSON data</li>
 </ul>
 
-<br>
-<br>
 Adam Levine and Pietro Verrecchia <br>
 MUMT 307: Audio and Computing 2 <br>
 McGill University
