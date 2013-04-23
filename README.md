@@ -4,7 +4,35 @@ OpenDAW
 <p>
 OpenDAW is an open source online digital audio workstation (DAW) based on the 
 <a href = https://dvcs.w3.org/hg/audio/raw-file/tip/webaudio/specification.html target = "blank">Web Audio API </a>.
+</p>
 
+![ScreenShot](https://raw.github.com/pvererecchia/OpenDAW/master/img/opendaw.PNG)
+<br>
+
+
+Update 2: April 22, 2013
+<br>
+<br>
+
+Progress since last update:
+<ul>
+  <li>Read/Write .json file for adding and rearranging samples in the workspace as well as seperate projects</li>
+  <li><del>Add track functionality</del> <i>completed</i></li>
+  <li>Remove track functionality</li>
+  <li>Dynamic sample length</li>
+  <li>Project save/export functionality</li>
+  <li><del>Click and drag samples from directory to workspace</del> <i>completed</i></li>
+  <li><del>Track-specific controls such as mute, volume and "solo"</del> <i>completed</i></li>
+  <li><del>Record functionality<del> <i>completed</i></li>
+  <li><del>Equalization, reverb, compression and other essential effects</del> <i>completed</i></li>
+  <li><del>Animated time cursor</del> <i>completed</i></li>
+  <li><del>Animated level meter</del> <i>completed</i></li>
+  <li>User-uploaded samples</li>
+</ul>
+
+
+
+Update 1: March 26, 2013
 <br>
 <br>
 
