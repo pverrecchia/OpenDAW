@@ -45,12 +45,20 @@ more upcoming audio events are found, the scheduler script has enough time to sc
 The scheduler script has a finite lifetime which is the amount of time it scan ahead. There is a recursive component to
 the lookahead scheduler which allows more than one instance of the script to exist at one time. By staggering multiple instances 
 of the scheduler in time, the scheduling system is robust enough to playbck samples seamlessly with multiple concurrent
-Javascript threads. More information about the starting point of our scheduler can be found <a href = "http://www.html5rocks.com/en/tutorials/audio/scheduling/"
+Javascript threads. More information about the design of the scheduler can be found <a href = "http://www.html5rocks.com/en/tutorials/audio/scheduling/"
 target = "blank">here</a>.
 </p>
 
 <p>
-audio bus/effects. describe audio bus, built in nodes, and larger networks.
+The API has built-in nodes for audio effects such as filtering and compression. Additionally, effects such as delay and 
+reverb can be constructed by connecting multiple nodes together. The compression effect has controls for threshold level,
+compression ratio and attack time. For the filter node; cutoff frequency, resonance and filter type (low-pass, high-pass,
+band-pass, etc.) are controllable. The filter and compression effects in OpenDAW were made simply using these nodes. The
+reverb and delay effects are also based on nodes built in to the API but require some extra work to implement wet/dry
+signal mixing, delay feedback gain or multiple reverb impulse response selection. We have begun to experiment with
+modulation-based effects using the oscillator node to create an LFO. A tremolo effect is currently in development. Tracks are 
+designed to have their own audio bus which allows for unique effect chains on every track. The processed track signals 
+are merged at the master volume node before continuing to the destination node. 
 </p>
 
 <p>
@@ -63,12 +71,14 @@ there is only one possible ordering for effects in the chain. Because of this li
 check for prior/future node attachments. Given more time, we would create a system which allows for ANY arrangment of effects in the chain for each
 track, and be able to update the backend more efficiently. Another future design consideration will be incorporating user-designed audio effects into
 OpenDAW. This will require restructuring the way the audio bus is implemented in code and possibly some loose standardization for the way effect patches are 
-created using the API.
+created using the API. Some of the next important features that will increase
+usability are to add include saving changes to workspace sessions and exporting finshed products to .WAV format.  
 </p>
 
 <p>
-conclusion. future design considerations
+-Adam and Pietro
 </p>
+
 
 <h6>Progress since last update:</h6>
 <ul>
@@ -88,12 +98,13 @@ conclusion. future design considerations
 
 <a href = "https://docs.google.com/presentation/d/1BJaS6c8hqJ_MFRLzce2q5IobM6fkv_2eIF2FPUToPyk/pub?start=false&loop=false&delayms=3000" target = "blank">Class presentation</a>
 
-Try OpenDAW at:
+<b>Try OpenDAW here:</b>
 <br>
 http://collegegradecalculator.com/webaudio/index.html
 <br>
 http://madebypietro.com/mumt307/index.html
 
+<hr>
 <h3>Update 1: March 26, 2013</h3>
 <p>
 So far, various audio clips can be placed on multiple tracks at arbitrary start times according to a 
@@ -156,10 +167,7 @@ The technologies we have used so far or are planning to use:
   <li>jsNode backend for writing JSON data</li>
 </ul>
 
+<hr>
 Adam Levine and Pietro Verrecchia <br>
 MUMT 307: Audio and Computing 2 <br>
 McGill University
-
-http://collegegradecalculator.com/webaudio/index.html
-<br>
-http://madebypietro.com/mumt307/index.html
