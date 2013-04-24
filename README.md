@@ -28,6 +28,7 @@ used in our design including Wavesurfer, jQuery Knob, VUMeter and jRecorder. The
 document below. We also built the scheduler (the main timing component for the application) based off of a tutorial.
 </p>
 
+
 <p>
 The basic workflow of the program upon loading is as follows: the page sends out a request for the JSON file associated with the current project. The JSON
 file has a project info section which has information on the tempo, number of tracks, and effects on each track. The DOM of the page is then populated with
@@ -38,6 +39,21 @@ update the backend (Web Audio API) which cause the appropriate change in playbac
 </p>
 
 <p>
+The backbone of OpenDAW's playback capability is the lookahead scheduler script. The scheduler constantly scans
+a the audio sample start times across all tracks to identify the samples that need to be played next. When one or 
+more upcoming audio events are found, the scheduler script has enough time to schedule the samples at the correct time.
+The scheduler script has a finite lifetime which is the amount of time it scan ahead. There is a recursive component to
+the lookahead scheduler which allows more than one instance of the script to exist at one time. By staggering multiple instances 
+of the scheduler in time, the scheduling system is robust enough to playbck samples seamlessly with multiple concurrent
+Javascript threads. More information about the starting point of our scheduler can be found <a href = "http://www.html5rocks.com/en/tutorials/audio/scheduling/"
+target = "blank">here</a>.
+</p>
+
+<p>
+audio bus/effects. describe audio bus, built in nodes, and larger networks.
+</p>
+
+<p>
 One of the challenges we faced in the project was maintaining modularity (breaking down functionality into independent and interchangable modules).
 We found this to be very important both because of the large scale of the project, and the opportunity to expand it later. A place we believe
 we acheived this was in our JSON data storage for project information. Instead of having the data for all the samples and effects in the main javascript
@@ -45,25 +61,15 @@ file, they are loaded from a different JSON file which minimizes the data that n
 One of the places where we could have improved on modularity was in the effect chain. At the current moment,
 there is only one possible ordering for effects in the chain. Because of this limitation we have a fair amount of repeated code (if/else statements) which
 check for prior/future node attachments. Given more time, we would create a system which allows for ANY arrangment of effects in the chain for each
-track, and be able to update the backend more efficiently.
-<p>
-
-<p>
-<h6>Features</h6>
-New features
+track, and be able to update the backend more efficiently. Another future design consideration will be incorporating user-designed audio effects into
+OpenDAW. This will require restructuring the way the audio bus is implemented in code and possibly some loose standardization for the way effect patches are 
+created using the API.
 </p>
 
 <p>
-<h6>Design</h6>
-
+conclusion. future design considerations
 </p>
 
-<p>
-<h6>Effects</h6>
-built in effects and custom effects nodes
-</p>
-
-<br>
 <h6>Progress since last update:</h6>
 <ul>
   <li>Read/Write .json file for adding and rearranging samples in the workspace as well as seperate projects</li>
@@ -82,6 +88,11 @@ built in effects and custom effects nodes
 
 <a href = "https://docs.google.com/presentation/d/1BJaS6c8hqJ_MFRLzce2q5IobM6fkv_2eIF2FPUToPyk/pub?start=false&loop=false&delayms=3000" target = "blank">Class presentation</a>
 
+Try OpenDAW at:
+<br>
+http://collegegradecalculator.com/webaudio/index.html
+<br>
+http://madebypietro.com/mumt307/index.html
 
 <h3>Update 1: March 26, 2013</h3>
 <p>
