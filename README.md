@@ -40,21 +40,21 @@ update the backend (Web Audio API) which cause the appropriate change in playbac
 
 <p>
 The backbone of OpenDAW's playback capability is the lookahead scheduler script. The scheduler constantly scans
-a the audio sample start times across all tracks to identify the samples that need to be played next. When one or 
-more upcoming audio events are found, the scheduler script has enough time to schedule the samples at the correct time.
-The scheduler script has a finite lifetime which is the amount of time it scan ahead. There is a recursive component to
-the lookahead scheduler which allows more than one instance of the script to exist at one time. By staggering multiple instances 
-of the scheduler in time, the scheduling system is robust enough to playbck samples seamlessly with multiple concurrent
+the audio sample start times across all tracks to identify the samples that need to be played next. When one or 
+more upcoming audio events are found, the scheduler script has enough time to schedule the samples at the correct playing time.
+The scheduler script has a finite lifetime which is the amount of time it scans ahead. There is a recursive component to
+the lookahead scheduler which allows more than one instance of the script to exist at a given time. By staggering multiple instances 
+of the scheduler in time, the system is robust enough to playbck samples seamlessly among other ongoing concurrent
 Javascript threads. More information about the design of the scheduler can be found <a href = "http://www.html5rocks.com/en/tutorials/audio/scheduling/"
 target = "blank">here</a>.
 </p>
 
 <p>
-The API has built-in nodes for audio effects such as filtering and compression. Additionally, effects such as delay and 
+The API has built-in single nodes for audio effects such as filtering and compression. Effects such as delay and 
 reverb can be constructed by connecting multiple nodes together. The compression effect has controls for threshold level,
 compression ratio and attack time. For the filter node; cutoff frequency, resonance and filter type (low-pass, high-pass,
 band-pass, etc.) are controllable. The filter and compression effects in OpenDAW were made simply using these nodes. The
-reverb and delay effects are also based on nodes built in to the API but require some extra work to implement wet/dry
+reverb and delay effects are also based on nodes built in to the API but require some extra work to implement controls such as wet/dry
 signal mixing, delay feedback gain or multiple reverb impulse response selection. We have begun to experiment with
 modulation-based effects using the oscillator node to create an LFO. A tremolo effect is currently in development. Tracks are 
 designed to have their own audio bus which allows for unique effect chains on every track. The processed track signals 
