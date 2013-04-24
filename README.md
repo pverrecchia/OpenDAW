@@ -22,15 +22,15 @@ many features which would still need to be implemented for a fully functional pr
 </p>
 
 <p>
-The technologies used for OpenDAW besides the Web Audio API were Javascript, JQuery, and JQuery UI components. The scaffolding of the site (the
+The technologies used for OpenDAW besides the Web Audio API were Javascript, JQuery, and JQuery UI. The scaffolding of the site (the
 page layout) was built on Twitter Bootstrap and other HTML/CSS programming. A number of third party open source JQuery components were modified and
 used in our design including Wavesurfer, jQuery Knob, VUMeter and jRecorder. The citations for these can be found at the end of the presentation
 document below. We also built the scheduler (the main timing component for the application) based off of a tutorial.
 </p>
 
 <p>
-The basic workflow of the program upon loading is as follows: upon the initial HTML loading, the page sends out a request for the JSON file associated with the current project. The JSON
-file has a project Info section which has information on the tempo, number of tracks, and effects on each track. The DOM of the page is then populated with
+The basic workflow of the program upon loading is as follows: the page sends out a request for the JSON file associated with the current project. The JSON
+file has a project info section which has information on the tempo, number of tracks, and effects on each track. The DOM of the page is then populated with
 the HTML objects corresponding to the project (such as div elements for each track). The JSON file also contains the sample information for the project
 which loads the appropriate audio buffers, and sets up the start times for each relevant sample. Once the initial load happens, the user can interact with
 the jQueryUI and javascript components on the interface (such as drag and drop of samples, and knob values for effects). Upon updating, these UI components
@@ -42,7 +42,7 @@ One of the challenges we faced in the project was maintaining modularity (breaki
 We found this to be very important both because of the large scale of the project, and the opportunity to expand it later. A place we believe
 we acheived this was in our JSON data storage for project information. Instead of having the data for all the samples and effects in the main javascript
 file, they are loaded from a different JSON file which minimizes the data that needs to be stored and also would allow for saving project files later.
-One of the places where we could have improved on modularity, and could for future iterations of the project, was in the effect chain. At the current moment,
+One of the places where we could have improved on modularity was in the effect chain. At the current moment,
 there is only one possible ordering for effects in the chain. Because of this limitation we have a fair amount of repeated code (if/else statements) which
 check for prior/future node attachments. Given more time, we would create a system which allows for ANY arrangment of effects in the chain for each
 track, and be able to update the backend more efficiently.
