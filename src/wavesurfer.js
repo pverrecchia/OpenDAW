@@ -3,17 +3,17 @@
 var WaveSurfer = {
     init: function (params) {
         var my = this;
-        
+
         if (params.audio) {
             var backend = WaveSurfer.Audio;
         } else {
             backend = WaveSurfer.WebAudio;
         }
-        
+
         this.backend = Object.create(backend);
         this.backend.init(params);
-        
-        
+
+
         this.drawer = Object.create(WaveSurfer.Drawer);
         this.drawer.init(params);
         /*
@@ -61,6 +61,7 @@ var WaveSurfer = {
     load: function (src) {
         var my = this;
         var xhr = new XMLHttpRequest();
+        xhr.open('GET', src, true);
         xhr.responseType = 'arraybuffer';
 
         xhr.addEventListener('progress', function (e) {
@@ -79,8 +80,6 @@ var WaveSurfer = {
                 my.drawBuffer.bind(my)
             );
         }, false);
-
-        xhr.open('GET', src, true);
         xhr.send();
     },
     /**

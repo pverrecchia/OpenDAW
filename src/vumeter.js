@@ -21,10 +21,10 @@ setupAudioNodes();
 function setupAudioNodes() {
 
     // setup a javascript node
-    javascriptNode = ac.createJavaScriptNode(2048, 1, 1);
+    javascriptNode = ac.createScriptProcessor(2048, 1, 1);
     // connect to destination, else it isn't called
     javascriptNode.connect(ac.destination);
-    
+
     // setup a analyzer
     analyser = ac.createAnalyser();
     analyser.smoothingTimeConstant = 0.3;
@@ -33,7 +33,7 @@ function setupAudioNodes() {
     analyser2 = ac.createAnalyser();
     analyser2.smoothingTimeConstant = 0.0;
     analyser2.fftSize = 1024;
-    
+
     // create a buffer source node
     //sourceNode = ac.createBufferSource();
     splitter = ac.createChannelSplitter();

@@ -31,11 +31,11 @@ function solo(trackNumber) {
     var thisNode = trackMasterGains[trackNumber];
     if (!thisNode.isSolo) {
         thisNode.isSolo = true;
-            
+
         for (var i=1; i <= globalNumberOfTracks; i++) {
             var node = trackMasterGains[i];
-            
-                if(i != trackNumber){  
+
+                if(i != trackNumber){
                     if(!node.isMuted){
                         node.node.gain.value = 0;
                         node.isMuted = true;
@@ -44,11 +44,11 @@ function solo(trackNumber) {
         }
     }else if (thisNode.isSolo) {
         thisNode.isSolo = false;
-            
+
         for (var i=1; i <= globalNumberOfTracks; i++) {
             var node = trackMasterGains[i];
-            
-                if(i != trackNumber){  
+
+                if(i != trackNumber){
                     if(node.isMuted){
                         node.node.gain.value = 1;
                         node.isMuted = false;
@@ -99,17 +99,17 @@ function setReverbWetDryValue(trackNumber, v){
     var dry = 1-wet;
     //set wetGain node gain
     trackReverbs[trackNumber][4].gain.value = wet;
-    
+
     //set dryGain node gain
-    trackReverbs[trackNumber][5].gain.value = dry; 
+    trackReverbs[trackNumber][5].gain.value = dry;
 }
 
 function setReverbIr(trackNumber, v){
     //if reverb buffer has already been loaded from wav file, use the exisiting arrayBuffer
    if (reverbIrBuffers[v] != null) {
     trackReverbs[trackNumber][2].buffer = reverbIrBuffers[v]
-    
-    //if not, create an arrayBuffer object from the wav file 
+
+    //if not, create an arrayBuffer object from the wav file
    }else{
     loadReverbIR(v, trackReverbs[trackNumber][2]);
    }
@@ -118,17 +118,17 @@ function setReverbIr(trackNumber, v){
 function setDelayWetDryValue(trackNumber, v) {
     var wet = v/100;
     var dry = 1-wet;
-    
+
     //set wet gain node
     trackDelays[trackNumber][3].gain.value = wet;
-    
+
     //set dry gain node
     trackDelays[trackNumber][2].gain.value = dry;
 }
 
 function setDelayTimeValue(trackNumber, v) {
     var time = v*secondsPer16;
-    
+
     //access delay node
     trackDelays[trackNumber][4].delayTime.value =time;
 }
@@ -138,41 +138,41 @@ function setDelayFeedbackValue(trackNumber, v) {
     if (v >= 1.0) {
         v = 0.99
     }
-    
+
     trackDelays[trackNumber][5].gain.value = v;
 }
 
 function createTrackReverb() {
     var reverbNetwork = [6];
-    
-    var reverbIn = ac.createGainNode();
-    var dryGain = ac.createGainNode();
-    var wetGain = ac.createGainNode();
-    var reverbOut = ac.createGainNode();
+
+    var reverbIn = ac.createGain();
+    var dryGain = ac.createGain();
+    var wetGain = ac.createGain();
+    var reverbOut = ac.createGain();
     var conv1 = ac.createConvolver();
-    var rev1Gain = ac.createGainNode();
-    
+    var rev1Gain = ac.createGain();
+
     wetGain.connect(reverbOut);
     dryGain.connect(reverbOut);
     rev1Gain.connect(wetGain);
-    
+
     conv1.connect(rev1Gain);
     loadReverbIR(0, conv1);
-   
-    
+
+
     reverbIn.connect(dryGain);
     reverbIn.connect(conv1);
-    
+
     wetGain.gain.value = 0.5;
     dryGain.gain.value = 0.5;
-    
+
     reverbNetwork[0]=reverbIn;
     reverbNetwork[1]=reverbOut;
     reverbNetwork[2]=conv1;
     reverbNetwork[3]=rev1Gain;
     reverbNetwork[4]=wetGain;
     reverbNetwork[5]=dryGain;
-    
+
     return reverbNetwork;
 }
 
@@ -182,12 +182,12 @@ function createTrackReverb() {
         case 0:
             url = 'src/data/ir/BelleMeade.wav';
         break;
-        
+
         case 1:
             url = 'src/data/ir/ir_rev_short.wav'
         break;
     }
-  
+
     var request = new XMLHttpRequest();
     request.open("GET", url, true);
     request.responseType = "arraybuffer";
@@ -197,13 +197,13 @@ function createTrackReverb() {
         reverbIrBuffers[reverb] = convNode.buffer;
     }
     request.send();
-    
+
 }
 
 /*function setReverbIR(trackNumber, reverb){
     var reverbList=document.getElementById("reverbList");
     var ir = value=reverbList.options[reverbList.selectedIndex].text;
-    
+
     loadReverbIR(ir, trackReverbs[trackNumber][2].buffer);
 }*/
 
@@ -220,14 +220,14 @@ function setFilterType(trackNumber,type){
 
 function createTrackDelay() {
     var delayNetwork = [6];
-    
-    var delayIn = ac.createGainNode();
-    var delayOut = ac.createGainNode();
-    var dryGain = ac.createGainNode();
-    var wetGain = ac.createGainNode();
-    var fbGain = ac.createGainNode();
+
+    var delayIn = ac.createGain();
+    var delayOut = ac.createGain();
+    var dryGain = ac.createGain();
+    var wetGain = ac.createGain();
+    var fbGain = ac.createGain();
     var delayNode = ac.createDelayNode();
-    
+
     wetGain.connect(delayOut);
     dryGain.connect(delayOut);
     delayIn.connect(dryGain);
@@ -235,54 +235,54 @@ function createTrackDelay() {
     delayNode.connect(fbGain);
     delayNode.connect(wetGain);
     fbGain.connect(delayNode);
-    
+
     dryGain.gain.value = 0.5;
     wetGain.gain.value = 0.5;
     fbGain.gain.value = 0.2;
-    
+
     delayNetwork[0] = delayIn;
     delayNetwork[1] = delayOut;
     delayNetwork[2] = dryGain;
     delayNetwork[3] = wetGain;
     delayNetwork[4] = delayNode;
     delayNetwork[5] = fbGain;
-    
+
     return delayNetwork;
-    
+
 }
 
 function createTrackTremolo() {
     var tremoloNetwork = [5];
-    
-    var tremoloIn = ac.createGainNode();
-    var tremoloOut = ac.createGainNode();
-    var lfoGain = ac.createGainNode();
+
+    var tremoloIn = ac.createGain();
+    var tremoloOut = ac.createGain();
+    var lfoGain = ac.createGain();
     var lfo = ac.createOscillator();
-    var depth = ac.createGainNode();
-    
+    var depth = ac.createGain();
+
     lfo.type = lfo.SINE;
     lfo.frequency = 0.1;
-    
-    lfoGain.gain.value = 1; 
-    
+
+    lfoGain.gain.value = 1;
+
     depth.connect(tremoloOut);
     tremoloIn.connect(depth);
     lfoGain.connect(depth.gain);
     lfo.connect(lfoGain);
-   
+
     lfo.start(0);
-    
+
     tremoloNetwork[0] = tremoloIn;
     tremoloNetwork[1] = tremoloOut;
     tremoloNetwork[2] = lfoGain;
     tremoloNetwork[3] = lfo;
     tremoloNetwork[4] = depth;
 
-    return tremoloNetwork; 
+    return tremoloNetwork;
 }
 
 function setTremoloRateValue(trackNumber, v) {
-    
+
     //access rate node
      //trackTremolos[trackNumber][3].stop();
     trackTremolos[trackNumber][3].frequency=v;
