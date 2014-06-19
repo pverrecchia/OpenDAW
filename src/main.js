@@ -1,7 +1,6 @@
 var ac = new (window.AudioContext || window.webkitAudioContext);
-navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
-
-var masterGainNode = ac.createGainNode();
+navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia
+var masterGainNode = ac.createGain();
 masterGainNode.gain.value = .8;
 masterGainNode.connect(ac.destination);
 
@@ -32,13 +31,13 @@ var pixelsPer16 = 6; 			//pixels per 16th note. used for grid snapping
 var pixelsPer4 = 4*pixelsPer16;		//pixels per 1/4 note	used for sample canvas size
 var bpm = tempo;
 var secondsPer16 = 0.25 * 60 / bpm;
-    
+
 jQuery.removeFromArray = function(value, arr) {
     return jQuery.grep(arr, function(elem, index) {
         return elem.id !== value;
     });
 };
-	
+
 var globalNumberOfTracks;
 var globalWavesurfers = [];
 
@@ -121,7 +120,7 @@ var wavesurfer = (function () {
 	//create track-specific nodes
 	globalNumberOfTracks = numberOfTracks;
 	createNodes(numberOfTracks);
-	
+
 	for(var i=0;i<numberOfTracks;i++){
 	   var currentTrackNumber = i+1;
 	    createTrack(currentTrackNumber);
@@ -145,7 +144,7 @@ var wavesurfer = (function () {
 		    trackFilters[currentTrackNumber] = trackFilter;
 		}
 	    });
-	    
+
 	}
 	//wavesurfers is array of all tracks
         var wavesurfers = json.samples.map(createWavesurfer);
@@ -167,9 +166,9 @@ var wavesurfer = (function () {
 	    }
 	});
     };
-	
-	
-	
+
+
+
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
         if (this.readyState == this.DONE && this.status == 200) {
@@ -180,12 +179,12 @@ var wavesurfer = (function () {
     xhr.send();
 }());
 
-	
+
 function load (src, id) {
 
     var xhr = new XMLHttpRequest();
+    xhr.open('GET', src, true);
     xhr.responseType = 'arraybuffer';
-    
     xhr.addEventListener('load', function (e) {
 	ac.decodeAudioData(
 	    e.target.response,
@@ -193,9 +192,8 @@ function load (src, id) {
 		buffers[id] = {buffer: buffer};
 	    },
 	    Error
-	);			
+	);
     }, false);
-    xhr.open('GET', src, true);
     xhr.send();
 };
 
@@ -242,9 +240,9 @@ $(document).ready(function(){
 	sort: function(event, ui){
 	     console.log($( "#effectSortable" ).sortable( "toArray" ))
 	}*/
-	
+
     });
-    
+
     $("#trackEffects").droppable({
 	accept: ".effectDrag",
 	drop: function(event, ui){
@@ -252,15 +250,15 @@ $(document).ready(function(){
 	    if(ui.draggable[0].textContent == "Reverb"){
 		$("#reverbIrSelectKnob").val(0).trigger('change');
 		$("#reverbWetDryKnob").val(50).trigger('change');
-		
-		
+
+
 		var trackReverb = createTrackReverb();
 		var inputNode = trackInputNodes[activeTrack];
 		var volumeNode = trackVolumeGains[activeTrack];
-		
+
 		inputNode.disconnect();
 		inputNode.connect(trackReverb[0]);
-		
+
 		if (trackFilters[activeTrack] != null ) {
 		    trackReverb[1].connect(trackFilters[activeTrack]);
 		}else if (trackCompressors[activeTrack != null]) {
@@ -272,7 +270,7 @@ $(document).ready(function(){
 		}else{
 		    trackReverb[1].connect(volumeNode);
 		}
-		
+
 		trackReverbs[activeTrack] = trackReverb;
 		effects[activeTrack-1].push({
 		    type: "Reverb",
@@ -287,15 +285,15 @@ $(document).ready(function(){
 		var trackFilter = ac.createBiquadFilter();
 		var inputNode = trackInputNodes[activeTrack];
 		var volumeNode = trackVolumeGains[activeTrack];
-		
+
 		if (trackReverbs[activeTrack] != null) {
 		    trackReverbs[activeTrack][1].disconnect();
 		    trackReverbs[activeTrack][1].connect(trackFilter);
-		}else { 
+		}else {
 		    inputNode.disconnect();
 		    inputNode.connect(trackFilter);
 		}
-		
+
 		if (trackCompressors[activeTrack] != null){
 		    trackFilter.connect(trackCompressors[activeTrack]);
 		}else if (trackTremolos[activeTrack != null]) {
@@ -305,7 +303,7 @@ $(document).ready(function(){
 		}else{
 		    trackFilter.connect(volumeNode);
 		}
-		
+
 		trackFilters[activeTrack] = trackFilter;
 		effects[activeTrack-1].push({
 		    type: "Filter",
@@ -321,7 +319,7 @@ $(document).ready(function(){
 		var trackCompressor = ac.createDynamicsCompressor();
 		var inputNode = trackInputNodes[activeTrack];
 		var volumeNode = trackVolumeGains[activeTrack];
-		
+
 		if (trackFilters[activeTrack] != null){
 		    trackFilters[activeTrack].disconnect();
 		    trackFilters[activeTrack].connect(trackCompressor);
@@ -332,15 +330,15 @@ $(document).ready(function(){
 		    inputNode.disconnect();
 		    inputNode.connect(trackCompressor);
 		}
-		
+
 		 if (trackTremolos[activeTrack != null]) {
 		    trackCompressor.connect(trackTremolos[activeTrack][0]);
 		}else if (trackDelays[activeTrack] != null) {
 		    trackCompressor.connect(trackDelays[activeTrack][0]);
 		}else{
 		    trackCompressor.connect(volumeNode);
-		}   
-		
+		}
+
 		trackCompressors[activeTrack] = trackCompressor;
 		effects[activeTrack-1].push({
 		    type: "Compressor",
@@ -351,13 +349,13 @@ $(document).ready(function(){
 		//console.log(effects[activeTrack-1]);
 	    }
 	    if(ui.draggable[0].textContent == "Tremolo"){
-		
+
 		$("#tremoloRateKnob").val(1).trigger('change');
 		$("#tremoloDepthKnob").val(10).trigger('change');
 		var trackTremolo = createTrackTremolo();
 		var inputNode = trackInputNodes[activeTrack];
 		var volumeNode = trackVolumeGains[activeTrack];
-		
+
 		if (trackCompressors[activeTrack] != null){
 		    trackCompressors[activeTrack].disconnect();
 		    trackCompressors[activeTrack].connect(trackTremolo[0]);
@@ -371,13 +369,13 @@ $(document).ready(function(){
 		    inputNode.disconnect();
 		    inputNode.connect(trackTremolo[0]);
 		}
-		
+
 		if (trackDelays[activeTrack] != null) {
 		    trackTremolo[1].connect(trackDelays[activeTrack][0]);
 		}else{
 		    trackTremolo[1].connect(volumeNode);
-		}   
-		
+		}
+
 		trackTremolos[activeTrack] = trackTremolo;
 		effects[activeTrack-1].push({
 		    type: "Tremolo",
@@ -393,7 +391,7 @@ $(document).ready(function(){
 		var trackDelay = createTrackDelay();
 		var inputNode = trackInputNodes[activeTrack];
 		var volumeNode = trackVolumeGains[activeTrack];
-		
+
 		if (trackFilters[activeTrack] != null){
 		    trackFilters[activeTrack].disconnect();
 		    trackFilters[activeTrack].connect(trackDelay[0]);
@@ -410,9 +408,9 @@ $(document).ready(function(){
 		    inputNode.disconnect();
 		    inputNode.connect(trackDelay[0]);
 		}
-		
+
 		trackDelay[1].connect(volumeNode);
-		
+
 		trackDelays[activeTrack] = trackDelay;
 		effects[activeTrack-1].push({
 		    type: "Delay",
@@ -421,16 +419,16 @@ $(document).ready(function(){
 		    wetDry: "50"
 		});
 	    }
-	   
-	
-	    
-	 
+
+
+
+
 	}
-	
+
     });
-    
-   
-    
+
+
+
     $("#compressorThresholdKnob").knob({
 	change : function(v) {
 	    setCompressorThresholdValue(activeTrack,v);
@@ -461,7 +459,7 @@ $(document).ready(function(){
 	    });
 	}
     });
-    
+
     $("#filterCutoffKnob").knob({
 	change : function(v) {
 	    setFilterCutoffValue(activeTrack,v);
@@ -492,7 +490,7 @@ $(document).ready(function(){
 	    });
 	}
     });
-    
+
     $("#reverbWetDryKnob").knob({
 	change : function(v) {
 	    setReverbWetDryValue(activeTrack,v);
@@ -513,9 +511,9 @@ $(document).ready(function(){
 	    });
 	}
     });
-    
+
     //$("#reverbList").onchange= setReverbIR()
-    
+
     $("#delayTimeKnob").knob({
 	change : function(v) {
 	    setDelayTimeValue(activeTrack,v);
@@ -546,7 +544,7 @@ $(document).ready(function(){
 	    });
 	}
     });
-    
+
       $("#tremoloRateKnob").knob({
 	change : function(v) {
 	    setTremoloRateValue(activeTrack,v);
@@ -567,9 +565,9 @@ $(document).ready(function(){
 	    });
 	}
     });
-    
-    
-    
+
+
+
     $(".dial").knob();
 
     $("#playPause").click(function(){
@@ -622,8 +620,8 @@ $(document).ready(function(){
 	$("#trackEffects").css("display","none");
 	$("#masterControl").css("display","none");
     });
-    
-    
+
+
     $( "#masterVolume" ).slider({
       orientation: "vertical",
       range: "min",
@@ -634,7 +632,7 @@ $(document).ready(function(){
 	setMasterVolume(ui.value );
       }
     });
-    
+
     $("#addTrackButton").click(function(){
 	var newTrackNumber = globalNumberOfTracks+1;
 	globalNumberOfTracks++;
@@ -644,21 +642,21 @@ $(document).ready(function(){
 	    $(".sidebar").css('height',""+currentSideBarHeight+"px");
 	}
 	createTrack(newTrackNumber);
-	var trackMasterGainNode = ac.createGainNode();
-	var trackInputNode = ac.createGainNode();
-	var trackVolumeNode = ac.createGainNode();
-	
+	var trackMasterGainNode = ac.createGain();
+	var trackInputNode = ac.createGain();
+	var trackVolumeNode = ac.createGain();
+
 	trackMasterGainNode.connect(masterGainNode);
 	trackVolumeNode.connect(trackMasterGainNode);
 	trackInputNode.connect(trackVolumeNode);
-	
+
 	trackMasterGains[newTrackNumber] = {node: trackMasterGainNode, isMuted: false, isSolo: false};
 	trackVolumeGains[newTrackNumber] = trackVolumeNode;
 	trackInputNodes[newTrackNumber] = trackInputNode;
     });
-    
+
    drawTimeline();
-	
+
 });
 
 function createTrack(trackNumber){
@@ -699,7 +697,7 @@ function createTrack(trackNumber){
 	    if(currentEffect.type == "Reverb"){
 		$("#reverbWetDryKnob").val(currentEffect.wetDry);
 		$("#reverbIrSelectKnob").val(currentEffect.ir);
-		
+
 	    }
 	    if(currentEffect.type == "Delay"){
 		$("#delayTimeKnob").val(currentEffect.time);
@@ -739,25 +737,25 @@ function createTrack(trackNumber){
 	} else {
 	    //Stop Recording
 	    activeRecorder.stop();
-	    
+
 	    var recordingDuration;
-	    
+
 	    var startBar;
 	    if(pauseBeat==undefined){
 		startBar = 0;
 	    } else {
 		startBar = pauseBeat;
 	    }
-	    
+
 	    activeRecorder.getBuffer(function(recordingBuffer){
 		recordingDuration = recordingBuffer[0].length/ac.sampleRate;
-		
+
 		var newBuffer = ac.createBuffer( 2, recordingBuffer[0].length, ac.sampleRate );
 		//var newSource = ac.createBufferSourceNode();
 		newBuffer.getChannelData(0).set(recordingBuffer[0]);
 		newBuffer.getChannelData(1).set(recordingBuffer[1]);
 		//newSource.buffer = newBuffer;
-		
+
 		var span = document.createElement('span');
 		span.id = "recording" + recordingCount + "Span";
 		var canvas = document.createElement('canvas');
@@ -791,7 +789,7 @@ function createTrack(trackNumber){
 		});
 		canvas.width = parseFloat(recordingDuration) * ((pixelsPer4*bpm)/60);
 		canvas.height = 80;
-		
+
 		activeRecorder.exportWAV(function(blob){
 		    var url = URL.createObjectURL(blob);
 		    var wavesurfer = Object.create(WaveSurfer);
@@ -806,7 +804,7 @@ function createTrack(trackNumber){
 		    wavesurfer.load(url);
 		    globalWavesurfers.push(wavesurfer);
 		    buffers[recordingCount] = {buffer: newBuffer};
-		    
+
 		    if(times[startBar] == null){
 			times[startBar] = [{id: recordingCount, track: recordTrackNumber}];
 		    } else {
@@ -815,11 +813,11 @@ function createTrack(trackNumber){
 		    recordingCount++;
 		});
 	    });
-	    
-	    
-	    
+
+
+
 	}
-	
+
     });
     $("#track"+trackNumber+"title").storage({
 	storageKey : 'track'+trackNumber
@@ -862,7 +860,7 @@ function createTrack(trackNumber){
 		    }
 		}
 	    });
-	    
+
 	    var wavesurfer = Object.create(WaveSurfer);
 	    wavesurfer.init({
 		canvas: canvas,
@@ -889,14 +887,14 @@ function createTrack(trackNumber){
 function createNodes(numTracks) {
     //for each track create a master gain node. specific tracks represented by array index i
     for (var i = 1; i <= numTracks; i++) {
-	var trackMasterGainNode = ac.createGainNode();
-	var trackInputNode = ac.createGainNode();
-	var trackVolumeNode = ac.createGainNode();
-	
+	var trackMasterGainNode = ac.createGain();
+	var trackInputNode = ac.createGain();
+	var trackVolumeNode = ac.createGain();
+
 	trackMasterGainNode.connect(masterGainNode);
 	trackVolumeNode.connect(trackMasterGainNode);
 	trackInputNode.connect(trackVolumeNode);
-	
+
 	trackMasterGains[i] = {node: trackMasterGainNode, isMuted: false, isSolo: false};
 	trackVolumeGains[i] = trackVolumeNode;
 	trackInputNodes[i] = trackInputNode;
@@ -912,11 +910,11 @@ window.onload = function init() {
       // webkit shim
       navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
       window.URL = window.URL || window.webkitURL;
-      
+
     } catch (e) {
       alert('No web audio support in this browser!');
     }
-    
+
     navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
     });
 };

@@ -27,7 +27,7 @@ WaveSurfer.WebAudio = {
         this.analyser.fftSize = this.fftSize;
         this.analyser.connect(this.destination);
 
-        this.proc = this.ac.createJavaScriptNode(this.fftSize / 2, 1, 1);
+        this.proc = this.ac.createScriptProcessor(this.fftSize / 2, 1, 1);
         this.proc.connect(this.destination);
 
         this.dataArray = new Uint8Array(this.analyser.fftSize);
