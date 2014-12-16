@@ -175,7 +175,7 @@ var wavesurfer = (function () {
             processData(JSON.parse(this.responseText));
         }
     };
-    xhr.open('GET', 'src/data/samples.json');
+    xhr.open('GET', 'src/data/samples.txt');
     xhr.send();
 }());
 
