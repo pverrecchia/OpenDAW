@@ -3,12 +3,11 @@ OpenDAW
 
 <p>
 OpenDAW is an open source online digital audio workstation (DAW) based on the 
-<a href = https://dvcs.w3.org/hg/audio/raw-file/tip/webaudio/specification.html target = "blank">Web Audio API </a>.
+<a href = https://dvcs.w3.org/hg/audio/raw-file/tip/webaudio/specification.html target = "blank">Web Audio API </a>. Try OpenDAW <a href = http://opendaw.azurewebsites.net target = "blank"> here </a>.
 </p>
 
 ![ScreenShot](https://raw.github.com/pvererecchia/OpenDAW/master/img/opendaw.PNG)
 <br>
-
 <h3>Update 2: April 22, 2013</h3>
 
 <h6>Project Summary</h6>
@@ -97,12 +96,6 @@ usability are to add include saving changes to workspace sessions and exporting 
 </ul>
 
 <a href = "https://docs.google.com/presentation/d/1BJaS6c8hqJ_MFRLzce2q5IobM6fkv_2eIF2FPUToPyk/pub?start=false&loop=false&delayms=3000" target = "blank">Class presentation</a>
-
-<b>Try OpenDAW here:</b>
-<br>
-http://collegegradecalculator.com/webaudio/index.html
-<br>
-http://madebypietro.com/mumt307/index.html
 
 <hr>
 <h3>Update 1: March 26, 2013</h3>
